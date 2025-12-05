@@ -1,0 +1,245 @@
+import * as SQLite from 'expo-sqlite';
+import { TimeEvent, Entry } from '../types';
+
+const db = SQLite.openDatabaseSync('time_tracking.db');
+
+export const initDatabase = (): void => {
+    // Check if events table exists
+    const eventsTable = db.getAllSync(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='events'",
+    );
+
+    if (eventsTable.length === 0) {
+        // Check if entries table exists (for migration)
+        const entriesTable = db.getAllSync(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='entries'",
+        );
+
+        db.execSync(`
+            CREATE TABLE IF NOT EXISTS events (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                date TEXT NOT NULL,
+                time TEXT NOT NULL,
+                note TEXT
+            );
+        `);
+
+        if (entriesTable.length > 0) {
+            console.log('Migrating from entries to events...');
+            const entries = db.getAllSync('SELECT * FROM entries') as Entry[];
+
+            const insertStatement = db.prepareSync(
+                'INSERT INTO events (date, time, note) VALUES ($date, $time, $note)',
+            );
+
+            try {
+                db.withTransactionSync(() => {
+                    entries.forEach((entry) => {
+                        // Insert Start Time
+                        insertStatement.executeSync({
+                            $date: entry.date,
+                            $time: entry.startTime,
+                            $note: entry.note,
+                        });
+
+                        // Insert End Time if exists
+                        if (entry.endTime) {
+                            insertStatement.executeSync({
+                                $date: entry.date,
+                                $time: entry.endTime,
+                                $note: entry.note, // Note is duplicated for now, or could be null
+                            });
+                        }
+                    });
+                });
+                console.log('Migration successful. Dropping entries table.');
+                db.execSync('DROP TABLE entries');
+            } catch (e) {
+                console.error('Migration failed:', e);
+            } finally {
+                insertStatement.finalizeSync();
+            }
+        }
+    }
+
+    // Settings Table
+    const settingsTable = db.getAllSync(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='settings'",
+    );
+    if (settingsTable.length === 0) {
+        db.execSync(`
+        CREATE TABLE IF NOT EXISTS settings (
+          key TEXT PRIMARY KEY,
+          value TEXT
+        );
+      `);
+    }
+};
+
+export const getSetting = (key: string): string | null => {
+    const result = db.getAllSync(
+        'SELECT value FROM settings WHERE key = $key',
+        {
+            $key: key,
+        },
+    ) as { value: string }[];
+    return result.length > 0 ? result[0].value : null;
+};
+
+export const setSetting = (key: string, value: string): void => {
+    const statement = db.prepareSync(
+        'INSERT OR REPLACE INTO settings (key, value) VALUES ($key, $value)',
+    );
+    try {
+        statement.executeSync({ $key: key, $value: value });
+    } finally {
+        statement.finalizeSync();
+    }
+};
+
+export const addEvent = (
+    date: string,
+    time: string,
+    note: string | null,
+): number => {
+    const statement = db.prepareSync(
+        'INSERT INTO events (date, time, note) VALUES ($date, $time, $note)',
+    );
+    try {
+        const result = statement.executeSync({
+            $date: date,
+            $time: time,
+            $note: note,
+        });
+        return result.lastInsertRowId;
+    } finally {
+        statement.finalizeSync();
+    }
+};
+
+export const updateEvent = (
+    id: number,
+    date: string,
+    time: string,
+    note: string | null,
+): void => {
+    const statement = db.prepareSync(
+        'UPDATE events SET date = $date, time = $time, note = $note WHERE id = $id',
+    );
+    try {
+        statement.executeSync({
+            $date: date,
+            $time: time,
+            $note: note,
+            $id: id,
+        });
+    } finally {
+        statement.finalizeSync();
+    }
+};
+
+export const deleteEvent = (id: number): void => {
+    const statement = db.prepareSync('DELETE FROM events WHERE id = $id');
+    try {
+        statement.executeSync({ $id: id });
+    } finally {
+        statement.finalizeSync();
+    }
+};
+
+export const getTodayEvents = (date: string): TimeEvent[] => {
+    return db.getAllSync(
+        'SELECT * FROM events WHERE date = $date ORDER BY time ASC',
+        { $date: date },
+    ) as TimeEvent[];
+};
+
+export const getMonthEvents = (month: string): TimeEvent[] => {
+    // month format: 'YYYY-MM'
+    return db.getAllSync(
+        'SELECT * FROM events WHERE date LIKE $month || "%" ORDER BY date ASC, time ASC',
+        { $month: month },
+    ) as TimeEvent[];
+};
+
+export const getAllEvents = (): TimeEvent[] => {
+    return db.getAllSync(
+        'SELECT * FROM events ORDER BY date DESC, time DESC',
+    ) as TimeEvent[];
+};
+
+export const getOverallStats = (): {
+    totalMinutesWorked: number;
+    overallBalanceMinutes: number;
+} => {
+    const events = db.getAllSync(
+        'SELECT * FROM events ORDER BY date ASC, time ASC',
+    ) as TimeEvent[];
+
+    let totalMinutesWorked = 0;
+    const workedDays = new Set<string>();
+
+    // Group events by date
+    const eventsByDate: { [key: string]: TimeEvent[] } = {};
+    events.forEach((event) => {
+        if (!eventsByDate[event.date]) {
+            eventsByDate[event.date] = [];
+        }
+        eventsByDate[event.date].push(event);
+    });
+
+    Object.keys(eventsByDate).forEach((date) => {
+        const dayEvents = eventsByDate[date];
+        // Sort just in case
+        dayEvents.sort((a, b) => a.time.localeCompare(b.time));
+
+        let dayMinutes = 0;
+        for (let i = 0; i < dayEvents.length; i += 2) {
+            if (i + 1 < dayEvents.length) {
+                const start = new Date(`${date}T${dayEvents[i].time}`);
+                const end = new Date(`${date}T${dayEvents[i + 1].time}`);
+                const diff = (end.getTime() - start.getTime()) / 1000 / 60;
+                dayMinutes += diff;
+            }
+        }
+
+        if (dayMinutes > 0) {
+            totalMinutesWorked += dayMinutes;
+            workedDays.add(date);
+        }
+    });
+
+    // Calculate expected minutes (8 hours per worked day)
+    const expectedMinutes = workedDays.size * 8 * 60;
+    const overallBalanceMinutes = totalMinutesWorked - expectedMinutes;
+
+    return {
+        totalMinutesWorked,
+        overallBalanceMinutes,
+    };
+};
+
+export const importEvents = (events: Omit<TimeEvent, 'id'>[]): void => {
+    const insertStatement = db.prepareSync(
+        'INSERT INTO events (date, time, note) VALUES ($date, $time, $note)',
+    );
+
+    try {
+        db.withTransactionSync(() => {
+            // Optional: Clear existing events? 
+            // For now, we append. User might want to clear, but append is safer.
+            // Or maybe we should check for duplicates?
+            // Let's just append for now as requested "import this file again".
+            
+            events.forEach((event) => {
+                insertStatement.executeSync({
+                    $date: event.date,
+                    $time: event.time,
+                    $note: event.note || null,
+                });
+            });
+        });
+    } finally {
+        insertStatement.finalizeSync();
+    }
+};
