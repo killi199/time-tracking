@@ -29,6 +29,9 @@ import MenuScreen from './screens/MenuScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import ThemeSettingsScreen from './screens/ThemeSettingsScreen';
 import LanguageSettingsScreen from './screens/LanguageSettingsScreen';
+import GeofenceSetupScreen from './screens/GeofenceSetupScreen';
+
+import './services/LocationTask';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -174,6 +177,11 @@ function NavigationWrapper() {
                         name="LanguageSettings"
                         component={LanguageSettingsScreen}
                         options={{ title: t('settings.languageTitle') }}
+                    />
+                    <Stack.Screen
+                        name="GeofenceSetup"
+                        component={GeofenceSetupScreen}
+                        options={{ title: t('geofence.title') }}
                     />
                 </Stack.Navigator>
             </NavigationContainer>

@@ -55,6 +55,7 @@ export default {
             dailyOverview: 'Day View',
             exportCSV: 'Export CSV',
             importCSV: 'Import CSV',
+            workingLocations: 'Working Location',
         },
         settings: {
             title: 'Settings',
@@ -76,6 +77,15 @@ export default {
             timeLabel: 'Time (HH:MM)',
             noteLabel: 'Note (Optional)',
             invalidTime: 'Invalid time format. Use HH:MM',
+        },
+        geofence: {
+            title: 'Working Location',
+            enableAutoCheckIn: 'Enable Auto Check-In',
+            radius: 'Radius (meters)',
+            instruction: 'Long press on the map to set your work location.',
+            permissionDenied: 'Location permissions are required.',
+            permissionBackgroundDenied: 'Background location permission is required.',
+            currentLocation: 'Use Current Location',
         },
     },
 };

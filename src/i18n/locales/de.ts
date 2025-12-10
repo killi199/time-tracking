@@ -55,6 +55,7 @@ export default {
             dailyOverview: 'Tagesansicht',
             exportCSV: 'CSV Exportieren',
             importCSV: 'CSV Importieren',
+            workingLocations: 'Arbeitsort',
         },
         settings: {
             title: 'Einstellungen',
@@ -75,7 +76,16 @@ export default {
             editEntryTitle: 'Eintrag bearbeiten',
             timeLabel: 'Zeit (HH:MM)',
             noteLabel: 'Notiz (Optional)',
-            invalidTime: 'Ungültiges Zeitformat. Verwenden Sie HH:MM',
+            invalidTime: 'Ungültiges Zeitformat. Bitte HH:MM verwenden',
+        },
+        geofence: {
+            title: 'Arbeitsort',
+            enableAutoCheckIn: 'Autom. Check-in aktivieren',
+            radius: 'Radius (Meter)',
+            instruction: 'Lang drücken, um Arbeitsort festzulegen.',
+            permissionDenied: 'Standortberechtigung erforderlich.',
+            permissionBackgroundDenied: 'Hintergrund-Standortberechtigung erforderlich.',
+            currentLocation: 'Aktuellen Standort verwenden',
         },
     },
 };

@@ -49,6 +49,12 @@ export default function MenuScreen({ navigation }: { navigation: any }) {
                     }
                 />
                 <List.Item
+                    title={t('menu.workingLocations')}
+                    left={() => <List.Icon icon="map-marker-radius" />}
+                    right={() => <List.Icon icon="chevron-right" />}
+                    onPress={() => navigation.navigate('GeofenceSetup')}
+                />
+                <List.Item
                     title={t('menu.exportCSV')}
                     left={() => <List.Icon icon="export" />}
                     right={() => <List.Icon icon="chevron-right" />}
