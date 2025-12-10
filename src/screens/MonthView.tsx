@@ -215,7 +215,7 @@ export default function MonthView({
                     renderLeftActions={() => renderLeftActions(item)}
                 >
                     <List.Item
-                        title={`${type === 'start' ? t('home.checkIn') : t('home.checkOut')} at ${item.time}`}
+                        title={`${type === 'start' ? t('home.checkIn') : t('home.checkOut')} ${t('home.at')} ${item.time}`}
                         description={item.note}
                         left={(props) => (
                             <List.Icon
