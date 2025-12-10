@@ -8,8 +8,7 @@ import {
     useTheme,
     FAB,
 } from 'react-native-paper';
-import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
-import { RectButton } from 'react-native-gesture-handler';
+import { EventListItem } from '../components/EventListItem';
 import {
     getTodayEvents,
     getOverallStats,
@@ -143,24 +142,6 @@ export default function DayView({
         return () => clearInterval(interval);
     }, [events, date, calculateMetrics]);
 
-    const renderRightActions = (item: TimeEvent) => (
-        <RectButton
-            style={styles.deleteAction}
-            onPress={() => onDeleteEvent(item)}
-        >
-            <List.Icon icon="delete" color="white" />
-        </RectButton>
-    );
-
-    const renderLeftActions = (item: TimeEvent) => (
-        <RectButton
-            style={styles.editAction}
-            onPress={() => onEditEvent(item)}
-        >
-            <List.Icon icon="pencil" color="white" />
-        </RectButton>
-    );
-
     const renderItem = ({
         item,
         index,
@@ -172,29 +153,12 @@ export default function DayView({
         const type = index % 2 === 0 ? 'start' : 'end';
 
         return (
-            <ReanimatedSwipeable
-                renderRightActions={() => renderRightActions(item)}
-                renderLeftActions={() => renderLeftActions(item)}
-            >
-                <List.Item
-                    title={`${type === 'start' ? t('home.checkIn') : t('home.checkOut')} ${t('home.at')} ${item.time}`}
-                    description={item.note}
-                    left={(props) => (
-                        <List.Icon
-                            {...props}
-                            icon={type === 'start' ? 'login' : 'logout'}
-                            color={
-                                type === 'start'
-                                    ? theme.colors.primary
-                                    : theme.colors.error
-                            }
-                        />
-                    )}
-                    style={{
-                        backgroundColor: theme.colors.elevation.level1,
-                    }}
-                />
-            </ReanimatedSwipeable>
+            <EventListItem
+                item={item}
+                type={type}
+                onEdit={onEditEvent}
+                onDelete={onDeleteEvent}
+            />
         );
     };
 
@@ -320,19 +284,5 @@ const styles = StyleSheet.create({
         margin: 16,
         right: 0,
         bottom: 0,
-    },
-    deleteAction: {
-        backgroundColor: '#dd2c00',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: 80,
-        height: '100%',
-    },
-    editAction: {
-        backgroundColor: '#2196f3',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: 80,
-        height: '100%',
     },
 });

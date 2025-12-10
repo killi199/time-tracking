@@ -7,8 +7,7 @@ import {
     Divider,
     useTheme,
 } from 'react-native-paper';
-import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
-import { RectButton } from 'react-native-gesture-handler';
+import { EventListItem } from '../components/EventListItem';
 import {
     getMonthEvents,
     getOverallStats,
@@ -158,24 +157,6 @@ export default function MonthView({
         return () => clearInterval(interval);
     }, [events, calculateMetrics]);
 
-    const renderRightActions = (item: TimeEvent) => (
-        <RectButton
-            style={styles.deleteAction}
-            onPress={() => onDeleteEvent(item)}
-        >
-            <List.Icon icon="delete" color="white" />
-        </RectButton>
-    );
-
-    const renderLeftActions = (item: TimeEvent) => (
-        <RectButton
-            style={styles.editAction}
-            onPress={() => onEditEvent(item)}
-        >
-            <List.Icon icon="pencil" color="white" />
-        </RectButton>
-    );
-
     const renderItem = ({
         item,
         index,
@@ -183,13 +164,6 @@ export default function MonthView({
         item: TimeEvent;
         index: number;
     }) => {
-        // Even index = Check-in (Start), Odd index = Check-out (End)
-        // Note: In month view, we need to be careful with index if we just flat list all events.
-        // However, getMonthEvents returns all events.
-        // We need to determine if it's start or end based on the daily sequence.
-        // But here we are iterating over a flat list of ALL month events.
-        // We need to know the index WITHIN the day.
-
         // Let's find the index of this event within its day
         const dayEvents = events.filter(e => e.date === item.date);
         const eventIndexInDay = dayEvents.findIndex(e => e.id === item.id);
@@ -210,29 +184,12 @@ export default function MonthView({
                         })}
                     </List.Subheader>
                 )}
-                <ReanimatedSwipeable
-                    renderRightActions={() => renderRightActions(item)}
-                    renderLeftActions={() => renderLeftActions(item)}
-                >
-                    <List.Item
-                        title={`${type === 'start' ? t('home.checkIn') : t('home.checkOut')} ${t('home.at')} ${item.time}`}
-                        description={item.note}
-                        left={(props) => (
-                            <List.Icon
-                                {...props}
-                                icon={type === 'start' ? 'login' : 'logout'}
-                                color={
-                                    type === 'start'
-                                        ? theme.colors.primary
-                                        : theme.colors.error
-                                }
-                            />
-                        )}
-                        style={{
-                            backgroundColor: theme.colors.elevation.level1,
-                        }}
-                    />
-                </ReanimatedSwipeable>
+                <EventListItem
+                    item={item}
+                    type={type}
+                    onEdit={onEditEvent}
+                    onDelete={onDeleteEvent}
+                />
             </View>
         );
     };
@@ -313,19 +270,5 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         flex: 1,
-    },
-    deleteAction: {
-        backgroundColor: '#dd2c00',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: 80,
-        height: '100%',
-    },
-    editAction: {
-        backgroundColor: '#2196f3',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: 80,
-        height: '100%',
     },
 });
