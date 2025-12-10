@@ -168,13 +168,21 @@ export const getAllEvents = (): TimeEvent[] => {
     ) as TimeEvent[];
 };
 
-export const getOverallStats = (): {
+export const getOverallStats = (cutoffDate?: string): {
     totalMinutesWorked: number;
     overallBalanceMinutes: number;
 } => {
-    const events = db.getAllSync(
-        'SELECT * FROM events ORDER BY date ASC, time ASC',
-    ) as TimeEvent[];
+    let query = 'SELECT * FROM events';
+    let params: any = {};
+
+    if (cutoffDate) {
+        query += ' WHERE date <= $cutoffDate';
+        params.$cutoffDate = cutoffDate;
+    }
+
+    query += ' ORDER BY date ASC, time ASC';
+
+    const events = db.getAllSync(query, params) as TimeEvent[];
 
     let totalMinutesWorked = 0;
     const workedDays = new Set<string>();

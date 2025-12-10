@@ -113,8 +113,14 @@ export default function MonthView({
             const monthBalanceMinutes = totalMinutesMonth - expectedMinutes;
             setDayBalance(formatTime(monthBalanceMinutes, true));
 
-            // Overall Balance (Always calculated globally)
-            const { overallBalanceMinutes } = getOverallStats();
+            // Overall Balance (Target: total accumulated until end of this month)
+            const [yearStr, monthStr] = month.split('-');
+            const year = parseInt(yearStr, 10);
+            const monthNum = parseInt(monthStr, 10);
+            const lastDay = new Date(year, monthNum, 0).getDate();
+            const cutoffDate = `${month}-${String(lastDay).padStart(2, '0')}`;
+
+            const { overallBalanceMinutes } = getOverallStats(cutoffDate);
             let finalOverallBalance = overallBalanceMinutes;
 
             // Add active session if exists (getOverallStats doesn't include active)
@@ -129,7 +135,7 @@ export default function MonthView({
             }
             setOverallBalance(formatTime(finalOverallBalance, true));
         },
-        [],
+        [month],
     );
 
     const loadData = useCallback(() => {

@@ -97,7 +97,7 @@ export default function DayView({
             setDayBalance(formatTime(dayBalanceMinutes, true));
 
             // 3. Overall Balance
-            const { overallBalanceMinutes } = getOverallStats();
+            const { overallBalanceMinutes } = getOverallStats(date);
 
             // Add today's active session to overall balance if any
             let finalOverallBalance = overallBalanceMinutes;
