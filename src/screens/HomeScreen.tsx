@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { View, StyleSheet, AppState } from 'react-native';
 import {
     Button,
     Text,
@@ -51,6 +51,49 @@ export default function HomeScreen({
 
     const theme = useTheme();
     const { t, i18n } = useTranslation();
+
+    // Track app state and date to auto-update on resume
+    const appState = useRef(AppState.currentState);
+    const lastActiveDateRef = useRef(new Date().toISOString().split('T')[0]);
+    const lastActiveMonthRef = useRef(new Date().toISOString().slice(0, 7));
+
+    useEffect(() => {
+        const subscription = AppState.addEventListener('change', nextAppState => {
+            if (
+                appState.current.match(/inactive|background/) &&
+                nextAppState === 'active'
+            ) {
+                const now = new Date();
+                const newToday = now.toISOString().split('T')[0];
+                const newMonth = now.toISOString().slice(0, 7);
+
+                // If real day changed and we were viewing "Today", update to new "Today"
+                if (newToday !== lastActiveDateRef.current) {
+                    if (currentDate === lastActiveDateRef.current) {
+                        setCurrentDate(newToday);
+                    }
+                    lastActiveDateRef.current = newToday;
+                }
+
+                // Same for month
+                if (newMonth !== lastActiveMonthRef.current) {
+                    if (currentMonth === lastActiveMonthRef.current) {
+                        setCurrentMonth(newMonth);
+                    }
+                    lastActiveMonthRef.current = newMonth;
+                }
+
+                // Always refresh data on resume
+                setRefreshTrigger(prev => prev + 1);
+            }
+
+            appState.current = nextAppState;
+        });
+
+        return () => {
+            subscription.remove();
+        };
+    }, [currentDate, currentMonth]);
 
     useFocusEffect(
         useCallback(() => {
