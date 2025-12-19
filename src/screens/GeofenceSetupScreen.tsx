@@ -34,24 +34,26 @@ export default function GeofenceSetupScreen() {
     const [dialogMessage, setDialogMessage] = useState('');
     const [isLocating, setIsLocating] = useState(false);
 
-    const showDialog = (title: string, message: string) => {
+    function showDialog(title: string, message: string) {
         setDialogTitle(title);
         setDialogMessage(message);
         setDialogVisible(true);
-    };
+    }
 
-    const hideDialog = () => setDialogVisible(false);
+    function hideDialog() {
+        setDialogVisible(false);
+    }
 
     useEffect(() => {
-        const init = async () => {
+        async function init() {
             const hasSavedLocation = loadSettings();
             await checkPermissions(hasSavedLocation);
             setLoading(false);
-        };
+        }
         init();
     }, []);
 
-    const loadSettings = (): boolean => {
+    function loadSettings(): boolean {
         try {
             const configStr = getSetting('geofence_config');
             if (configStr) {
@@ -74,9 +76,9 @@ export default function GeofenceSetupScreen() {
             console.error('Failed to load geofence settings', e);
         }
         return false;
-    };
+    }
 
-    const checkPermissions = async (hasSavedLocation: boolean) => {
+    async function checkPermissions(hasSavedLocation: boolean) {
         const { status: fgStatus } = await Location.getForegroundPermissionsAsync();
         if (fgStatus !== 'granted') {
             const { status } = await Location.requestForegroundPermissionsAsync();
@@ -113,9 +115,9 @@ export default function GeofenceSetupScreen() {
                 console.log("Could not get current location", error);
             }
         }
-    };
+    }
 
-    const handleEnableToggle = async () => {
+    async function handleEnableToggle() {
         if (!marker) {
             showDialog(t('common.error'), t('geofence.instruction'));
             return;
@@ -158,9 +160,9 @@ export default function GeofenceSetupScreen() {
                 showDialog(t('common.error'), t('geofence.stopFailed'));
             }
         }
-    };
+    }
 
-    const saveConfig = (enabled: boolean) => {
+    function saveConfig(enabled: boolean) {
         const config = {
             isEnabled: enabled,
             latitude: marker?.latitude,
@@ -168,9 +170,9 @@ export default function GeofenceSetupScreen() {
             radius: radius,
         };
         setSetting('geofence_config', JSON.stringify(config));
-    };
+    }
 
-    const onMapPress = (e: LongPressEvent) => {
+    function onMapPress(e: LongPressEvent) {
         // If enabled, warn that they need to disable first to edit? Or just update it?
         // Let's allow update but restart geofence if enabled.
         setMarker(e.nativeEvent.coordinate);
@@ -192,9 +194,9 @@ export default function GeofenceSetupScreen() {
             };
             setSetting('geofence_config', JSON.stringify(config));
         }
-    };
+    }
 
-    const onRadiusChange = (val: number) => {
+    function onRadiusChange(val: number) {
         setRadius(val);
         if (!isEnabled && marker) {
             const config = {
@@ -205,9 +207,9 @@ export default function GeofenceSetupScreen() {
             };
             setSetting('geofence_config', JSON.stringify(config));
         }
-    };
+    }
 
-    const centerMapOnUser = async () => {
+    async function centerMapOnUser() {
         setIsLocating(true);
         try {
             const location = await Location.getCurrentPositionAsync({});
@@ -222,9 +224,9 @@ export default function GeofenceSetupScreen() {
         } finally {
             setIsLocating(false);
         }
-    };
+    }
 
-    const centerMapOnMarker = () => {
+    function centerMapOnMarker() {
         if (marker) {
             mapRef.current?.animateToRegion({
                 latitude: marker.latitude,
@@ -233,7 +235,7 @@ export default function GeofenceSetupScreen() {
                 longitudeDelta: 0.005,
             }, 1000);
         }
-    };
+    }
 
     if (loading) {
         return (
