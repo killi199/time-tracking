@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, StyleSheet, Alert, Dimensions } from 'react-native';
-import { useTheme, Text, Button, Switch, ActivityIndicator, HelperText } from 'react-native-paper';
+import { useTheme, Text, Switch, ActivityIndicator, HelperText } from 'react-native-paper';
 import MapView, { Circle, Marker, LongPressEvent, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { useTranslation } from 'react-i18next';
@@ -23,17 +23,22 @@ export default function GeofenceSetupScreen() {
     const { t } = useTranslation();
     const [isEnabled, setIsEnabled] = useState(false);
     const [region, setRegion] = useState(DEFAULT_REGION);
+    const mapRef = useRef<MapView>(null);
     const [marker, setMarker] = useState<{ latitude: number; longitude: number } | null>(null);
     const [radius, setRadius] = useState(100);
     const [loading, setLoading] = useState(true);
     const [permissionStatus, setPermissionStatus] = useState<'granted' | 'denied' | 'undetermined'>('undetermined');
 
     useEffect(() => {
-        loadSettings();
-        checkPermissions();
+        const init = async () => {
+            const hasSavedLocation = loadSettings();
+            await checkPermissions(hasSavedLocation);
+            setLoading(false);
+        };
+        init();
     }, []);
 
-    const loadSettings = () => {
+    const loadSettings = (): boolean => {
         try {
             const configStr = getSetting('geofence_config');
             if (configStr) {
@@ -47,17 +52,18 @@ export default function GeofenceSetupScreen() {
                         latitudeDelta: 0.02,
                         longitudeDelta: 0.02,
                     });
+                    if (config.radius) setRadius(config.radius);
+                    return true;
                 }
                 if (config.radius) setRadius(config.radius);
             }
         } catch (e) {
             console.error('Failed to load geofence settings', e);
-        } finally {
-            setLoading(false);
         }
+        return false;
     };
 
-    const checkPermissions = async () => {
+    const checkPermissions = async (hasSavedLocation: boolean) => {
         const { status: fgStatus } = await Location.getForegroundPermissionsAsync();
         if (fgStatus !== 'granted') {
             const { status } = await Location.requestForegroundPermissionsAsync();
@@ -76,16 +82,20 @@ export default function GeofenceSetupScreen() {
             setPermissionStatus('granted');
         }
 
-        // Always try to get current location to center map if no marker is set
-        if (!marker) {
+        // Only try to get current location to center map if NO marker is set
+        if (!hasSavedLocation) {
             try {
                 const location = await Location.getCurrentPositionAsync({});
-                setRegion({
+                const newRegion = {
                     latitude: location.coords.latitude,
                     longitude: location.coords.longitude,
                     latitudeDelta: 0.02,
                     longitudeDelta: 0.02,
-                });
+                };
+                setRegion(newRegion);
+                // Since loading is still true, initialRegion will pick this up when we set Loading false
+                // However, if we want to be safe or if loading causes weird mount behavior:
+                // We are setting loading to false AFTER this content in useEffect.
             } catch (error) {
                 console.log("Could not get current location", error);
             }
@@ -195,13 +205,15 @@ export default function GeofenceSetupScreen() {
     return (
         <View style={styles.container}>
             <MapView
+                ref={mapRef}
                 style={styles.map}
-                region={region}
-                onRegionChangeComplete={setRegion}
+                initialRegion={region}
                 onLongPress={onMapPress} // Using LongPress as simpler instruction
                 showsUserLocation
                 showsMyLocationButton
                 provider={PROVIDER_GOOGLE}
+                rotateEnabled={true}
+                pitchEnabled={true}
             >
                 {marker && (
                     <>
