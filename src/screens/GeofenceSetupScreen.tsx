@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
-import { useTheme, Text, Switch, ActivityIndicator, HelperText, Portal, Dialog, Button } from 'react-native-paper';
+import { useTheme, Text, Switch, ActivityIndicator, HelperText, Portal, Dialog, Button, FAB } from 'react-native-paper';
 import MapView, { Circle, Marker, LongPressEvent, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { useTranslation } from 'react-i18next';
@@ -32,6 +32,7 @@ export default function GeofenceSetupScreen() {
     const [dialogVisible, setDialogVisible] = useState(false);
     const [dialogTitle, setDialogTitle] = useState('');
     const [dialogMessage, setDialogMessage] = useState('');
+    const [isLocating, setIsLocating] = useState(false);
 
     const showDialog = (title: string, message: string) => {
         setDialogTitle(title);
@@ -206,6 +207,23 @@ export default function GeofenceSetupScreen() {
         }
     };
 
+    const centerMapOnUser = async () => {
+        setIsLocating(true);
+        try {
+            const location = await Location.getCurrentPositionAsync({});
+            mapRef.current?.animateToRegion({
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+                latitudeDelta: 0.005,
+                longitudeDelta: 0.005,
+            }, 1000);
+        } catch (e) {
+            console.log("Failed to get location", e);
+        } finally {
+            setIsLocating(false);
+        }
+    };
+
     if (loading) {
         return (
             <View style={[styles.container, { justifyContent: 'center' }]}>
@@ -222,7 +240,7 @@ export default function GeofenceSetupScreen() {
                 initialRegion={region}
                 onLongPress={onMapPress} // Using LongPress as simpler instruction
                 showsUserLocation
-                showsMyLocationButton
+                showsMyLocationButton={false}
                 provider={PROVIDER_GOOGLE}
                 rotateEnabled={true}
                 pitchEnabled={true}
@@ -239,6 +257,13 @@ export default function GeofenceSetupScreen() {
                     </>
                 )}
             </MapView>
+
+            <FAB
+                icon="crosshairs-gps"
+                style={[styles.fab, { backgroundColor: theme.colors.surface }]}
+                onPress={centerMapOnUser}
+                loading={isLocating}
+            />
 
             <View style={[styles.controls, { backgroundColor: theme.colors.surface }]}>
                 <Text variant="titleMedium" style={{ marginBottom: 8 }}>
@@ -312,5 +337,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 10,
+    },
+    fab: {
+        position: 'absolute',
+        right: 16,
+        top: height * 0.65 - 80,
     },
 });
