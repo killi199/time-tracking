@@ -224,6 +224,17 @@ export default function GeofenceSetupScreen() {
         }
     };
 
+    const centerMapOnMarker = () => {
+        if (marker) {
+            mapRef.current?.animateToRegion({
+                latitude: marker.latitude,
+                longitude: marker.longitude,
+                latitudeDelta: 0.005,
+                longitudeDelta: 0.005,
+            }, 1000);
+        }
+    };
+
     if (loading) {
         return (
             <View style={[styles.container, { justifyContent: 'center' }]}>
@@ -260,10 +271,18 @@ export default function GeofenceSetupScreen() {
 
             <FAB
                 icon="crosshairs-gps"
-                style={[styles.fab, { backgroundColor: theme.colors.surface }]}
+                style={[styles.fab, { top: height * 0.65 - 80, backgroundColor: theme.colors.surface }]}
                 onPress={centerMapOnUser}
                 loading={isLocating}
             />
+
+            {marker && (
+                <FAB
+                    icon="map-marker"
+                    style={[styles.fab, { top: height * 0.65 - 150, backgroundColor: theme.colors.surface }]}
+                    onPress={centerMapOnMarker}
+                />
+            )}
 
             <View style={[styles.controls, { backgroundColor: theme.colors.surface }]}>
                 <Text variant="titleMedium" style={{ marginBottom: 8 }}>
@@ -341,6 +360,5 @@ const styles = StyleSheet.create({
     fab: {
         position: 'absolute',
         right: 16,
-        top: height * 0.65 - 80,
     },
 });
