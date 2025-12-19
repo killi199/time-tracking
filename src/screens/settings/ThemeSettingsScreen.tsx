@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { RadioButton, List, useTheme } from 'react-native-paper';
-import { useAppTheme } from '../context/ThemeContext';
+import { useAppTheme } from '../../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
 
 export default function ThemeSettingsScreen() {

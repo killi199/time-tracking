@@ -59,7 +59,7 @@ export default function MenuScreen({ navigation }: { navigation: any }) {
                     left={() => <List.Icon icon="export" />}
                     right={() => <List.Icon icon="chevron-right" />}
                     onPress={async () => {
-                        const { exportToCSV } = await import('../utils/csv');
+                        const { exportToCSV } = await import('../../utils/csv');
                         const result = await exportToCSV();
                         if (!result.success && result.message) {
                             showDialog(t('common.error'), result.message);
@@ -79,7 +79,7 @@ export default function MenuScreen({ navigation }: { navigation: any }) {
                     left={() => <List.Icon icon="import" />}
                     right={() => <List.Icon icon="chevron-right" />}
                     onPress={async () => {
-                        const { importFromCSV } = await import('../utils/csv');
+                        const { importFromCSV } = await import('../../utils/csv');
                         const result = await importFromCSV();
                         if (result.success) {
                             showDialog(

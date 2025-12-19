@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { RadioButton, List, useTheme, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
-import { getSetting, setSetting } from '../db/database';
+import { getSetting, setSetting } from '../../db/database';
 import i18n from 'i18next';
 import * as Localization from 'expo-localization';
 

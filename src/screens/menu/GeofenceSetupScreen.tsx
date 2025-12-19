@@ -5,8 +5,8 @@ import MapView, { Circle, Marker, LongPressEvent, PROVIDER_GOOGLE } from 'react-
 import * as Location from 'expo-location';
 import { useTranslation } from 'react-i18next';
 import Slider from '@react-native-community/slider';
-import { getSetting, setSetting } from '../db/database';
-import { LOCATION_TASK_NAME } from '../services/LocationTask';
+import { getSetting, setSetting } from '../../db/database';
+import { LOCATION_TASK_NAME } from '../../services/LocationTask';
 
 const { width, height } = Dimensions.get('window');
 

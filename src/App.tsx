@@ -25,11 +25,11 @@ enableScreens(true);
 
 import HomeScreen from './screens/HomeScreen';
 
-import MenuScreen from './screens/MenuScreen';
-import SettingsScreen from './screens/SettingsScreen';
-import ThemeSettingsScreen from './screens/ThemeSettingsScreen';
-import LanguageSettingsScreen from './screens/LanguageSettingsScreen';
-import GeofenceSetupScreen from './screens/GeofenceSetupScreen';
+import MenuScreen from './screens/menu/MenuScreen';
+import SettingsScreen from './screens/settings/SettingsScreen';
+import ThemeSettingsScreen from './screens/settings/ThemeSettingsScreen';
+import LanguageSettingsScreen from './screens/settings/LanguageSettingsScreen';
+import GeofenceSetupScreen from './screens/menu/GeofenceSetupScreen';
 
 import './services/LocationTask';
 
