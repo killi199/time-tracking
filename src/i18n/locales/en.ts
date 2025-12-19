@@ -10,6 +10,7 @@ export default {
             error: 'Error',
             success: 'Success',
             loading: 'Loading...',
+            info: 'Info',
         },
         home: {
             title: 'Day',
@@ -86,6 +87,11 @@ export default {
             permissionDenied: 'Location permissions are required.',
             permissionBackgroundDenied: 'Background location permission is required.',
             currentLocation: 'Use Current Location',
+            enabled: 'Geofencing enabled!',
+            startCurrentFailed: 'Failed to start geofencing.',
+            stopFailed: 'Failed to stop geofencing.',
+            updateInstruction: 'Disable and re-enable to apply new location.',
+            active: 'Geofence Active',
         },
     },
 };

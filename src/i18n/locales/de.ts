@@ -10,6 +10,7 @@ export default {
             error: 'Fehler',
             success: 'Erfolgreich',
             loading: 'Laden...',
+            info: 'Info',
         },
         home: {
             title: 'Tag',
@@ -86,6 +87,11 @@ export default {
             permissionDenied: 'Standortberechtigung erforderlich.',
             permissionBackgroundDenied: 'Hintergrund-Standortberechtigung erforderlich.',
             currentLocation: 'Aktuellen Standort verwenden',
+            enabled: 'Geofencing aktiviert!',
+            startCurrentFailed: 'Starten des Geofencing fehlgeschlagen.',
+            stopFailed: 'Stoppen des Geofencing fehlgeschlagen.',
+            updateInstruction: 'Deaktivieren und reaktivieren, um den neuen Standort anzuwenden.',
+            active: 'Geofence Aktiv',
         },
     },
 };

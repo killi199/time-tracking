@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, StyleSheet, Alert, Dimensions } from 'react-native';
-import { useTheme, Text, Switch, ActivityIndicator, HelperText } from 'react-native-paper';
+import { View, StyleSheet, Dimensions } from 'react-native';
+import { useTheme, Text, Switch, ActivityIndicator, HelperText, Portal, Dialog, Button } from 'react-native-paper';
 import MapView, { Circle, Marker, LongPressEvent, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { useTranslation } from 'react-i18next';
@@ -28,6 +28,18 @@ export default function GeofenceSetupScreen() {
     const [radius, setRadius] = useState(100);
     const [loading, setLoading] = useState(true);
     const [permissionStatus, setPermissionStatus] = useState<'granted' | 'denied' | 'undetermined'>('undetermined');
+
+    const [dialogVisible, setDialogVisible] = useState(false);
+    const [dialogTitle, setDialogTitle] = useState('');
+    const [dialogMessage, setDialogMessage] = useState('');
+
+    const showDialog = (title: string, message: string) => {
+        setDialogTitle(title);
+        setDialogMessage(message);
+        setDialogVisible(true);
+    };
+
+    const hideDialog = () => setDialogVisible(false);
 
     useEffect(() => {
         const init = async () => {
@@ -104,7 +116,7 @@ export default function GeofenceSetupScreen() {
 
     const handleEnableToggle = async () => {
         if (!marker) {
-            Alert.alert(t('common.error'), t('geofence.instruction'));
+            showDialog(t('common.error'), t('geofence.instruction'));
             return;
         }
 
@@ -112,7 +124,7 @@ export default function GeofenceSetupScreen() {
             // Turning ON
             const { status: bgStatus } = await Location.requestBackgroundPermissionsAsync();
             if (bgStatus !== 'granted') {
-                Alert.alert(t('common.error'), t('geofence.permissionBackgroundDenied'));
+                showDialog(t('common.error'), t('geofence.permissionBackgroundDenied'));
                 return;
             }
 
@@ -129,10 +141,10 @@ export default function GeofenceSetupScreen() {
                 ]);
                 setIsEnabled(true);
                 saveConfig(true);
-                Alert.alert(t('common.success'), 'Geofencing enabled!');
+                showDialog(t('common.success'), t('geofence.enabled'));
             } catch (e) {
                 console.error(e);
-                Alert.alert(t('common.error'), 'Failed to start geofencing.');
+                showDialog(t('common.error'), t('geofence.startCurrentFailed'));
             }
         } else {
             // Turning OFF
@@ -142,7 +154,7 @@ export default function GeofenceSetupScreen() {
                 saveConfig(false);
             } catch (e) {
                 console.error(e);
-                Alert.alert(t('common.error'), 'Failed to stop geofencing.');
+                showDialog(t('common.error'), t('geofence.stopFailed'));
             }
         }
     };
@@ -168,7 +180,7 @@ export default function GeofenceSetupScreen() {
         // If switch is ON and user moves marker, we could show "Update Geofence" button.
         // For MVP: Toggle off then on to update.
         if (isEnabled) {
-            Alert.alert('Info', 'Disable and re-enable to apply new location.');
+            showDialog(t('common.info'), t('geofence.updateInstruction'));
         } else {
             // Save immediately for persistence even if disabled
             const config = {
@@ -257,10 +269,21 @@ export default function GeofenceSetupScreen() {
                 )}
                 {marker && isEnabled && (
                     <HelperText type="info" visible={true} style={{ color: theme.colors.primary }}>
-                        Geofence Active
+                        {t('geofence.active')}
                     </HelperText>
                 )}
             </View>
+            <Portal>
+                <Dialog visible={dialogVisible} onDismiss={hideDialog}>
+                    <Dialog.Title>{dialogTitle}</Dialog.Title>
+                    <Dialog.Content>
+                        <Text variant="bodyMedium">{dialogMessage}</Text>
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <Button onPress={hideDialog}>{t('common.confirm')}</Button>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
         </View>
     );
 }
