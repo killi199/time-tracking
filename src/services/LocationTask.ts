@@ -23,21 +23,19 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
     if (data) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const { eventType } = data as any;
+        const now = new Date();
+        const dateStr = now.toISOString().split('T')[0];
+        const timeStr = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
         
         if (eventType === Location.GeofencingEventType.Enter) {
             console.log('Entered geofence');
-            
-            const now = new Date();
-            const dateStr = now.toISOString().split('T')[0];
-            // Format time as HH:MM
-            const timeStr = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
 
             try {
-                addEvent(dateStr, timeStr, 'Auto Check-in geofence');
+                addEvent(dateStr, timeStr, 'Auto check-in geofence');
                 
                 await Notifications.scheduleNotificationAsync({
                     content: {
-                        title: 'Auto Check-in',
+                        title: 'Auto check-in',
                         body: `Checked in at ${timeStr}`,
                     },
                     trigger: null, // Send immediately
@@ -46,8 +44,21 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
                 console.error('Failed to auto check-in:', err);
             }
         } else if (eventType === Location.GeofencingEventType.Exit) {
-             console.log('Exited geofence');
-             // Optionally handle exit
+            console.log('Exited geofence');
+
+            try {
+                addEvent(dateStr, timeStr, 'Auto check-out geofence');
+
+                await Notifications.scheduleNotificationAsync({
+                    content: {
+                        title: 'Auto check-out',
+                        body: `Checked out at ${timeStr}`,
+                    },
+                    trigger: null,
+                });
+            } catch (err) {
+                console.error('Failed to auto check-out:', err);
+            }
         }
     }
 });
