@@ -22,10 +22,10 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
     }
     if (data) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { eventType, region } = data as any;
+        const { eventType } = data as any;
         
         if (eventType === Location.GeofencingEventType.Enter) {
-            console.log('Entered geofence:', region);
+            console.log('Entered geofence');
             
             const now = new Date();
             const dateStr = now.toISOString().split('T')[0];
@@ -33,12 +33,12 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
             const timeStr = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
 
             try {
-                addEvent(dateStr, timeStr, `Auto Check-in: ${region.identifier}`);
+                addEvent(dateStr, timeStr, 'Auto Check-in geofence');
                 
                 await Notifications.scheduleNotificationAsync({
                     content: {
                         title: 'Auto Check-in',
-                        body: `Checked in at ${timeStr} (${region.identifier})`,
+                        body: `Checked in at ${timeStr}`,
                     },
                     trigger: null, // Send immediately
                 });
@@ -46,7 +46,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
                 console.error('Failed to auto check-in:', err);
             }
         } else if (eventType === Location.GeofencingEventType.Exit) {
-             console.log('Exited geofence:', region);
+             console.log('Exited geofence');
              // Optionally handle exit
         }
     }
