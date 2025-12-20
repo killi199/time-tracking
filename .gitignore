@@ -24,11 +24,6 @@ yarn-error.log*
 # Yarn Berry
 .pnp.*
 .yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
 
 # Node modules
 node_modules/

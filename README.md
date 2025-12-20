@@ -4,7 +4,15 @@
 
 ### Prerequisites
 
-1.  **Environment Variables**:
+1.  **Node.js & Yarn**:
+    This project uses Yarn (via Corepack). Ensure you have Node.js installed.
+    Enable Corepack to use the correct Yarn version and install dependencies:
+    ```bash
+    corepack enable
+    yarn install
+    ```
+
+2.  **Environment Variables**:
     You must create an `.env` file in the root directory of the project.
     Add the following variable with your Google Maps API Key:
     ```
