@@ -1,3 +1,10 @@
+/**
+ * Formats a duration in minutes into a string format (HH:MM).
+ *
+ * @param totalMinutes - The total number of minutes to format. Can be negative.
+ * @param showSign - Whether to explicitly show a '+' or '-' sign. Defaults to false.
+ * @returns A string representing the formatted time (e.g., "01:30", "-01:30", "+01:30").
+ */
 export const formatTime = (totalMinutes: number, showSign = false) => {
     const isNegative = totalMinutes < 0;
     const absMinutes = Math.abs(totalMinutes);
