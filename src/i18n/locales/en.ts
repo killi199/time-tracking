@@ -30,6 +30,8 @@ export default {
             deleteCheckIn: 'Deleting this Check-in will make the Check-out the new Check-in time.',
             deleteCheckOut: 'Deleting this Check-out will re-open the session.',
             deleteEventTitle: 'Delete Event',
+            work: 'Work',
+            pause: 'Pause',
         },
         addEntry: {
             addTitle: 'Add Entry',

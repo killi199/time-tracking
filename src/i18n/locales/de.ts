@@ -30,6 +30,8 @@ export default {
             deleteCheckIn: 'Das Löschen dieses Check-ins macht den Check-out zur neuen Check-in-Zeit.',
             deleteCheckOut: 'Das Löschen dieses Check-outs öffnet die Sitzung erneut.',
             deleteEventTitle: 'Ereignis löschen',
+            work: 'Arbeit',
+            pause: 'Pause',
         },
         addEntry: {
             addTitle: 'Eintrag hinzufügen',

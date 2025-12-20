@@ -8,12 +8,14 @@ import {
     useTheme,
 } from 'react-native-paper';
 import { EventListItem } from '../components/EventListItem';
+import { TimeSeparator } from '../components/TimeSeparator';
 import {
     getMonthEvents,
     getOverallStats,
 } from '../db/database';
 import { TimeEvent } from '../types';
 import { useTranslation } from 'react-i18next';
+import { formatTime } from '../utils/time';
 
 interface MonthViewProps {
     month: string;
@@ -35,20 +37,6 @@ export default function MonthView({
 
     const theme = useTheme();
     const { t, i18n } = useTranslation();
-
-    // Helper to format minutes to HH:MM or +HH:MM
-    const formatTime = (totalMinutes: number, showSign = false) => {
-        const isNegative = totalMinutes < 0;
-        const absMinutes = Math.abs(totalMinutes);
-        const hours = Math.floor(absMinutes / 60);
-        const minutes = Math.floor(absMinutes % 60);
-        const timeString = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-
-        if (showSign) {
-            return isNegative ? `-${timeString}` : `+${timeString}`;
-        }
-        return timeString;
-    };
 
     const calculateMetrics = useCallback(
         (currentEvents: TimeEvent[]) => {
@@ -250,7 +238,9 @@ export default function MonthView({
                     data={events}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={renderItem}
-                    ItemSeparatorComponent={Divider}
+                    ItemSeparatorComponent={(props) => (
+                        <TimeSeparator {...props} events={events} />
+                    )}
                 />
             </View>
         </View>

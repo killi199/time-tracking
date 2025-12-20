@@ -9,12 +9,14 @@ import {
     FAB,
 } from 'react-native-paper';
 import { EventListItem } from '../components/EventListItem';
+import { TimeSeparator } from '../components/TimeSeparator';
 import {
     getTodayEvents,
     getOverallStats,
 } from '../db/database';
 import { TimeEvent } from '../types';
 import { useTranslation } from 'react-i18next';
+import { formatTime } from '../utils/time';
 
 interface DayViewProps {
     date: string;
@@ -38,20 +40,6 @@ export default function DayView({
 
     const theme = useTheme();
     const { t } = useTranslation();
-
-    // Helper to format minutes to HH:MM or +HH:MM
-    const formatTime = (totalMinutes: number, showSign = false) => {
-        const isNegative = totalMinutes < 0;
-        const absMinutes = Math.abs(totalMinutes);
-        const hours = Math.floor(absMinutes / 60);
-        const minutes = Math.floor(absMinutes % 60);
-        const timeString = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-
-        if (showSign) {
-            return isNegative ? `-${timeString}` : `+${timeString}`;
-        }
-        return timeString;
-    };
 
     const calculateMetrics = useCallback(
         (currentEvents: TimeEvent[]) => {
@@ -232,7 +220,9 @@ export default function DayView({
                     data={events}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={renderItem}
-                    ItemSeparatorComponent={Divider}
+                    ItemSeparatorComponent={(props) => (
+                        <TimeSeparator {...props} events={events} />
+                    )}
                 />
             </View>
 
