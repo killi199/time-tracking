@@ -144,14 +144,6 @@ export default function HomeScreen({
                 day: 'numeric',
             });
 
-    const showAddDialog = () => {
-        const now = new Date();
-        setDialogTime(now.toTimeString().slice(0, 5));
-        setDialogNote('');
-        setEditingEvent(null);
-        setVisible(true);
-    };
-
     const showEditDialog = (item: TimeEvent) => {
         setDialogTime(item.time);
         setDialogNote(item.note || '');
@@ -227,6 +219,12 @@ export default function HomeScreen({
         }
     }, [visible, editingEvent]);
 
+    const handleAddEvent = () => {
+        const now = new Date();
+        const timeString = now.toTimeString().slice(0, 5);
+        addEvent(currentDate, timeString, null);
+        setRefreshTrigger((prev) => prev + 1);
+    };
 
     return (
         <View style={styles.container}>
@@ -252,7 +250,7 @@ export default function HomeScreen({
                     date={currentDate}
                     onEditEvent={showEditDialog}
                     onDeleteEvent={showDeleteDialog}
-                    onAddEvent={showAddDialog}
+                    onAddEvent={handleAddEvent}
                     refreshTrigger={refreshTrigger}
                 />
             ) : (
