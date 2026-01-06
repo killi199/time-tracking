@@ -2,45 +2,35 @@ import React from 'react';
 import { View } from 'react-native';
 import { Text, Divider, useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
-import { TimeEvent } from '../types';
+import { TimeEvent, ProcessedTimeEvent } from '../types';
 import { formatTime } from '../utils/time';
 
 interface TimeSeparatorProps {
     leadingItem: TimeEvent;
-    events: TimeEvent[];
 }
 
-export const TimeSeparator = ({ leadingItem, events }: TimeSeparatorProps) => {
+export const TimeSeparator = ({ leadingItem }: TimeSeparatorProps) => {
     const theme = useTheme();
     const { t } = useTranslation();
 
-    const index = events.findIndex((e) => e.id === leadingItem.id);
-    if (index === -1 || index >= events.length - 1) {
-        return <Divider />;
+    let isSimpleDivider = true;
+    let label = '';
+    let isWork = false;
+
+    // Fast path: Check if we have pre-calculated separator data
+    const processedItem = leadingItem as ProcessedTimeEvent;
+
+    if (processedItem.separatorData) {
+        ({ isSimpleDivider, label, isWork } = processedItem.separatorData);
+    } else {
+        // Fallback or empty state if no separator data is present
+        // This effectively means we just return null or default
+        return null;
     }
 
-    const nextItem = events[index + 1];
-
-    // If items are on different days, just show a divider
-    if (leadingItem.date !== nextItem.date) {
+    if (isSimpleDivider) {
         return <Divider />;
     }
-
-    // Calculate duration
-    const start = new Date(`${leadingItem.date}T${leadingItem.time}`);
-    const end = new Date(`${nextItem.date}T${nextItem.time}`);
-    const diffMinutes = (end.getTime() - start.getTime()) / 1000 / 60;
-    const duration = formatTime(diffMinutes);
-
-    // Determine type (Work or Pause) based on index within the day
-    const dayEvents = events.filter((e) => e.date === leadingItem.date);
-    // Ensure day events are sorted exactly as they are in the full list or by time
-    // The main list should already be sorted, but filtering preserves order.
-    const indexInDay = dayEvents.findIndex((e) => e.id === leadingItem.id);
-
-    // Even index in day = Check-in (Start) -> Next is Check-out -> Duration is Work
-    // Odd index in day = Check-out (End) -> Next is Check-in -> Duration is Pause
-    const isWork = indexInDay % 2 === 0;
 
     return (
         <View
@@ -59,7 +49,7 @@ export const TimeSeparator = ({ leadingItem, events }: TimeSeparatorProps) => {
                     color: theme.colors.outline,
                 }}
             >
-                {isWork ? t('home.work') : t('home.pause')}: {duration}
+                {isWork ? t('home.work') : t('home.pause')}: {label}
             </Text>
             <Divider style={{ flex: 1 }} />
         </View>

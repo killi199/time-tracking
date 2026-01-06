@@ -13,7 +13,7 @@ interface EventListItemProps {
     onDelete: (event: TimeEvent) => void;
 }
 
-export const EventListItem = ({
+export const EventListItem = React.memo(({
     item,
     type,
     onEdit,
@@ -65,7 +65,7 @@ export const EventListItem = ({
             />
         </ReanimatedSwipeable>
     );
-};
+});
 
 const styles = StyleSheet.create({
     deleteAction: {

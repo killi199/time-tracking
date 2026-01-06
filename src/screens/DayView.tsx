@@ -14,7 +14,7 @@ import {
     getTodayEvents,
     getOverallStats,
 } from '../db/database';
-import { TimeEvent } from '../types';
+import { TimeEvent, ProcessedTimeEvent } from '../types';
 import { useTranslation } from 'react-i18next';
 import { formatTime, getFormattedDate } from '../utils/time';
 
@@ -33,7 +33,7 @@ export default function DayView({
     onAddEvent,
     refreshTrigger,
 }: DayViewProps) {
-    const [events, setEvents] = useState<TimeEvent[]>([]);
+    const [events, setEvents] = useState<ProcessedTimeEvent[]>([]);
     const [todayWorked, setTodayWorked] = useState('00:00');
     const [dayBalance, setDayBalance] = useState('+00:00');
     const [overallBalance, setOverallBalance] = useState('+00:00');
@@ -106,11 +106,54 @@ export default function DayView({
         [date],
     );
 
+    const processEvents = useCallback((rawEvents: TimeEvent[]): ProcessedTimeEvent[] => {
+        const processed: ProcessedTimeEvent[] = [];
+
+        // Sort just in case, though getTodayEvents should already sort
+        const sorted = [...rawEvents].sort((a, b) => a.time.localeCompare(b.time));
+
+        for (let i = 0; i < sorted.length; i++) {
+            const event = sorted[i];
+            const type = i % 2 === 0 ? 'start' : 'end'; // Even=Start, Odd=End in DayView
+
+            let separatorData = {
+                isSimpleDivider: true,
+                label: '',
+                isWork: false,
+            };
+
+            const next = i < sorted.length - 1 ? sorted[i + 1] : null;
+            if (next) {
+                // Same day is guaranteed in DayView
+                const start = new Date(`${event.date}T${event.time}`);
+                const end = new Date(`${next.date}T${next.time}`);
+                const diffMinutes =
+                    (end.getTime() - start.getTime()) / 1000 / 60;
+                const duration = formatTime(diffMinutes);
+
+                separatorData = {
+                    isSimpleDivider: false,
+                    label: duration,
+                    isWork: i % 2 === 0, // Even index (Check-in) -> Next is Check-out -> Duration is Work
+                };
+            }
+
+            processed.push({
+                ...event,
+                type,
+                showDateHeader: false, // DayView handles its own context, no date headers inside list usually
+                separatorData,
+            });
+        }
+        return processed;
+    }, []);
+
     const loadData = useCallback(() => {
         const loadedEvents = getTodayEvents(date);
-        setEvents(loadedEvents);
+        const processed = processEvents(loadedEvents);
+        setEvents(processed);
         calculateMetrics(loadedEvents);
-    }, [date, calculateMetrics]);
+    }, [date, calculateMetrics, processEvents]);
 
     useEffect(() => {
         loadData();
@@ -130,25 +173,22 @@ export default function DayView({
         return () => clearInterval(interval);
     }, [events, date, calculateMetrics]);
 
-    const renderItem = ({
+    const renderItem = useCallback(({
         item,
-        index,
     }: {
-        item: TimeEvent;
+        item: ProcessedTimeEvent;
         index: number;
     }) => {
-        // Even index = Check-in (Start), Odd index = Check-out (End)
-        const type = index % 2 === 0 ? 'start' : 'end';
-
         return (
             <EventListItem
                 item={item}
-                type={type}
+                // @ts-ignore - ProcessedTimeEvent type vs literal string
+                type={item.type}
                 onEdit={onEditEvent}
                 onDelete={onDeleteEvent}
             />
         );
-    };
+    }, [onEditEvent, onDeleteEvent]);
 
     const isToday = date === getFormattedDate(new Date());
     const isCheckedIn = events.length % 2 !== 0;
@@ -221,7 +261,7 @@ export default function DayView({
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={renderItem}
                     ItemSeparatorComponent={(props) => (
-                        <TimeSeparator {...props} events={events} />
+                        <TimeSeparator {...props} />
                     )}
                 />
             </View>

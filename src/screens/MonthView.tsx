@@ -17,6 +17,16 @@ import { TimeEvent } from '../types';
 import { useTranslation } from 'react-i18next';
 import { formatTime, getFormattedDate } from '../utils/time';
 
+interface ProcessedEvent extends TimeEvent {
+    type: 'start' | 'end';
+    showDateHeader: boolean;
+    separatorData: {
+        isSimpleDivider: boolean;
+        label: string;
+        isWork: boolean;
+    };
+}
+
 interface MonthViewProps {
     month: string;
     onEditEvent: (event: TimeEvent) => void;
@@ -30,7 +40,7 @@ export default function MonthView({
     onDeleteEvent,
     refreshTrigger,
 }: MonthViewProps) {
-    const [events, setEvents] = useState<TimeEvent[]>([]);
+    const [events, setEvents] = useState<ProcessedEvent[]>([]);
     const [todayWorked, setTodayWorked] = useState('00:00');
     const [dayBalance, setDayBalance] = useState('+00:00');
     const [overallBalance, setOverallBalance] = useState('+00:00');
@@ -124,11 +134,61 @@ export default function MonthView({
         [month],
     );
 
+    const processEvents = useCallback((rawEvents: TimeEvent[]): ProcessedEvent[] => {
+        const processed: ProcessedEvent[] = [];
+        let currentDay = '';
+        let indexInDay = 0;
+
+        for (let i = 0; i < rawEvents.length; i++) {
+            const event = rawEvents[i];
+
+            if (event.date !== currentDay) {
+                currentDay = event.date;
+                indexInDay = 0;
+            } else {
+                indexInDay++;
+            }
+
+            const type = indexInDay % 2 === 0 ? 'start' : 'end';
+            const showDateHeader = indexInDay === 0;
+
+            let separatorData = {
+                isSimpleDivider: true,
+                label: '',
+                isWork: false,
+            };
+
+            const next = i < rawEvents.length - 1 ? rawEvents[i + 1] : null;
+            if (next && next.date === event.date) {
+                const start = new Date(`${event.date}T${event.time}`);
+                const end = new Date(`${next.date}T${next.time}`);
+                const diffMinutes =
+                    (end.getTime() - start.getTime()) / 1000 / 60;
+                const duration = formatTime(diffMinutes);
+
+                separatorData = {
+                    isSimpleDivider: false,
+                    label: duration,
+                    isWork: indexInDay % 2 === 0,
+                };
+            }
+
+            processed.push({
+                ...event,
+                type,
+                showDateHeader,
+                separatorData,
+            });
+        }
+        return processed;
+    }, []);
+
     const loadData = useCallback(() => {
         const loadedEvents = getMonthEvents(month);
-        setEvents(loadedEvents);
+        const processed = processEvents(loadedEvents);
+        setEvents(processed);
         calculateMetrics(loadedEvents);
-    }, [month, calculateMetrics]);
+    }, [month, calculateMetrics, processEvents]);
 
     useEffect(() => {
         loadData();
@@ -149,25 +209,15 @@ export default function MonthView({
         return () => clearInterval(interval);
     }, [events, calculateMetrics]);
 
-    const renderItem = ({
+    const renderItem = useCallback(({
         item,
-        index,
     }: {
-        item: TimeEvent;
+        item: ProcessedEvent;
         index: number;
     }) => {
-        // Let's find the index of this event within its day
-        const dayEvents = events.filter(e => e.date === item.date);
-        const eventIndexInDay = dayEvents.findIndex(e => e.id === item.id);
-
-        const type = eventIndexInDay % 2 === 0 ? 'start' : 'end';
-
-        const showDateHeader =
-            index === 0 || events[index - 1].date !== item.date;
-
         return (
             <View>
-                {showDateHeader && (
+                {item.showDateHeader && (
                     <List.Subheader>
                         {new Date(item.date).toLocaleDateString(i18n.language, {
                             weekday: 'short',
@@ -178,13 +228,13 @@ export default function MonthView({
                 )}
                 <EventListItem
                     item={item}
-                    type={type}
+                    type={item.type}
                     onEdit={onEditEvent}
                     onDelete={onDeleteEvent}
                 />
             </View>
         );
-    };
+    }, [i18n.language, onEditEvent, onDeleteEvent]);
 
     return (
         <View style={styles.container}>
@@ -237,7 +287,7 @@ export default function MonthView({
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={renderItem}
                     ItemSeparatorComponent={(props) => (
-                        <TimeSeparator {...props} events={events} />
+                        <TimeSeparator {...props} />
                     )}
                 />
             </View>

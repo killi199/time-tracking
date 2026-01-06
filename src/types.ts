@@ -13,6 +13,18 @@ export interface TimeEvent {
     note: string | null;
 }
 
+export interface SeparatorData {
+    isSimpleDivider: boolean;
+    label: string;
+    isWork: boolean;
+}
+
+export interface ProcessedTimeEvent extends TimeEvent {
+    type?: 'start' | 'end';
+    showDateHeader?: boolean;
+    separatorData?: SeparatorData;
+}
+
 export interface Settings {
     theme: 'auto' | 'light' | 'dark';
 }
