@@ -97,6 +97,14 @@ export const setSetting = (key: string, value: string): void => {
     }
 };
 
+/**
+ * Adds a new event to the database.
+ * 
+ * @param date - Date string in YYYY-MM-DD format. Use `getFormattedDate()` helper.
+ * @param time - Time string in HH:MM format. Use `getFormattedTime()` helper.
+ * @param note - Optional note for the event.
+ * @returns The ID of the inserted event.
+ */
 export const addEvent = (
     date: string,
     time: string,

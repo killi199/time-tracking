@@ -4,6 +4,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import Papa from 'papaparse';
 import { getAllEvents, importEvents } from '../db/database';
 import { TimeEvent } from '../types';
+import { getFormattedDate } from './time';
 
 export type CSVResult = {
     success: boolean;
@@ -23,7 +24,7 @@ export const exportToCSV = async (): Promise<CSVResult> => {
 
         const csvContent = Papa.unparse(data);
 
-        const fileName = `time_tracking_export_${new Date().toISOString().split('T')[0]}.csv`;
+        const fileName = `time_tracking_export_${getFormattedDate(new Date())}.csv`;
         
         const documentDirectory = FileSystem.documentDirectory;
         

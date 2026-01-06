@@ -15,7 +15,7 @@ import {
 } from '../db/database';
 import { TimeEvent } from '../types';
 import { useTranslation } from 'react-i18next';
-import { formatTime } from '../utils/time';
+import { formatTime, getFormattedDate } from '../utils/time';
 
 interface MonthViewProps {
     month: string;
@@ -71,9 +71,7 @@ export default function MonthView({
                         dayMinutes += diff;
                     } else {
                         // Active session handling for today
-                        const today = new Date()
-                            .toISOString()
-                            .split('T')[0];
+                        const today = getFormattedDate(new Date());
                         if (date === today) {
                             const start = new Date(
                                 `${date}T${dayEvents[i].time}`,
@@ -112,7 +110,7 @@ export default function MonthView({
             let finalOverallBalance = overallBalanceMinutes;
 
             // Add active session if exists (getOverallStats doesn't include active)
-            const today = new Date().toISOString().split('T')[0];
+            const today = getFormattedDate(new Date());
             const todayEvents = eventsByDate[today] || [];
             if (todayEvents.length % 2 !== 0) {
                 const lastEvent = todayEvents[todayEvents.length - 1];
@@ -139,7 +137,7 @@ export default function MonthView({
     useEffect(() => {
         // Update metrics every minute if there is an active session
         // Check if there's any active session in the loaded events (only for today)
-        const today = new Date().toISOString().split('T')[0];
+        const today = getFormattedDate(new Date());
         const todayEvents = events.filter(e => e.date === today);
 
         if (todayEvents.length % 2 === 0) return;

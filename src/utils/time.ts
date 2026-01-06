@@ -17,3 +17,28 @@ export const formatTime = (totalMinutes: number, showSign = false) => {
     }
     return timeString;
 };
+
+/**
+ * Formats a Date object into a 24-hour time string (HH:MM).
+ *
+ * @param date - The date to format.
+ * @returns A string representing the time in HH:MM format.
+ */
+export const getFormattedTime = (date: Date): string => {
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+};
+
+/**
+ * Formats a Date object into a date string (YYYY-MM-DD).
+ *
+ * @param date - The date to format.
+ * @returns A string representing the date in YYYY-MM-DD format.
+ */
+export const getFormattedDate = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};

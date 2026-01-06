@@ -2,6 +2,7 @@ import * as TaskManager from 'expo-task-manager';
 import * as Location from 'expo-location';
 import * as Notifications from 'expo-notifications';
 import { addEvent } from '../db/database';
+import { getFormattedTime, getFormattedDate } from '../utils/time';
 
 export const LOCATION_TASK_NAME = 'background-geofence-task';
 
@@ -24,8 +25,8 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const { eventType } = data as any;
         const now = new Date();
-        const dateStr = now.toISOString().split('T')[0];
-        const timeStr = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+        const dateStr = getFormattedDate(now);
+        const timeStr = getFormattedTime(now);
         
         if (eventType === Location.GeofencingEventType.Enter) {
             console.log('Entered geofence');

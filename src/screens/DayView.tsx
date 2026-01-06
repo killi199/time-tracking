@@ -16,7 +16,7 @@ import {
 } from '../db/database';
 import { TimeEvent } from '../types';
 import { useTranslation } from 'react-i18next';
-import { formatTime } from '../utils/time';
+import { formatTime, getFormattedDate } from '../utils/time';
 
 interface DayViewProps {
     date: string;
@@ -69,7 +69,7 @@ export default function DayView({
                     );
                     const now = new Date();
                     // Only count if today is actually today
-                    const today = new Date().toISOString().split('T')[0];
+                    const today = getFormattedDate(new Date());
                     if (date === today) {
                         const diff =
                             (now.getTime() - start.getTime()) / 1000 / 60;
@@ -91,7 +91,7 @@ export default function DayView({
             let finalOverallBalance = overallBalanceMinutes;
 
             if (
-                date === new Date().toISOString().split('T')[0] &&
+                date === getFormattedDate(new Date()) &&
                 sortedEvents.length % 2 !== 0
             ) {
                 const lastEvent = sortedEvents[sortedEvents.length - 1];
@@ -121,7 +121,7 @@ export default function DayView({
         if (events.length % 2 === 0) return;
 
         const interval = setInterval(() => {
-            const today = new Date().toISOString().split('T')[0];
+            const today = getFormattedDate(new Date());
             if (date === today) {
                 calculateMetrics(events);
             }
@@ -150,7 +150,7 @@ export default function DayView({
         );
     };
 
-    const isToday = date === new Date().toISOString().split('T')[0];
+    const isToday = date === getFormattedDate(new Date());
     const isCheckedIn = events.length % 2 !== 0;
 
     return (

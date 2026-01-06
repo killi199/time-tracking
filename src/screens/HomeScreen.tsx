@@ -18,6 +18,7 @@ import {
 } from '../db/database';
 import { TimeEvent } from '../types';
 import { useTranslation } from 'react-i18next';
+import { getFormattedTime, getFormattedDate } from '../utils/time';
 import DayView from './DayView';
 import MonthView from './MonthView';
 
@@ -30,7 +31,7 @@ export default function HomeScreen({
 }) {
     const [viewMode, setViewMode] = useState<'day' | 'month'>('day');
     const [currentDate, setCurrentDate] = useState<string>(
-        new Date().toISOString().split('T')[0],
+        getFormattedDate(new Date()),
     );
     const [currentMonth, setCurrentMonth] = useState<string>(
         new Date().toISOString().slice(0, 7), // YYYY-MM
@@ -54,7 +55,7 @@ export default function HomeScreen({
 
     // Track app state and date to auto-update on resume
     const appState = useRef(AppState.currentState);
-    const lastActiveDateRef = useRef(new Date().toISOString().split('T')[0]);
+    const lastActiveDateRef = useRef(getFormattedDate(new Date()));
     const lastActiveMonthRef = useRef(new Date().toISOString().slice(0, 7));
 
     useEffect(() => {
@@ -64,7 +65,7 @@ export default function HomeScreen({
                 nextAppState === 'active'
             ) {
                 const now = new Date();
-                const newToday = now.toISOString().split('T')[0];
+                const newToday = getFormattedDate(now);
                 const newMonth = now.toISOString().slice(0, 7);
 
                 // If real day changed and we were viewing "Today", update to new "Today"
@@ -127,7 +128,7 @@ export default function HomeScreen({
 
     const goToToday = () => {
         const now = new Date();
-        setCurrentDate(now.toISOString().split('T')[0]);
+        setCurrentDate(getFormattedDate(now));
         setCurrentMonth(now.toISOString().slice(0, 7));
     };
 
@@ -196,7 +197,7 @@ export default function HomeScreen({
         setItemToDelete(null);
     };
 
-    const isToday = currentDate === new Date().toISOString().split('T')[0];
+    const isToday = currentDate === getFormattedDate(new Date());
     const showBackToToday = !isToday || viewMode === 'month';
 
     // Check if checked in for dialog title (only relevant for today/add)
@@ -214,14 +215,14 @@ export default function HomeScreen({
     useEffect(() => {
         if (visible && !editingEvent) {
             // Only check when opening add dialog
-            const todayEvents = getTodayEvents(new Date().toISOString().split('T')[0]);
+            const todayEvents = getTodayEvents(getFormattedDate(new Date()));
             setIsCheckedIn(todayEvents.length % 2 !== 0);
         }
     }, [visible, editingEvent]);
 
     const handleAddEvent = () => {
         const now = new Date();
-        const timeString = now.toTimeString().slice(0, 5);
+        const timeString = getFormattedTime(now);
         addEvent(currentDate, timeString, null);
         setRefreshTrigger((prev) => prev + 1);
     };

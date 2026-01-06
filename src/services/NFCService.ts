@@ -1,17 +1,16 @@
 import { Linking, Platform, ToastAndroid, BackHandler } from 'react-native';
 import { getTodayEvents, addEvent } from '../db/database';
+import { getFormattedTime, getFormattedDate } from '../utils/time';
 
 const handleUrl = async (url: string | null) => {
     if (url && url.includes('timetracking')) {
         try {
-            const today = new Date().toISOString().split('T')[0];
+            const today = getFormattedDate(new Date());
             const events = getTodayEvents(today);
             const isWorking = events.length % 2 !== 0;
 
             const now = new Date();
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const timeString = `${hours}:${minutes}`;
+            const timeString = getFormattedTime(now);
 
             addEvent(today, timeString, isWorking ? 'Auto check-out NFC' : 'Auto check-in NFC');
 
