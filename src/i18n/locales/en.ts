@@ -22,7 +22,7 @@ export default {
             today: 'Day',
             dayBalance: 'Day Balance',
             overall: 'Overall',
-            backToToday: 'Today',
+            backToNow: 'Now',
             month: 'Month',
             monthBalance: 'Month Balance',
             day: 'Day',

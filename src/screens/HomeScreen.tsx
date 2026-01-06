@@ -198,7 +198,8 @@ export default function HomeScreen({
     };
 
     const isToday = currentDate === getFormattedDate(new Date());
-    const showBackToToday = !isToday || viewMode === 'month';
+    const isThisMonth = currentMonth === new Date().toISOString().slice(0, 7);
+    const showBackToNow = !isToday || !isThisMonth;
 
     // Check if checked in for dialog title (only relevant for today/add)
     // We need to know if we are checked in to show correct title in Add Dialog
@@ -241,8 +242,8 @@ export default function HomeScreen({
                         onPress={() => changeDate(1)}
                     />
                 </View>
-                <Button mode="contained-tonal" onPress={goToToday} disabled={!showBackToToday}>
-                    {t('home.backToToday')}
+                <Button mode="contained-tonal" onPress={goToToday} disabled={!showBackToNow}>
+                    {t('home.backToNow')}
                 </Button>
             </View>
 
