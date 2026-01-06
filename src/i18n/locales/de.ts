@@ -95,5 +95,15 @@ export default {
             updateInstruction: 'Deaktivieren und reaktivieren, um den neuen Standort anzuwenden.',
             active: 'Geofence Aktiv',
         },
+        nfc: {
+            title: 'NFC Einrichtung',
+            instruction: 'Halten Sie einen Tag bereit. Dieser Tag wird zum Ein-/Auschecken verwendet.',
+            writeSuccess: 'Tag erfolgreich beschrieben!',
+            writeError: 'Schreiben des Tags fehlgeschlagen.',
+            reading: 'Bereit zum Scannen...',
+            notSupported: 'NFC wird auf diesem Gerät nicht unterstützt.',
+            write: 'Tag schreiben',
+            setup: 'Einrichtung',
+        },
     },
 };

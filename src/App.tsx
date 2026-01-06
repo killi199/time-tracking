@@ -24,14 +24,14 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 enableScreens(true);
 
 import HomeScreen from './screens/HomeScreen';
-
 import MenuScreen from './screens/menu/MenuScreen';
 import SettingsScreen from './screens/settings/SettingsScreen';
 import ThemeSettingsScreen from './screens/settings/ThemeSettingsScreen';
 import LanguageSettingsScreen from './screens/settings/LanguageSettingsScreen';
 import GeofenceSetupScreen from './screens/menu/GeofenceSetupScreen';
-
+import NFCSetupScreen from './screens/menu/NFCSetupScreen';
 import './services/LocationTask';
+import { initNfcService } from './services/NFCService';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -183,6 +183,11 @@ function NavigationWrapper() {
                         component={GeofenceSetupScreen}
                         options={{ title: t('geofence.title') }}
                     />
+                    <Stack.Screen
+                        name="NFCSetup"
+                        component={NFCSetupScreen}
+                        options={{ title: t('nfc.title') }}
+                    />
                 </Stack.Navigator>
             </NavigationContainer>
         </GestureHandlerRootView>
@@ -205,6 +210,14 @@ export default function App() {
         };
         init();
     }, []);
+
+    // NFC Handling
+    useEffect(() => {
+        if (!isDbReady) return;
+
+        const cleanup = initNfcService();
+        return cleanup;
+    }, [isDbReady]);
 
     if (!isDbReady) {
         return null;

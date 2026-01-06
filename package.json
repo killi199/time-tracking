@@ -38,6 +38,7 @@
         "react-native": "0.81.5",
         "react-native-gesture-handler": "^2.29.1",
         "react-native-maps": "1.20.1",
+        "react-native-nfc-manager": "3.17.2",
         "react-native-paper": "^5.14.5",
         "react-native-reanimated": "~4.1.1",
         "react-native-safe-area-context": "~5.6.0",

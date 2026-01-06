@@ -95,5 +95,15 @@ export default {
             updateInstruction: 'Disable and re-enable to apply new location.',
             active: 'Geofence Active',
         },
+        nfc: {
+            title: 'NFC Setup',
+            instruction: 'Tap a tag to write. This tag will be used to toggle Check-In/Check-Out.',
+            writeSuccess: 'Tag written successfully!',
+            writeError: 'Failed to write tag.',
+            reading: 'Ready to scan...',
+            notSupported: 'NFC is not supported on this device.',
+            write: 'Write Tag',
+            setup: 'Setup',
+        },
     },
 };

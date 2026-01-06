@@ -55,6 +55,12 @@ export default function MenuScreen({ navigation }: { navigation: any }) {
                     onPress={() => navigation.navigate('GeofenceSetup')}
                 />
                 <List.Item
+                    title={t('nfc.title')}
+                    left={() => <List.Icon icon="nfc" />}
+                    right={() => <List.Icon icon="chevron-right" />}
+                    onPress={() => navigation.navigate('NFCSetup')}
+                />
+                <List.Item
                     title={t('menu.exportCSV')}
                     left={() => <List.Icon icon="export" />}
                     right={() => <List.Icon icon="chevron-right" />}

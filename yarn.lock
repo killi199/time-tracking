@@ -8581,6 +8581,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-nfc-manager@npm:3.17.2":
+  version: 3.17.2
+  resolution: "react-native-nfc-manager@npm:3.17.2"
+  peerDependencies:
+    "@expo/config-plugins": "*"
+  peerDependenciesMeta:
+    "@expo/config-plugins":
+      optional: true
+  checksum: 10c0/71ae53d8526a4f64f31327d52a196e51b6fb9845bb9ab4eccdc095e45a229b3a64bd9b4b873be3fa9d95996cb3c35ed5b9d37d42f0c8741c187376f6ee53cead
+  languageName: node
+  linkType: hard
+
 "react-native-paper@npm:^5.14.5":
   version: 5.14.5
   resolution: "react-native-paper@npm:5.14.5"
@@ -9943,6 +9955,7 @@ __metadata:
     react-native: "npm:0.81.5"
     react-native-gesture-handler: "npm:^2.29.1"
     react-native-maps: "npm:1.20.1"
+    react-native-nfc-manager: "npm:3.17.2"
     react-native-paper: "npm:^5.14.5"
     react-native-reanimated: "npm:~4.1.1"
     react-native-safe-area-context: "npm:~5.6.0"

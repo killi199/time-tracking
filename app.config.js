@@ -23,6 +23,7 @@ module.exports = {
             edgeToEdgeEnabled: true,
             predictiveBackGesture: true,
             package: "de.killi199.timetracking",
+            permissions: ["android.permission.NFC"],
             config: {
                 googleMaps: {
                     apiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY
@@ -30,6 +31,7 @@ module.exports = {
             }
         },
         plugins: [
+            "./plugins/withNfcIntent",
             "expo-sqlite",
             [
                 "expo-location",
