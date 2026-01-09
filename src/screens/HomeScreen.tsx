@@ -212,8 +212,6 @@ export default function HomeScreen({
                 dialogTime,
                 dialogNote,
             );
-        } else {
-            addEvent(currentDate, dialogTime, dialogNote);
         }
 
         setRefreshTrigger(prev => prev + 1);
@@ -270,17 +268,6 @@ export default function HomeScreen({
             return currentDate !== todayStr;
         }
     }, [viewMode, currentDate, currentMonth]);
-
-
-    const [isCheckedIn, setIsCheckedIn] = useState(false);
-
-    useEffect(() => {
-        if (visible && !editingEvent) {
-            // Only check when opening add dialog
-            const todayEvents = getTodayEvents(getFormattedDate(new Date()));
-            setIsCheckedIn(todayEvents.length % 2 !== 0);
-        }
-    }, [visible, editingEvent]);
 
     const handleAddEvent = () => {
         const now = new Date();
@@ -379,11 +366,7 @@ export default function HomeScreen({
             <Portal>
                 <Dialog visible={visible} onDismiss={hideDialog}>
                     <Dialog.Title>
-                        {editingEvent
-                            ? t('addEntry.editTitle')
-                            : isCheckedIn
-                                ? t('dialog.checkOutTitle')
-                                : t('dialog.checkInTitle')}
+                        {t('addEntry.editTitle')}
                     </Dialog.Title>
                     <Dialog.Content>
                         <TextInput
