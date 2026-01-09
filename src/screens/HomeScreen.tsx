@@ -16,7 +16,6 @@ import {
     addEvent,
     updateEvent,
     deleteEvent,
-    getTodayEvents,
 } from '../db/database';
 import { TimeEvent } from '../types';
 import { useTranslation } from 'react-i18next';
@@ -60,12 +59,12 @@ export default function HomeScreen({
 
     // Dialog State (Add/Edit)
     const [visible, setVisible] = useState(false);
+    const [dialogDate, setDialogDate] = useState('');
     const [dialogTime, setDialogTime] = useState('');
     const [dialogNote, setDialogNote] = useState('');
     const [editingEvent, setEditingEvent] = useState<TimeEvent | null>(null);
     const [timePickerVisible, setTimePickerVisible] = useState(false);
-
-    // Delete Dialog State
+    const [createDatePickerVisible, setCreateDatePickerVisible] = useState(false);
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<TimeEvent | null>(null);
 
@@ -76,6 +75,15 @@ export default function HomeScreen({
     const appState = useRef(AppState.currentState);
     const lastActiveDateRef = useRef(getFormattedDate(new Date()));
     const lastActiveMonthRef = useRef(new Date().toISOString().slice(0, 7));
+
+    navigation.setOptions({
+        headerRight: () => (
+            <IconButton
+                icon="plus"
+                onPress={showAddDialog}
+            />
+        ),
+    })
 
     useEffect(() => {
         const subscription = AppState.addEventListener('change', nextAppState => {
@@ -182,6 +190,14 @@ export default function HomeScreen({
 
     const activeItemCloseCallback = useRef<(() => void) | undefined>(undefined);
 
+    const showAddDialog = () => {
+        setEditingEvent(null);
+        setDialogDate(currentDate);
+        setDialogTime(getFormattedTime(new Date()));
+        setDialogNote('');
+        setVisible(true);
+    };
+
     const showEditDialog = (item: TimeEvent, close?: () => void) => {
         setDialogTime(item.time);
         setDialogNote(item.note || '');
@@ -213,6 +229,8 @@ export default function HomeScreen({
                 dialogTime,
                 dialogNote,
             );
+        } else {
+            addEvent(dialogDate, dialogTime, dialogNote || null);
         }
 
         setRefreshTrigger(prev => prev + 1);
@@ -235,6 +253,20 @@ export default function HomeScreen({
             setDialogTime(`${h}:${m}`);
         },
         [setTimePickerVisible, setDialogTime]
+    );
+
+    const onDismissCreateDatePicker = useCallback(() => {
+        setCreateDatePickerVisible(false);
+    }, [setCreateDatePickerVisible]);
+
+    const onConfirmCreateDatePicker = useCallback(
+        (params: { date: Date | undefined }) => {
+            setCreateDatePickerVisible(false);
+            if (params.date) {
+                setDialogDate(getFormattedDate(params.date));
+            }
+        },
+        [setCreateDatePickerVisible, setDialogDate]
     );
 
     const showDeleteDialog = (item: TimeEvent, close?: () => void) => {
@@ -377,6 +409,16 @@ export default function HomeScreen({
                 locale={i18n.language}
             />
 
+            <DatePickerModal
+                locale={i18n.language}
+                mode="single"
+                visible={createDatePickerVisible}
+                onDismiss={onDismissCreateDatePicker}
+                date={new Date(dialogDate || new Date().toISOString())}
+                onConfirm={onConfirmCreateDatePicker}
+                startWeekOnMonday
+            />
+
             {viewMode === 'day' ? (
                 <DayView
                     date={currentDate}
@@ -404,9 +446,26 @@ export default function HomeScreen({
             <Portal>
                 <Dialog visible={visible} onDismiss={hideDialog}>
                     <Dialog.Title>
-                        {t('addEntry.editTitle')}
+                        {editingEvent ? t('addEntry.editTitle') : t('addEntry.addTitle')}
                     </Dialog.Title>
                     <Dialog.Content>
+                        {!editingEvent && (
+                            <TouchableOpacity onPress={() => {
+                                Keyboard.dismiss();
+                                setCreateDatePickerVisible(true);
+                            }}>
+                                <View pointerEvents="none">
+                                    <TextInput
+                                        label={t('addEntry.dateLabel')}
+                                        value={dialogDate}
+                                        mode="outlined"
+                                        style={styles.dialogInput}
+                                        editable={false}
+                                        right={<TextInput.Icon icon="calendar" />}
+                                    />
+                                </View>
+                            </TouchableOpacity>
+                        )}
                         <TouchableOpacity onPress={() => {
                             Keyboard.dismiss();
                             setTimePickerVisible(true);
