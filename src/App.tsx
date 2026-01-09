@@ -6,11 +6,13 @@ import {
     DarkTheme as NavDarkTheme,
     DefaultTheme as NavDefaultTheme,
     CommonActions,
+    DrawerActions, // Import DrawerActions
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createDrawerNavigator } from '@react-navigation/drawer'; // Import Drawer
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useTheme, adaptNavigationTheme, BottomNavigation, TouchableRipple } from 'react-native-paper';
+import { useTheme, adaptNavigationTheme, BottomNavigation, IconButton } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import { useTranslation } from 'react-i18next';
@@ -24,25 +26,26 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 enableScreens(true);
 
 import HomeScreen from './screens/HomeScreen';
-import MenuScreen from './screens/menu/MenuScreen';
 import SettingsScreen from './screens/settings/SettingsScreen';
 import ThemeSettingsScreen from './screens/settings/ThemeSettingsScreen';
 import LanguageSettingsScreen from './screens/settings/LanguageSettingsScreen';
 import GeofenceSetupScreen from './screens/menu/GeofenceSetupScreen';
 import NFCSetupScreen from './screens/menu/NFCSetupScreen';
+import MenuDrawerContent from './components/MenuDrawerContent'; // Import custom drawer content
 import './services/LocationTask';
 import { initNfcService } from './services/NFCService';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator(); // Create Drawer
 
-function MainTabs() {
+function MainTabs({ navigation }: { navigation: any }) {
     const theme = useTheme();
     const { t } = useTranslation();
 
     return (
         <Tab.Navigator
-            initialRouteName="DayView"
+            initialRouteName="Day"
             tabBar={({ navigation, state, descriptors, insets }) => (
                 <BottomNavigation.Bar
                     navigationState={state}
@@ -90,17 +93,19 @@ function MainTabs() {
             )}
             screenOptions={({ route }) => ({
                 headerShown: true,
+                headerLeft: () => (
+                    <IconButton
+                        icon="menu"
+                        onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+                    />
+                ),
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName = 'help';
 
-                    if (route.name === 'Menu') {
-                        iconName = focused ? 'menu' : 'menu';
-                    } else if (route.name === 'DayView') {
-                        iconName = focused
-                            ? 'calendar-today'
-                            : 'calendar-today';
-                    } else if (route.name === 'Settings') {
-                        iconName = focused ? 'cog' : 'cog-outline';
+                    if (route.name === 'Day') {
+                        iconName = focused ? 'calendar-today' : 'calendar-today';
+                    } else if (route.name === 'Month') {
+                        iconName = focused ? 'calendar-month' : 'calendar-month';
                     }
 
                     return (
@@ -117,21 +122,41 @@ function MainTabs() {
             })}
         >
             <Tab.Screen
-                name="Menu"
-                component={MenuScreen}
-                options={{ title: t('menu.title') }}
-            />
-            <Tab.Screen
-                name="DayView"
+                name="Day"
                 component={HomeScreen}
-                options={{ title: t('home.title') }}
+                initialParams={{ viewMode: 'day' }}
+                options={{ title: t('home.day') }}
             />
             <Tab.Screen
-                name="Settings"
-                component={SettingsScreen}
-                options={{ title: t('settings.title') }}
+                name="Month"
+                component={HomeScreen}
+                initialParams={{ viewMode: 'month' }}
+                options={{ title: t('home.month') }}
             />
         </Tab.Navigator>
+    );
+}
+
+function DrawerNav() {
+    const theme = useTheme();
+
+    return (
+        <Drawer.Navigator
+            drawerContent={(props) => <MenuDrawerContent {...props} />}
+            screenOptions={{
+                headerShown: false,
+                drawerActiveTintColor: theme.colors.primary,
+                drawerInactiveTintColor: theme.colors.onSurfaceVariant,
+            }}
+        >
+            <Drawer.Screen
+                name="TimeTracking"
+                component={MainTabs}
+                options={{
+                    headerShown: false,
+                }}
+            />
+        </Drawer.Navigator>
     );
 }
 
@@ -164,10 +189,15 @@ function NavigationWrapper() {
                 <Stack.Navigator initialRouteName="Main" screenOptions={{ animation: 'default' }}>
                     <Stack.Screen
                         name="Main"
-                        component={MainTabs}
+                        component={DrawerNav}
                         options={{ headerShown: false }}
                     />
 
+                    <Stack.Screen
+                        name="Settings"
+                        component={SettingsScreen}
+                        options={{ title: t('settings.title') }}
+                    />
                     <Stack.Screen
                         name="ThemeSettings"
                         component={ThemeSettingsScreen}
@@ -181,7 +211,7 @@ function NavigationWrapper() {
                     <Stack.Screen
                         name="GeofenceSetup"
                         component={GeofenceSetupScreen}
-                        options={{ title: t('geofence.title') }}
+                        options={{ title: t('menu.workingLocations') }}
                     />
                     <Stack.Screen
                         name="NFCSetup"
