@@ -5,7 +5,6 @@ import {
     NavigationContainer,
     DarkTheme as NavDarkTheme,
     DefaultTheme as NavDefaultTheme,
-    CommonActions,
     DrawerActions, // Import DrawerActions
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -50,21 +49,8 @@ function MainTabs({ navigation }: { navigation: any }) {
                 <BottomNavigation.Bar
                     navigationState={state}
                     safeAreaInsets={insets}
-                    onTabPress={({ route, preventDefault }) => {
-                        const event = navigation.emit({
-                            type: 'tabPress',
-                            target: route.key,
-                            canPreventDefault: true,
-                        });
-
-                        if (event.defaultPrevented) {
-                            preventDefault();
-                        } else {
-                            navigation.dispatch({
-                                ...CommonActions.navigate(route.name, route.params),
-                                target: state.key,
-                            });
-                        }
+                    onTabPress={({ route }) => {
+                        navigation.navigate(route.name, route.params);
                     }}
                     renderIcon={({ route, focused, color }) => {
                         const { options } = descriptors[route.key];
@@ -84,10 +70,6 @@ function MainTabs({ navigation }: { navigation: any }) {
                                     : route.name;
 
                         return label as string;
-                    }}
-                    getAccessibilityLabel={({ route }) => {
-                        const { options } = descriptors[route.key];
-                        return options.tabBarAccessibilityLabel;
                     }}
                 />
             )}
@@ -112,7 +94,6 @@ function MainTabs({ navigation }: { navigation: any }) {
 
                     return (
                         <MaterialCommunityIcons
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
                             name={iconName as any}
                             size={size}
                             color={color}
