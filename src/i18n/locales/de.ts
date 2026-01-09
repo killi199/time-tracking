@@ -55,6 +55,7 @@ export default {
         },
         menu: {
             title: 'Menü',
+            headline: 'Zeiterfassung',
             placeholder: 'Einstellungen und mehr kommen bald...',
             monthlyOverview: 'Monatsübersicht',
             dailyOverview: 'Tagesansicht',

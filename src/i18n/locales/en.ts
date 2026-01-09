@@ -55,6 +55,7 @@ export default {
         },
         menu: {
             title: 'Menu',
+            headline: 'Time Tracking',
             placeholder: 'Settings and more coming soon...',
             monthlyOverview: 'Monthly Overview',
             dailyOverview: 'Day View',
