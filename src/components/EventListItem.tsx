@@ -1,16 +1,16 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { List, useTheme } from 'react-native-paper';
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
-import { RectButton } from 'react-native-gesture-handler';
+
 import { useTranslation } from 'react-i18next';
 import { TimeEvent } from '../types';
 
 interface EventListItemProps {
     item: TimeEvent;
     type: 'start' | 'end';
-    onEdit: (event: TimeEvent) => void;
-    onDelete: (event: TimeEvent) => void;
+    onEdit: (event: TimeEvent, close?: () => void) => void;
+    onDelete: (event: TimeEvent, close?: () => void) => void;
 }
 
 export const EventListItem = React.memo(({
@@ -21,29 +21,33 @@ export const EventListItem = React.memo(({
 }: EventListItemProps) => {
     const theme = useTheme();
     const { t } = useTranslation();
+    const swipeableRef = useRef<any>(null);
 
     const renderRightActions = () => (
-        <RectButton
-            style={styles.deleteAction}
-            onPress={() => onDelete(item)}
-        >
+        <View style={styles.deleteAction}>
             <List.Icon icon="delete" color="white" />
-        </RectButton>
+        </View>
     );
 
     const renderLeftActions = () => (
-        <RectButton
-            style={styles.editAction}
-            onPress={() => onEdit(item)}
-        >
+        <View style={styles.editAction}>
             <List.Icon icon="pencil" color="white" />
-        </RectButton>
+        </View>
     );
 
     return (
         <ReanimatedSwipeable
+            ref={swipeableRef}
             renderRightActions={renderRightActions}
             renderLeftActions={renderLeftActions}
+            onSwipeableOpen={(direction) => {
+                const close = () => swipeableRef.current?.close();
+                if (direction === 'right') {
+                    onEdit(item, close);
+                } else {
+                    onDelete(item, close);
+                }
+            }}
         >
             <List.Item
                 title={`${type === 'start' ? t('home.checkIn') : t('home.checkOut')} ${t('home.at')} ${item.time}`}

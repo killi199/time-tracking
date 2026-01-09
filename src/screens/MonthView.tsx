@@ -29,8 +29,8 @@ interface ProcessedEvent extends TimeEvent {
 
 interface MonthViewProps {
     month: string;
-    onEditEvent: (event: TimeEvent) => void;
-    onDeleteEvent: (event: TimeEvent) => void;
+    onEditEvent: (event: TimeEvent, close?: () => void) => void;
+    onDeleteEvent: (event: TimeEvent, close?: () => void) => void;
     refreshTrigger: number;
 }
 

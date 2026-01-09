@@ -150,16 +150,23 @@ export default function HomeScreen({
                 day: 'numeric',
             });
 
-    const showEditDialog = (item: TimeEvent) => {
+    const activeItemCloseCallback = useRef<(() => void) | undefined>(undefined);
+
+    const showEditDialog = (item: TimeEvent, close?: () => void) => {
         setDialogTime(item.time);
         setDialogNote(item.note || '');
         setEditingEvent(item);
+        activeItemCloseCallback.current = close;
         setVisible(true);
     };
 
     const hideDialog = () => {
         setVisible(false);
         setEditingEvent(null);
+        if (activeItemCloseCallback.current) {
+            activeItemCloseCallback.current();
+            activeItemCloseCallback.current = undefined;
+        }
     };
 
     const handleConfirm = () => {
@@ -182,10 +189,15 @@ export default function HomeScreen({
 
         setRefreshTrigger(prev => prev + 1);
         hideDialog();
+        if (activeItemCloseCallback.current) {
+            activeItemCloseCallback.current();
+            activeItemCloseCallback.current = undefined;
+        }
     };
 
-    const showDeleteDialog = (item: TimeEvent) => {
+    const showDeleteDialog = (item: TimeEvent, close?: () => void) => {
         setItemToDelete(item);
+        activeItemCloseCallback.current = close;
         setDeleteDialogVisible(true);
     };
 
@@ -195,11 +207,19 @@ export default function HomeScreen({
         setRefreshTrigger(prev => prev + 1);
         setDeleteDialogVisible(false);
         setItemToDelete(null);
+        if (activeItemCloseCallback.current) {
+            activeItemCloseCallback.current();
+            activeItemCloseCallback.current = undefined;
+        }
     };
 
     const cancelDelete = () => {
         setDeleteDialogVisible(false);
         setItemToDelete(null);
+        if (activeItemCloseCallback.current) {
+            activeItemCloseCallback.current();
+            activeItemCloseCallback.current = undefined;
+        }
     };
 
     const isToday = currentDate === getFormattedDate(new Date());

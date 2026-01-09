@@ -20,8 +20,8 @@ import { formatTime, getFormattedDate } from '../utils/time';
 
 interface DayViewProps {
     date: string;
-    onEditEvent: (event: TimeEvent) => void;
-    onDeleteEvent: (event: TimeEvent) => void;
+    onEditEvent: (event: TimeEvent, close?: () => void) => void;
+    onDeleteEvent: (event: TimeEvent, close?: () => void) => void;
     onAddEvent: () => void;
     refreshTrigger: number;
 }
