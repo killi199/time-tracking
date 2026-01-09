@@ -2911,6 +2911,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-is@npm:^19":
+  version: 19.2.0
+  resolution: "@types/react-is@npm:19.2.0"
+  dependencies:
+    "@types/react": "npm:*"
+  checksum: 10c0/ff49ac8b8d439c3377e11d2f9f491ed4f8c8ee800225a40093c7941715ca8ccbde1b3833c5435354a8e39305fd0a163019d97f033c9402bc4b46f515851d2290
+  languageName: node
+  linkType: hard
+
 "@types/react-native@npm:^0.73.0":
   version: 0.73.0
   resolution: "@types/react-native@npm:0.73.0"
@@ -2920,7 +2929,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^19.2.7":
+"@types/react@npm:*, @types/react@npm:^19.2.7":
   version: 19.2.7
   resolution: "@types/react@npm:19.2.7"
   dependencies:
@@ -6239,13 +6248,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"intl-pluralrules@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "intl-pluralrules@npm:2.0.1"
-  checksum: 10c0/ba9786694f7e748c4639bffaa465a8609f61b92da174c92b16b385cf91704af9bad12dd9cb8907e14f4b2b419663891c217b5466d08f58a93ef2970b29b30554
-  languageName: node
-  linkType: hard
-
 "invariant@npm:^2.2.4":
   version: 2.2.4
   resolution: "invariant@npm:2.2.4"
@@ -8476,18 +8478,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-worklets-core@npm:^1.6.2":
-  version: 1.6.2
-  resolution: "react-native-worklets-core@npm:1.6.2"
-  dependencies:
-    string-hash-64: "npm:^1.0.3"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 10c0/c10a6edb0b8c8f7f9573ac24e0808dc01bfc90581d0b0aa6d264457ef7805f54358226b5afe4ce67ac9fa00c861ec65d1ebfd9657f97197068f10240758b1175
-  languageName: node
-  linkType: hard
-
 "react-native-worklets@npm:0.5.1":
   version: 0.5.1
   resolution: "react-native-worklets@npm:0.5.1"
@@ -9454,13 +9444,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"string-hash-64@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "string-hash-64@npm:1.0.3"
-  checksum: 10c0/ac175f71b383af1487ab16b4cc1b42b5302bea08bdf1cc1ea04bacb293fb9b35afc6c58260e1fc728627e7265519da01976822a188d493d7e7625b9628173ea3
-  languageName: node
-  linkType: hard
-
 "string-width@npm:^4.1.0, string-width@npm:^4.2.0, string-width@npm:^4.2.3":
   version: 4.2.3
   resolution: "string-width@npm:4.2.3"
@@ -9751,6 +9734,7 @@ __metadata:
     "@react-navigation/native-stack": "npm:^7.8.2"
     "@types/papaparse": "npm:^5.5.1"
     "@types/react": "npm:^19.2.7"
+    "@types/react-is": "npm:^19"
     "@types/react-native": "npm:^0.73.0"
     eslint: "npm:^9.39.1"
     eslint-config-expo: "npm:^10.0.0"
@@ -9771,12 +9755,10 @@ __metadata:
     expo-task-manager: "npm:~14.0.9"
     globals: "npm:^16.5.0"
     i18next: "npm:^25.6.3"
-    intl-pluralrules: "npm:^2.0.1"
     papaparse: "npm:^5.5.3"
     prettier: "npm:^3.7.3"
     react: "npm:19.1.0"
     react-i18next: "npm:^16.3.5"
-    react-is: "npm:^19.2.0"
     react-native: "npm:0.81.5"
     react-native-gesture-handler: "npm:^2.29.1"
     react-native-maps: "npm:1.20.1"
@@ -9787,7 +9769,6 @@ __metadata:
     react-native-safe-area-context: "npm:~5.6.0"
     react-native-screens: "npm:~4.16.0"
     react-native-worklets: "npm:0.5.1"
-    react-native-worklets-core: "npm:^1.6.2"
     typescript: "npm:^5.9.3"
     typescript-eslint: "npm:^8.48.0"
     vitest: "npm:4.0.16"
