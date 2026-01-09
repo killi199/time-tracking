@@ -80,7 +80,7 @@ export default {
             checkInTitle: 'Einchecken',
             checkOutTitle: 'Auschecken',
             editEntryTitle: 'Eintrag bearbeiten',
-            timeLabel: 'Zeit (HH:MM)',
+            timeLabel: 'Zeit',
             noteLabel: 'Notiz (Optional)',
             invalidTime: 'Ungültiges Zeitformat. Bitte HH:MM verwenden',
         },

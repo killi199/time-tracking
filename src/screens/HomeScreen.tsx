@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { View, StyleSheet, AppState, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, AppState, TouchableOpacity, Keyboard } from 'react-native';
 import {
     Button,
     Text,
@@ -9,7 +9,7 @@ import {
     TextInput,
     useTheme,
 } from 'react-native-paper';
-import { DatePickerModal } from 'react-native-paper-dates';
+import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates';
 import { en, de, registerTranslation } from 'react-native-paper-dates';
 import { useFocusEffect } from '@react-navigation/native';
 import {
@@ -63,6 +63,7 @@ export default function HomeScreen({
     const [dialogTime, setDialogTime] = useState('');
     const [dialogNote, setDialogNote] = useState('');
     const [editingEvent, setEditingEvent] = useState<TimeEvent | null>(null);
+    const [timePickerVisible, setTimePickerVisible] = useState(false);
 
     // Delete Dialog State
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
@@ -222,6 +223,20 @@ export default function HomeScreen({
         }
     };
 
+    const onDismissTimePicker = useCallback(() => {
+        setTimePickerVisible(false);
+    }, [setTimePickerVisible]);
+
+    const onConfirmTimePicker = useCallback(
+        ({ hours, minutes }: { hours: number; minutes: number }) => {
+            setTimePickerVisible(false);
+            const h = hours.toString().padStart(2, '0');
+            const m = minutes.toString().padStart(2, '0');
+            setDialogTime(`${h}:${m}`);
+        },
+        [setTimePickerVisible, setDialogTime]
+    );
+
     const showDeleteDialog = (item: TimeEvent, close?: () => void) => {
         setItemToDelete(item);
         activeItemCloseCallback.current = close;
@@ -308,6 +323,20 @@ export default function HomeScreen({
     // Ensure the date is valid (fallback to now if invalid)
     const validDateForPicker = isNaN(dateForPicker.getTime()) ? new Date() : dateForPicker;
 
+    // Helper to extract hours/minutes from dialogTime for the picker
+    const getPickerTime = () => {
+        if (!dialogTime) return { hours: new Date().getHours(), minutes: new Date().getMinutes() };
+        const parts = dialogTime.split(':');
+        if (parts.length === 2) {
+            const h = parseInt(parts[0], 10);
+            const m = parseInt(parts[1], 10);
+            if (!isNaN(h) && !isNaN(m)) return { hours: h, minutes: m };
+        }
+        return { hours: new Date().getHours(), minutes: new Date().getMinutes() };
+    };
+
+    const { hours: pickerHours, minutes: pickerMinutes } = getPickerTime();
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -337,6 +366,15 @@ export default function HomeScreen({
                 date={validDateForPicker}
                 onConfirm={onConfirmDatePicker}
                 startWeekOnMonday
+            />
+
+            <TimePickerModal
+                visible={timePickerVisible}
+                onDismiss={onDismissTimePicker}
+                onConfirm={onConfirmTimePicker}
+                hours={pickerHours}
+                minutes={pickerMinutes}
+                locale={i18n.language}
             />
 
             {viewMode === 'day' ? (
@@ -369,13 +407,21 @@ export default function HomeScreen({
                         {t('addEntry.editTitle')}
                     </Dialog.Title>
                     <Dialog.Content>
-                        <TextInput
-                            label={t('dialog.timeLabel')}
-                            value={dialogTime}
-                            onChangeText={setDialogTime}
-                            mode="outlined"
-                            style={styles.dialogInput}
-                        />
+                        <TouchableOpacity onPress={() => {
+                            Keyboard.dismiss();
+                            setTimePickerVisible(true);
+                        }}>
+                            <View pointerEvents="none">
+                                <TextInput
+                                    label={t('dialog.timeLabel')}
+                                    value={dialogTime}
+                                    mode="outlined"
+                                    style={styles.dialogInput}
+                                    editable={false}
+                                    right={<TextInput.Icon icon="clock-outline" />}
+                                />
+                            </View>
+                        </TouchableOpacity>
                         <TextInput
                             label={t('dialog.noteLabel')}
                             value={dialogNote}
