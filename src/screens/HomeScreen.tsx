@@ -23,9 +23,22 @@ import { useTranslation } from 'react-i18next';
 import { getFormattedTime, getFormattedDate } from '../utils/time';
 import DayView from './DayView';
 import MonthView from './MonthView';
+import WeekView from './WeekView';
 
 registerTranslation('en', en);
 registerTranslation('de', de);
+
+// Helper to get week range text
+const getWeekRangeData = (dateStr: string) => {
+    const curr = new Date(dateStr);
+    const day = curr.getDay(); // 0-6
+    const diffToMonday = day === 0 ? 6 : day - 1;
+    const first = new Date(curr);
+    first.setDate(curr.getDate() - diffToMonday);
+    const last = new Date(first);
+    last.setDate(first.getDate() + 6);
+    return { start: first, end: last };
+};
 
 export default function HomeScreen({
     navigation,
@@ -34,7 +47,7 @@ export default function HomeScreen({
     navigation: any;
     route: any;
 }) {
-    const [viewMode, setViewMode] = useState<'day' | 'month'>('day');
+    const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day');
     const [currentDate, setCurrentDate] = useState<string>(
         getFormattedDate(new Date()),
     );
@@ -114,8 +127,12 @@ export default function HomeScreen({
     );
 
     useEffect(() => {
+        let title = t('home.day');
+        if (viewMode === 'month') title = t('home.month');
+        if (viewMode === 'week') title = t('home.week');
+
         navigation.setOptions({
-            title: viewMode === 'month' ? t('home.month') : t('home.day'),
+            title,
         });
     }, [navigation, viewMode, t]);
 
@@ -124,6 +141,10 @@ export default function HomeScreen({
             const date = new Date(`${currentMonth}-01`);
             date.setMonth(date.getMonth() + step);
             setCurrentMonth(date.toISOString().slice(0, 7));
+        } else if (viewMode === 'week') {
+            const date = new Date(currentDate);
+            date.setDate(date.getDate() + (step * 7));
+            setCurrentDate(getFormattedDate(date));
         } else {
             const date = new Date(currentDate);
             date.setDate(date.getDate() + step);
@@ -137,18 +158,26 @@ export default function HomeScreen({
         setCurrentMonth(now.toISOString().slice(0, 7));
     };
 
-    const formattedDate =
-        viewMode === 'month'
-            ? new Date(`${currentMonth}-01`).toLocaleDateString(i18n.language, {
+    const formattedDate = React.useMemo(() => {
+        if (viewMode === 'month') {
+            return new Date(`${currentMonth}-01`).toLocaleDateString(i18n.language, {
                 year: 'numeric',
                 month: 'long',
-            })
-            : new Date(currentDate).toLocaleDateString(i18n.language, {
+            });
+        } else if (viewMode === 'week') {
+            const { start, end } = getWeekRangeData(currentDate);
+            const startStr = start.toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' });
+            const endStr = end.toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' });
+            return `${startStr} - ${endStr}`;
+        } else {
+            return new Date(currentDate).toLocaleDateString(i18n.language, {
                 weekday: 'short',
                 year: 'numeric',
                 month: 'numeric',
                 day: 'numeric',
             });
+        }
+    }, [viewMode, currentDate, currentMonth, i18n.language]);
 
     const activeItemCloseCallback = useRef<(() => void) | undefined>(undefined);
 
@@ -222,19 +251,26 @@ export default function HomeScreen({
         }
     };
 
-    const isToday = currentDate === getFormattedDate(new Date());
-    const isThisMonth = currentMonth === new Date().toISOString().slice(0, 7);
-    const showBackToNow = !isToday || !isThisMonth;
+    const showBackToNowCalculated = React.useMemo(() => {
+        const today = new Date();
+        const todayStr = getFormattedDate(today);
+        const currentMonthStr = today.toISOString().slice(0, 7);
 
-    // Check if checked in for dialog title (only relevant for today/add)
-    // We need to know if we are checked in to show correct title in Add Dialog
-    // Ideally DayView should pass this up, or we just check quickly here.
-    // Since we don't have the events here anymore, we might need a quick check or just default.
-    // However, for the title "Check In" vs "Check Out", it depends on the LAST event of TODAY.
-    // Let's fetch today events just for this status if needed, or pass it from DayView?
-    // Passing from DayView is cleaner but requires callback.
-    // For now, let's just do a quick fetch or assume Check In if we don't know.
-    // Actually, we can just fetch today's events when opening the dialog if it's for today.
+        if (viewMode === 'month') {
+            return currentMonth !== currentMonthStr;
+        } else if (viewMode === 'week') {
+            const { start, end } = getWeekRangeData(currentDate);
+            const todayTime = today.getTime();
+            // Extend end to include end of day
+            const endOfDay = new Date(end);
+            endOfDay.setHours(23, 59, 59, 999);
+
+            return !(todayTime >= start.getTime() && todayTime <= endOfDay.getTime());
+        } else {
+            return currentDate !== todayStr;
+        }
+    }, [viewMode, currentDate, currentMonth]);
+
 
     const [isCheckedIn, setIsCheckedIn] = useState(false);
 
@@ -301,7 +337,7 @@ export default function HomeScreen({
                         onPress={() => changeDate(1)}
                     />
                 </View>
-                <Button mode="contained-tonal" onPress={goToToday} disabled={!showBackToNow}>
+                <Button mode="contained-tonal" onPress={goToToday} disabled={!showBackToNowCalculated}>
                     {t('home.backToNow')}
                 </Button>
             </View>
@@ -322,6 +358,13 @@ export default function HomeScreen({
                     onEditEvent={showEditDialog}
                     onDeleteEvent={showDeleteDialog}
                     onAddEvent={handleAddEvent}
+                    refreshTrigger={refreshTrigger}
+                />
+            ) : viewMode === 'week' ? (
+                <WeekView
+                    date={currentDate}
+                    onEditEvent={showEditDialog}
+                    onDeleteEvent={showDeleteDialog}
                     refreshTrigger={refreshTrigger}
                 />
             ) : (

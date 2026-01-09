@@ -170,6 +170,13 @@ export const getMonthEvents = (month: string): TimeEvent[] => {
     ) as TimeEvent[];
 };
 
+export const getEventsRange = (startDate: string, endDate: string): TimeEvent[] => {
+    return db.getAllSync(
+        'SELECT * FROM events WHERE date >= $startDate AND date <= $endDate ORDER BY date ASC, time ASC',
+        { $startDate: startDate, $endDate: endDate },
+    ) as TimeEvent[];
+};
+
 export const getAllEvents = (): TimeEvent[] => {
     return db.getAllSync(
         'SELECT * FROM events ORDER BY date DESC, time DESC',

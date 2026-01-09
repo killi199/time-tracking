@@ -21,6 +21,8 @@ export default {
             notWorking: 'Not Working',
             today: 'Day',
             dayBalance: 'Day Balance',
+            week: 'Week',
+            weekBalance: 'Week Balance',
             overall: 'Overall',
             backToNow: 'Now',
             month: 'Month',

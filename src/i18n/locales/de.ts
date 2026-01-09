@@ -21,6 +21,8 @@ export default {
             notWorking: 'Nicht am Arbeiten',
             today: 'Tag',
             dayBalance: 'Tagesbilanz',
+            week: 'Woche',
+            weekBalance: 'Wochenbilanz',
             overall: 'Gesamt',
             backToNow: 'Jetzt',
             month: 'Monat',

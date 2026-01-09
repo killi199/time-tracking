@@ -104,6 +104,8 @@ function MainTabs({ navigation }: { navigation: any }) {
 
                     if (route.name === 'Day') {
                         iconName = focused ? 'calendar-today' : 'calendar-today';
+                    } else if (route.name === 'Week') {
+                        iconName = focused ? 'calendar-week' : 'calendar-week';
                     } else if (route.name === 'Month') {
                         iconName = focused ? 'calendar-month' : 'calendar-month';
                     }
@@ -126,6 +128,12 @@ function MainTabs({ navigation }: { navigation: any }) {
                 component={HomeScreen}
                 initialParams={{ viewMode: 'day' }}
                 options={{ title: t('home.day') }}
+            />
+            <Tab.Screen
+                name="Week"
+                component={HomeScreen}
+                initialParams={{ viewMode: 'week' }}
+                options={{ title: t('home.week') }}
             />
             <Tab.Screen
                 name="Month"
