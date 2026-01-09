@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { View, StyleSheet, AppState } from 'react-native';
+import { View, StyleSheet, AppState, TouchableOpacity } from 'react-native';
 import {
     Button,
     Text,
@@ -9,6 +9,8 @@ import {
     TextInput,
     useTheme,
 } from 'react-native-paper';
+import { DatePickerModal } from 'react-native-paper-dates';
+import { en, de, registerTranslation } from 'react-native-paper-dates';
 import { useFocusEffect } from '@react-navigation/native';
 import {
     addEvent,
@@ -21,6 +23,9 @@ import { useTranslation } from 'react-i18next';
 import { getFormattedTime, getFormattedDate } from '../utils/time';
 import DayView from './DayView';
 import MonthView from './MonthView';
+
+registerTranslation('en', en);
+registerTranslation('de', de);
 
 export default function HomeScreen({
     navigation,
@@ -228,6 +233,38 @@ export default function HomeScreen({
         setRefreshTrigger((prev) => prev + 1);
     };
 
+    // Date Picker State
+    const [datePickerVisible, setDatePickerVisible] = useState(false);
+
+    const onDismissDatePicker = useCallback(() => {
+        setDatePickerVisible(false);
+    }, [setDatePickerVisible]);
+
+    const onConfirmDatePicker = useCallback(
+        (params: { date: Date | undefined }) => {
+            setDatePickerVisible(false);
+            if (params.date) {
+                if (viewMode === 'month') {
+                    // Update month
+                    const newMonth = params.date.toISOString().slice(0, 7);
+                    setCurrentMonth(newMonth);
+                } else {
+                    // Update date
+                    const newDate = getFormattedDate(params.date);
+                    setCurrentDate(newDate);
+                }
+            }
+        },
+        [setDatePickerVisible, viewMode, setCurrentMonth, setCurrentDate]
+    );
+
+    const dateForPicker = viewMode === 'month'
+        ? new Date(`${currentMonth}-01`)
+        : new Date(currentDate);
+
+    // Ensure the date is valid (fallback to now if invalid)
+    const validDateForPicker = isNaN(dateForPicker.getTime()) ? new Date() : dateForPicker;
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -236,7 +273,9 @@ export default function HomeScreen({
                         icon="chevron-left"
                         onPress={() => changeDate(-1)}
                     />
-                    <Text variant="titleLarge" style={styles.dateText}>{formattedDate}</Text>
+                    <TouchableOpacity onPress={() => setDatePickerVisible(true)}>
+                        <Text variant="titleLarge" style={styles.dateText}>{formattedDate}</Text>
+                    </TouchableOpacity>
                     <IconButton
                         icon="chevron-right"
                         onPress={() => changeDate(1)}
@@ -246,6 +285,16 @@ export default function HomeScreen({
                     {t('home.backToNow')}
                 </Button>
             </View>
+
+            <DatePickerModal
+                locale={i18n.language}
+                mode="single"
+                visible={datePickerVisible}
+                onDismiss={onDismissDatePicker}
+                date={validDateForPicker}
+                onConfirm={onConfirmDatePicker}
+                startWeekOnMonday
+            />
 
             {viewMode === 'day' ? (
                 <DayView
