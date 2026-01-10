@@ -38,9 +38,7 @@ export default {
         addEntry: {
             addTitle: 'Add Entry',
             editTitle: 'Edit Entry',
-            dateLabel: 'Date (YYYY-MM-DD)',
-            startTimeLabel: 'Start Time (HH:MM)',
-            endTimeLabel: 'End Time (HH:MM)',
+            dateLabel: 'Date',
             noteLabel: 'Note (Optional)',
             saveButton: 'Save Entry',
             updateButton: 'Update Entry',
