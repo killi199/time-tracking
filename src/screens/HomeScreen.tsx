@@ -19,7 +19,7 @@ import {
 } from '../db/database';
 import { TimeEvent } from '../types';
 import { useTranslation } from 'react-i18next';
-import { getFormattedTime, getFormattedDate } from '../utils/time';
+import { getFormattedTime, getFormattedDate, getLocaleDateString } from '../utils/time';
 import DayView from './DayView';
 import MonthView from './MonthView';
 import WeekView from './WeekView';
@@ -457,7 +457,7 @@ export default function HomeScreen({
                                 <View pointerEvents="none">
                                     <TextInput
                                         label={t('addEntry.dateLabel')}
-                                        value={dialogDate}
+                                        value={getLocaleDateString(dialogDate, i18n.language)}
                                         mode="outlined"
                                         style={styles.dialogInput}
                                         editable={false}
