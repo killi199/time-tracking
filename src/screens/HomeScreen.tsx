@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef, useLayoutEffect } from 'react';
 import { View, StyleSheet, AppState, TouchableOpacity, Keyboard } from 'react-native';
 import {
     Button,
@@ -77,15 +77,6 @@ export default function HomeScreen({
     const appState = useRef(AppState.currentState);
     const lastActiveDateRef = useRef(getFormattedDate(new Date()));
     const lastActiveMonthRef = useRef(new Date().toISOString().slice(0, 7));
-
-    navigation.setOptions({
-        headerRight: () => (
-            <IconButton
-                icon="plus"
-                onPress={showAddDialog}
-            />
-        ),
-    })
 
     useEffect(() => {
         const subscription = AppState.addEventListener('change', nextAppState => {
@@ -200,6 +191,17 @@ export default function HomeScreen({
         setDialogIsLateEntry(true);
         setVisible(true);
     };
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (
+                <IconButton
+                    icon="plus"
+                    onPress={showAddDialog}
+                />
+            ),
+        });
+    }, [navigation, showAddDialog]);
 
     const showEditDialog = (item: TimeEvent, close?: () => void) => {
         setDialogTime(item.time);
