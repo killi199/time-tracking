@@ -1,86 +1,27 @@
 import * as SQLite from 'expo-sqlite';
-import { TimeEvent, Entry } from '../types';
+import { TimeEvent } from '../types';
 
 const db = SQLite.openDatabaseSync('time_tracking.db');
 
 export const initDatabase = (): void => {
-    // Check if events table exists
-    const eventsTable = db.getAllSync(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='events'",
-    );
-
-    if (eventsTable.length === 0) {
-        // Check if entries table exists (for migration)
-        const entriesTable = db.getAllSync(
-            "SELECT name FROM sqlite_master WHERE type='table' AND name='entries'",
+    // Events Table
+    db.execSync(`
+        CREATE TABLE IF NOT EXISTS events (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            date TEXT NOT NULL,
+            time TEXT NOT NULL,
+            note TEXT,
+            isManualEntry INTEGER DEFAULT 0
         );
-
-        db.execSync(`
-            CREATE TABLE IF NOT EXISTS events (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                date TEXT NOT NULL,
-                time TEXT NOT NULL,
-                note TEXT
-            );
-        `);
-
-        if (entriesTable.length > 0) {
-            console.log('Migrating from entries to events...');
-            const entries = db.getAllSync('SELECT * FROM entries') as Entry[];
-
-            const insertStatement = db.prepareSync(
-                'INSERT INTO events (date, time, note) VALUES ($date, $time, $note)',
-            );
-
-            try {
-                db.withTransactionSync(() => {
-                    entries.forEach((entry) => {
-                        // Insert Start Time
-                        insertStatement.executeSync({
-                            $date: entry.date,
-                            $time: entry.startTime,
-                            $note: entry.note,
-                        });
-
-                        // Insert End Time if exists
-                        if (entry.endTime) {
-                            insertStatement.executeSync({
-                                $date: entry.date,
-                                $time: entry.endTime,
-                                $note: entry.note, // Note is duplicated for now, or could be null
-                            });
-                        }
-                    });
-                });
-                console.log('Migration successful. Dropping entries table.');
-                db.execSync('DROP TABLE entries');
-            } catch (e) {
-                console.error('Migration failed:', e);
-            } finally {
-                insertStatement.finalizeSync();
-            }
-        }
-    }
+    `);
 
     // Settings Table
-    const settingsTable = db.getAllSync(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='settings'",
-    );
-    if (settingsTable.length === 0) {
-        db.execSync(`
+    db.execSync(`
         CREATE TABLE IF NOT EXISTS settings (
           key TEXT PRIMARY KEY,
           value TEXT
         );
-      `);
-    }
-
-    // Check for isManualEntry column
-    const columns = db.getAllSync('PRAGMA table_info(events)') as any[];
-    const hasIsManualEntry = columns.some((col: any) => col.name === 'isManualEntry');
-    if (!hasIsManualEntry) {
-        db.execSync('ALTER TABLE events ADD COLUMN isManualEntry INTEGER DEFAULT 0');
-    }
+    `);
 };
 
 export const getSetting = (key: string): string | null => {
