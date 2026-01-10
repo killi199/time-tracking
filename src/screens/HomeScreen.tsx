@@ -203,14 +203,14 @@ export default function HomeScreen({
         });
     }, [navigation, showAddDialog]);
 
-    const showEditDialog = (item: TimeEvent, close?: () => void) => {
+    const showEditDialog = useCallback((item: TimeEvent, close?: () => void) => {
         setDialogTime(item.time);
         setDialogNote(item.note || '');
         setDialogIsLateEntry(item.isManualEntry ?? false);
         setEditingEvent(item);
         activeItemCloseCallback.current = close;
         setVisible(true);
-    };
+    }, []);
 
     const hideDialog = () => {
         setVisible(false);
@@ -276,11 +276,11 @@ export default function HomeScreen({
         [setCreateDatePickerVisible, setDialogDate]
     );
 
-    const showDeleteDialog = (item: TimeEvent, close?: () => void) => {
+    const showDeleteDialog = useCallback((item: TimeEvent, close?: () => void) => {
         setItemToDelete(item);
         activeItemCloseCallback.current = close;
         setDeleteDialogVisible(true);
-    };
+    }, []);
 
     const confirmDelete = () => {
         if (!itemToDelete) return;
