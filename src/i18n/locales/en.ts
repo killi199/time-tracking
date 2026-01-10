@@ -34,12 +34,14 @@ export default {
             deleteEventTitle: 'Delete Event',
             work: 'Work',
             pause: 'Pause',
+            lateEntry: '(Late Entry)',
         },
         addEntry: {
             addTitle: 'Add Entry',
             editTitle: 'Edit Entry',
             dateLabel: 'Date',
             noteLabel: 'Note (Optional)',
+            lateEntryLabel: 'Late Entry',
             saveButton: 'Save Entry',
             updateButton: 'Update Entry',
             validationError:

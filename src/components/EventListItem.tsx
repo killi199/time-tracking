@@ -50,7 +50,7 @@ export const EventListItem = React.memo(({
             }}
         >
             <List.Item
-                title={`${type === 'start' ? t('home.checkIn') : t('home.checkOut')} ${t('home.at')} ${item.time}`}
+                title={`${type === 'start' ? t('home.checkIn') : t('home.checkOut')} ${t('home.at')} ${item.time}${item.isManualEntry ? ' ' + t('home.lateEntry') : ''}`}
                 description={item.note}
                 left={(props) => (
                     <List.Icon

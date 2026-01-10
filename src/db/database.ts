@@ -74,6 +74,13 @@ export const initDatabase = (): void => {
         );
       `);
     }
+
+    // Check for isManualEntry column
+    const columns = db.getAllSync('PRAGMA table_info(events)') as any[];
+    const hasIsManualEntry = columns.some((col: any) => col.name === 'isManualEntry');
+    if (!hasIsManualEntry) {
+        db.execSync('ALTER TABLE events ADD COLUMN isManualEntry INTEGER DEFAULT 0');
+    }
 };
 
 export const getSetting = (key: string): string | null => {
@@ -109,15 +116,17 @@ export const addEvent = (
     date: string,
     time: string,
     note: string | null,
+    isManualEntry: boolean = false
 ): number => {
     const statement = db.prepareSync(
-        'INSERT INTO events (date, time, note) VALUES ($date, $time, $note)',
+        'INSERT INTO events (date, time, note, isManualEntry) VALUES ($date, $time, $note, $isManualEntry)',
     );
     try {
         const result = statement.executeSync({
             $date: date,
             $time: time,
             $note: note,
+            $isManualEntry: isManualEntry ? 1 : 0,
         });
         return result.lastInsertRowId;
     } finally {
@@ -130,15 +139,17 @@ export const updateEvent = (
     date: string,
     time: string,
     note: string | null,
+    isManualEntry: boolean = false
 ): void => {
     const statement = db.prepareSync(
-        'UPDATE events SET date = $date, time = $time, note = $note WHERE id = $id',
+        'UPDATE events SET date = $date, time = $time, note = $note, isManualEntry = $isManualEntry WHERE id = $id',
     );
     try {
         statement.executeSync({
             $date: date,
             $time: time,
             $note: note,
+            $isManualEntry: isManualEntry ? 1 : 0,
             $id: id,
         });
     } finally {
@@ -244,7 +255,7 @@ export const getOverallStats = (cutoffDate?: string): {
 
 export const importEvents = (events: Omit<TimeEvent, 'id'>[]): void => {
     const insertStatement = db.prepareSync(
-        'INSERT INTO events (date, time, note) VALUES ($date, $time, $note)',
+        'INSERT INTO events (date, time, note, isManualEntry) VALUES ($date, $time, $note, $isManualEntry)',
     );
 
     try {
@@ -259,6 +270,7 @@ export const importEvents = (events: Omit<TimeEvent, 'id'>[]): void => {
                     $date: event.date,
                     $time: event.time,
                     $note: event.note || null,
+                    $isManualEntry: event.isManualEntry ? 1 : 0,
                 });
             });
         });

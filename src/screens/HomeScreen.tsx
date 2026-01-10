@@ -8,6 +8,7 @@ import {
     Dialog,
     TextInput,
     useTheme,
+    Checkbox,
 } from 'react-native-paper';
 import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates';
 import { en, de, registerTranslation } from 'react-native-paper-dates';
@@ -62,6 +63,7 @@ export default function HomeScreen({
     const [dialogDate, setDialogDate] = useState('');
     const [dialogTime, setDialogTime] = useState('');
     const [dialogNote, setDialogNote] = useState('');
+    const [dialogIsLateEntry, setDialogIsLateEntry] = useState(true);
     const [editingEvent, setEditingEvent] = useState<TimeEvent | null>(null);
     const [timePickerVisible, setTimePickerVisible] = useState(false);
     const [createDatePickerVisible, setCreateDatePickerVisible] = useState(false);
@@ -195,12 +197,14 @@ export default function HomeScreen({
         setDialogDate(currentDate);
         setDialogTime(getFormattedTime(new Date()));
         setDialogNote('');
+        setDialogIsLateEntry(true);
         setVisible(true);
     };
 
     const showEditDialog = (item: TimeEvent, close?: () => void) => {
         setDialogTime(item.time);
         setDialogNote(item.note || '');
+        setDialogIsLateEntry(item.isManualEntry ?? false);
         setEditingEvent(item);
         activeItemCloseCallback.current = close;
         setVisible(true);
@@ -228,9 +232,10 @@ export default function HomeScreen({
                 editingEvent.date,
                 dialogTime,
                 dialogNote,
+                dialogIsLateEntry,
             );
         } else {
-            addEvent(dialogDate, dialogTime, dialogNote || null);
+            addEvent(dialogDate, dialogTime, dialogNote || null, dialogIsLateEntry);
         }
 
         setRefreshTrigger(prev => prev + 1);
@@ -488,6 +493,11 @@ export default function HomeScreen({
                             mode="outlined"
                             returnKeyType="done"
                             onSubmitEditing={() => Keyboard.dismiss()}
+                        />
+                        <Checkbox.Item
+                            label={t('addEntry.lateEntryLabel')}
+                            status={dialogIsLateEntry ? 'checked' : 'unchecked'}
+                            onPress={() => setDialogIsLateEntry(!dialogIsLateEntry)}
                         />
                     </Dialog.Content>
                     <Dialog.Actions>

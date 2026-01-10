@@ -34,12 +34,14 @@ export default {
             deleteEventTitle: 'Ereignis löschen',
             work: 'Arbeit',
             pause: 'Pause',
+            lateEntry: '(Nachtrag)',
         },
         addEntry: {
             addTitle: 'Eintrag hinzufügen',
             editTitle: 'Eintrag bearbeiten',
             dateLabel: 'Datum',
             noteLabel: 'Notiz (Optional)',
+            lateEntryLabel: 'Nachtrag',
             saveButton: 'Eintrag speichern',
             updateButton: 'Eintrag aktualisieren',
             validationError:

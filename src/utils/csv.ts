@@ -19,7 +19,8 @@ export const exportToCSV = async (): Promise<CSVResult> => {
         const data = events.map(event => ({
             Date: event.date,
             Time: event.time,
-            Note: event.note || ''
+            Note: event.note || '',
+            IsManualEntry: event.isManualEntry ? 'true' : 'false'
         }));
 
         const csvContent = Papa.unparse(data);
@@ -77,6 +78,7 @@ export const importFromCSV = async (): Promise<CSVResult> => {
                     date: row.Date,
                     time: row.Time,
                     note: row.Note || null,
+                    isManualEntry: row.IsManualEntry === 'true',
                 });
             }
         });
