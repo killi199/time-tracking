@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import {
     NavigationContainer,
@@ -42,6 +42,25 @@ function MainTabs({ navigation }: { navigation: any }) {
     const theme = useTheme();
     const { t } = useTranslation();
 
+    const renderIcon = useCallback(({ route, color }: { route: any, color: string }) => {
+        let iconName = 'help';
+        if (route.name === 'Day') {
+            iconName = 'calendar-today';
+        } else if (route.name === 'Week') {
+            iconName = 'calendar-week';
+        } else if (route.name === 'Month') {
+            iconName = 'calendar-month';
+        }
+
+        return (
+            <MaterialCommunityIcons
+                name={iconName as any}
+                size={24}
+                color={color}
+            />
+        );
+    }, []);
+
     return (
         <Tab.Navigator
             initialRouteName="Day"
@@ -52,54 +71,27 @@ function MainTabs({ navigation }: { navigation: any }) {
                     onTabPress={({ route }) => {
                         navigation.navigate(route.name, route.params);
                     }}
-                    renderIcon={({ route, focused, color }) => {
-                        const { options } = descriptors[route.key];
-                        if (options.tabBarIcon) {
-                            return options.tabBarIcon({ focused, color, size: 24 });
-                        }
-
-                        return null;
-                    }}
+                    renderIcon={renderIcon}
                     getLabelText={({ route }) => {
                         const { options } = descriptors[route.key];
                         const label =
-                            options.tabBarLabel !== undefined
+                            typeof options.tabBarLabel === 'string'
                                 ? options.tabBarLabel
-                                : options.title !== undefined
+                                : typeof options.title === 'string'
                                     ? options.title
                                     : route.name;
 
-                        return label as string;
+                        return label;
                     }}
                 />
             )}
-            screenOptions={({ route }) => ({
-                headerShown: true,
+            screenOptions={() => ({
                 headerLeft: () => (
                     <IconButton
                         icon="menu"
                         onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
                     />
                 ),
-                tabBarIcon: ({ focused, color, size }) => {
-                    let iconName = 'help';
-
-                    if (route.name === 'Day') {
-                        iconName = focused ? 'calendar-today' : 'calendar-today';
-                    } else if (route.name === 'Week') {
-                        iconName = focused ? 'calendar-week' : 'calendar-week';
-                    } else if (route.name === 'Month') {
-                        iconName = focused ? 'calendar-month' : 'calendar-month';
-                    }
-
-                    return (
-                        <MaterialCommunityIcons
-                            name={iconName as any}
-                            size={size}
-                            color={color}
-                        />
-                    );
-                },
                 headerStyle: { backgroundColor: theme.colors.background },
                 headerTintColor: theme.colors.onBackground,
             })}
