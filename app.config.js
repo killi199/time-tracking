@@ -21,7 +21,7 @@ module.exports = {
                 monochromeImage: "./assets/adaptive-icon.png"
             },
             edgeToEdgeEnabled: true,
-            predictiveBackGestureEnabled: true,
+            predictiveBackGestureEnabled: false,
             package: "de.killi199.timetracking",
             permissions: ["android.permission.NFC"],
             config: {
