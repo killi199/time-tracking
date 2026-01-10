@@ -256,7 +256,6 @@ export default function GeofenceSetupScreen() {
                 showsMyLocationButton={false}
                 provider={PROVIDER_GOOGLE}
                 rotateEnabled={true}
-                pitchEnabled={true}
             >
                 {marker && (
                     <>
