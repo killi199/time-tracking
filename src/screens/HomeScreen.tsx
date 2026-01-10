@@ -384,7 +384,7 @@ export default function HomeScreen({
                         icon="chevron-left"
                         onPress={() => changeDate(-1)}
                     />
-                    <TouchableOpacity onPress={() => setDatePickerVisible(true)}>
+                    <TouchableOpacity style={styles.dateTouchable} onPress={() => setDatePickerVisible(true)}>
                         <Text variant="titleLarge" style={styles.dateText}>{formattedDate}</Text>
                     </TouchableOpacity>
                     <IconButton
@@ -550,12 +550,15 @@ const styles = StyleSheet.create({
     dateNav: {
         flexDirection: 'row',
         alignItems: 'center',
+        flex: 1,
+    },
+    dateTouchable: {
+        flex: 1,
     },
     dialogInput: {
         marginBottom: 10,
     },
     dateText: {
-        minWidth: 230,
         textAlign: 'center',
     },
 });
