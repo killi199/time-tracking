@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef, useLayoutEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef, useLayoutEffect, useMemo } from 'react';
 import { View, StyleSheet, AppState, TouchableOpacity, Keyboard } from 'react-native';
 import {
     Button,
@@ -160,7 +160,7 @@ export default function HomeScreen({
         setCurrentMonth(now.toISOString().slice(0, 7));
     };
 
-    const formattedDate = React.useMemo(() => {
+    const formattedDate = useMemo(() => {
         if (viewMode === 'month') {
             return new Date(`${currentMonth}-01`).toLocaleDateString(i18n.language, {
                 year: 'numeric',
@@ -303,7 +303,7 @@ export default function HomeScreen({
         }
     };
 
-    const showBackToNowCalculated = React.useMemo(() => {
+    const showBackToNowCalculated = useMemo(() => {
         const today = new Date();
         const todayStr = getFormattedDate(today);
         const currentMonthStr = today.toISOString().slice(0, 7);

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { memo, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { List, useTheme } from 'react-native-paper';
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
@@ -13,7 +13,7 @@ interface EventListItemProps {
     onDelete: (event: TimeEvent, close?: () => void) => void;
 }
 
-export const EventListItem = React.memo(({
+export const EventListItem = memo(({
     item,
     type,
     onEdit,

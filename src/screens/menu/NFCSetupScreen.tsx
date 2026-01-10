@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useTheme, Text, Button, Portal, Dialog } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ export default function NFCSetupScreen() {
     const [dialogTitle, setDialogTitle] = useState('');
     const [dialogMessage, setDialogMessage] = useState('');
 
-    const cancelRef = React.useRef(false);
+    const cancelRef = useRef(false);
 
     useEffect(() => {
         async function checkNfc() {
