@@ -486,7 +486,8 @@ export default function HomeScreen({
                             value={dialogNote}
                             onChangeText={setDialogNote}
                             mode="outlined"
-                            multiline
+                            returnKeyType="done"
+                            onSubmitEditing={() => Keyboard.dismiss()}
                         />
                     </Dialog.Content>
                     <Dialog.Actions>
