@@ -2120,10 +2120,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-community/slider@npm:5.0.1":
-  version: 5.0.1
-  resolution: "@react-native-community/slider@npm:5.0.1"
-  checksum: 10c0/b2e712bf97057704ebbd00506de3b6df69b41da111234dfda94926641dd27fdd2186b31b3ba6d8b63e9804411eba7a70b74e293a4eefd3d433561bc61b5b5c3b
+"@react-native-community/slider@npm:5.1.2":
+  version: 5.1.2
+  resolution: "@react-native-community/slider@npm:5.1.2"
+  checksum: 10c0/e48f0ad72292ca30d63b84a6c0137bb3531516c22a8a3bd1981132f25e3195c19757da271d5b8b1d66d73882ccef02a0cf21c3a99f23144623345c4eaa67823c
   languageName: node
   linkType: hard
 
@@ -9732,7 +9732,7 @@ __metadata:
   dependencies:
     "@eslint/js": "npm:^9.39.1"
     "@pchmn/expo-material3-theme": "npm:^1.3.2"
-    "@react-native-community/slider": "npm:5.0.1"
+    "@react-native-community/slider": "npm:5.1.2"
     "@react-navigation/bottom-tabs": "npm:^7.8.8"
     "@react-navigation/drawer": "npm:^7.7.10"
     "@react-navigation/native": "npm:^7.1.22"
