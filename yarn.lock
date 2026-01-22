@@ -8624,19 +8624,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-maps@npm:1.20.1":
-  version: 1.20.1
-  resolution: "react-native-maps@npm:1.20.1"
+"react-native-maps@npm:1.26.20":
+  version: 1.26.20
+  resolution: "react-native-maps@npm:1.26.20"
   dependencies:
     "@types/geojson": "npm:^7946.0.13"
   peerDependencies:
-    react: ">= 17.0.1"
-    react-native: ">= 0.64.3"
+    react: ">= 18.3.1"
+    react-native: ">= 0.76.0"
     react-native-web: ">= 0.11"
   peerDependenciesMeta:
     react-native-web:
       optional: true
-  checksum: 10c0/59c8d5600feb907df179c675b7185ef3bf205bdc85391c7ef530bb17d56d44d03ffd9ab3ae08dcc00cfabe9b14e37041327c7446114104b141efb2c8d4c3e797
+  checksum: 10c0/84f6db0f34d8ad8666eaa1e69aee34e6439a67b3bbfed787e70b24950fef0756b6b6ec4e3cb5d0fabcac44c0b8c89329eb050732d4f5910970c63fec038f0524
   languageName: node
   linkType: hard
 
@@ -10004,7 +10004,7 @@ __metadata:
     react-i18next: "npm:^16.3.5"
     react-native: "npm:0.81.5"
     react-native-gesture-handler: "npm:^2.29.1"
-    react-native-maps: "npm:1.20.1"
+    react-native-maps: "npm:1.26.20"
     react-native-nfc-manager: "npm:3.17.2"
     react-native-paper: "npm:^5.14.5"
     react-native-paper-dates: "npm:^0.22.57"
