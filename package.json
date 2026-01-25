@@ -34,7 +34,7 @@
         "papaparse": "^5.5.3",
         "react": "19.1.0",
         "react-i18next": "^16.3.5",
-        "react-native": "0.81.5",
+        "react-native": "0.83.1",
         "react-native-gesture-handler": "^2.29.1",
         "react-native-maps": "1.26.20",
         "react-native-nfc-manager": "3.17.2",
