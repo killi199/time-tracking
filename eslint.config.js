@@ -1,45 +1,15 @@
-const js = require('@eslint/js');
-const tseslint = require('typescript-eslint');
-const react = require('eslint-plugin-react');
-const reactHooks = require('eslint-plugin-react-hooks');
-const prettier = require('eslint-plugin-prettier/recommended');
-const globals = require('globals');
+import eslint from '@eslint/js';
+import { defineConfig } from 'eslint/config';
+import react from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
+import tseslint from 'typescript-eslint';
+import eslintConfigPrettier from "eslint-config-prettier/flat";
 
-module.exports = tseslint.config(
-    {
-        ignores: ['**/node_modules/**', '**/.expo/**', '**/dist/**', 'babel.config.js', 'eslint.config.js'],
-    },
-    js.configs.recommended,
-    ...tseslint.configs.recommended,
-    prettier,
-    {
-        files: ['**/*.{ts,tsx}'],
-        languageOptions: {
-            ecmaVersion: 2020,
-            globals: {
-                ...globals.browser,
-                process: 'readonly',
-            },
-            parserOptions: {
-                project: ['./tsconfig.json'],
-                tsconfigRootDir: __dirname,
-            },
-        },
-        plugins: {
-            react: react,
-            'react-hooks': reactHooks,
-        },
-        rules: {
-            ...reactHooks.configs.recommended.rules,
-            'react/react-in-jsx-scope': 'off',
-            '@typescript-eslint/no-explicit-any': 'warn',
-            '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
-            'prettier/prettier': 'error',
-        },
-        settings: {
-            react: {
-                version: 'detect',
-            },
-        },
-    }
+export default defineConfig(
+    eslint.configs.recommended,
+    tseslint.configs.strict,
+    react.configs.flat.recommended,
+    react.configs.flat['jsx-runtime'],
+    reactHooks.configs.flat.recommended,
+    eslintConfigPrettier
 );
