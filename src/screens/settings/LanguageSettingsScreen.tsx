@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { RadioButton, List, useTheme, Text } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'

@@ -1,5 +1,4 @@
-import * as React from 'react'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useColorScheme } from 'react-native'
 import {
     NavigationContainer,
@@ -157,7 +156,7 @@ function NavigationWrapper() {
     const { t } = useTranslation()
     const paperTheme = useTheme()
 
-    const navTheme = React.useMemo(() => {
+    const navTheme = useMemo(() => {
         const { LightTheme, DarkTheme } = adaptNavigationTheme({
             reactNavigationLight: NavDefaultTheme,
             reactNavigationDark: NavDarkTheme,
@@ -219,7 +218,7 @@ function NavigationWrapper() {
 }
 
 export default function App() {
-    const [isDbReady, setIsDbReady] = React.useState(false)
+    const [isDbReady, setIsDbReady] = useState(false)
 
     useEffect(() => {
         const init = async () => {

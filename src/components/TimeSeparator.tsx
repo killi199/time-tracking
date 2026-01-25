@@ -1,9 +1,7 @@
-import React from 'react'
 import { View } from 'react-native'
 import { Text, Divider, useTheme } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
 import { TimeEvent, ProcessedTimeEvent } from '../types'
-import { formatTime } from '../utils/time'
 
 interface TimeSeparatorProps {
     leadingItem: TimeEvent

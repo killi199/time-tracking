@@ -1,4 +1,4 @@
-import React, { memo, useRef } from 'react'
+import { memo, useRef } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { List, useTheme } from 'react-native-paper'
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable'

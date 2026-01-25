@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { useTheme, Text, Button, Portal, Dialog } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'

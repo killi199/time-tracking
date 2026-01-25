@@ -145,7 +145,7 @@ export const getOverallStats = (
     overallBalanceMinutes: number
 } => {
     let query = 'SELECT * FROM events'
-    let params: any = {}
+    const params: any = {}
 
     if (cutoffDate) {
         query += ' WHERE date <= $cutoffDate'

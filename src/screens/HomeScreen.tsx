@@ -1,4 +1,4 @@
-import React, {
+import {
     useState,
     useCallback,
     useEffect,
@@ -209,14 +209,14 @@ export default function HomeScreen({
 
     const activeItemCloseCallback = useRef<(() => void) | undefined>(undefined)
 
-    const showAddDialog = () => {
+    const showAddDialog = useCallback(() => {
         setEditingEvent(null)
         setDialogDate(currentDate)
         setDialogTime(getFormattedTime(new Date()))
         setDialogNote('')
         setDialogIsLateEntry(true)
         setVisible(true)
-    }
+    }, [currentDate])
 
     useLayoutEffect(() => {
         navigation.setOptions({

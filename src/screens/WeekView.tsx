@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { View, FlatList, StyleSheet } from 'react-native'
 import { Text, Card, List, useTheme } from 'react-native-paper'
 import { EventListItem } from '../components/EventListItem'

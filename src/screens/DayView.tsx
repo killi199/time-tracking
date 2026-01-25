@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { View, FlatList, StyleSheet } from 'react-native'
-import { Text, Card, List, Divider, useTheme, FAB } from 'react-native-paper'
+import { Text, Card, useTheme, FAB } from 'react-native-paper'
 import { EventListItem } from '../components/EventListItem'
 import { TimeSeparator } from '../components/TimeSeparator'
 import { getTodayEvents, getOverallStats } from '../db/database'

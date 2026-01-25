@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { View, StyleSheet, Dimensions } from 'react-native'
 import {
     useTheme,
@@ -45,7 +45,7 @@ export default function GeofenceSetupScreen() {
     } | null>(null)
     const [radius, setRadius] = useState(100)
     const [loading, setLoading] = useState(true)
-    const [permissionStatus, setPermissionStatus] = useState<
+    const [, setPermissionStatus] = useState<
         'granted' | 'denied' | 'undetermined'
     >('undetermined')
 
