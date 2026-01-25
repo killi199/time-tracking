@@ -8,7 +8,6 @@
         "android:release": "expo run:android --variant=release",
         "ios": "expo run:ios",
         "ios:release": "expo run:ios --variant=release",
-        "web": "expo start --web",
         "typecheck": "tsc --noEmit",
         "lint": "eslint src",
         "test": "vitest"
