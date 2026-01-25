@@ -29,7 +29,8 @@ export default {
             monthBalance: 'Month Balance',
             day: 'Day',
             deleteSession: 'Are you sure you want to delete this session?',
-            deleteCheckIn: 'Deleting this Check-in will make the Check-out the new Check-in time.',
+            deleteCheckIn:
+                'Deleting this Check-in will make the Check-out the new Check-in time.',
             deleteCheckOut: 'Deleting this Check-out will re-open the session.',
             deleteEventTitle: 'Delete Event',
             work: 'Work',
@@ -90,7 +91,8 @@ export default {
             radius: 'Radius (meters)',
             instruction: 'Long press on the map to set your work location.',
             permissionDenied: 'Location permissions are required.',
-            permissionBackgroundDenied: 'Background location permission is required.',
+            permissionBackgroundDenied:
+                'Background location permission is required.',
             currentLocation: 'Use Current Location',
             enabled: 'Geofencing enabled!',
             startCurrentFailed: 'Failed to start geofencing.',
@@ -100,7 +102,8 @@ export default {
         },
         nfc: {
             title: 'NFC Setup',
-            instruction: 'Tap a tag to write. This tag will be used to toggle Check-In/Check-Out.',
+            instruction:
+                'Tap a tag to write. This tag will be used to toggle Check-In/Check-Out.',
             writeSuccess: 'Tag written successfully!',
             writeError: 'Failed to write tag.',
             reading: 'Ready to scan...',
@@ -109,4 +112,4 @@ export default {
             setup: 'Setup',
         },
     },
-};
+}

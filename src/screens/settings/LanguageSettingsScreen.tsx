@@ -1,30 +1,30 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { RadioButton, List, useTheme, Text } from 'react-native-paper';
-import { useTranslation } from 'react-i18next';
-import { getSetting, setSetting } from '../../db/database';
-import i18n from 'i18next';
-import * as Localization from 'expo-localization';
+import React, { useState } from 'react'
+import { View, StyleSheet } from 'react-native'
+import { RadioButton, List, useTheme, Text } from 'react-native-paper'
+import { useTranslation } from 'react-i18next'
+import { getSetting, setSetting } from '../../db/database'
+import i18n from 'i18next'
+import * as Localization from 'expo-localization'
 
 export default function LanguageSettingsScreen() {
-    const theme = useTheme();
-    const { t } = useTranslation();
+    const theme = useTheme()
+    const { t } = useTranslation()
     const [language, setLanguage] = useState(() => {
-        const saved = getSetting('language');
-        return saved || 'auto';
-    });
+        const saved = getSetting('language')
+        return saved || 'auto'
+    })
 
     const handleLanguageChange = (value: string) => {
-        setLanguage(value);
-        setSetting('language', value);
+        setLanguage(value)
+        setSetting('language', value)
 
         if (value === 'auto') {
-            const deviceLanguage = Localization.getLocales()[0]?.languageCode;
-            i18n.changeLanguage(deviceLanguage === 'de' ? 'de' : 'en');
+            const deviceLanguage = Localization.getLocales()[0]?.languageCode
+            i18n.changeLanguage(deviceLanguage === 'de' ? 'de' : 'en')
         } else {
-            i18n.changeLanguage(value);
+            i18n.changeLanguage(value)
         }
-    };
+    }
 
     return (
         <View
@@ -59,7 +59,7 @@ export default function LanguageSettingsScreen() {
                 </RadioButton.Group>
             </List.Section>
         </View>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
@@ -67,4 +67,4 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingLeft: 16,
     },
-});
+})

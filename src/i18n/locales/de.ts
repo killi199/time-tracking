@@ -28,9 +28,12 @@ export default {
             month: 'Monat',
             monthBalance: 'Monatsbilanz',
             day: 'Tag',
-            deleteSession: 'Sind Sie sicher, dass Sie diese Sitzung löschen möchten?',
-            deleteCheckIn: 'Das Löschen dieses Check-ins macht den Check-out zur neuen Check-in-Zeit.',
-            deleteCheckOut: 'Das Löschen dieses Check-outs öffnet die Sitzung erneut.',
+            deleteSession:
+                'Sind Sie sicher, dass Sie diese Sitzung löschen möchten?',
+            deleteCheckIn:
+                'Das Löschen dieses Check-ins macht den Check-out zur neuen Check-in-Zeit.',
+            deleteCheckOut:
+                'Das Löschen dieses Check-outs öffnet die Sitzung erneut.',
             deleteEventTitle: 'Ereignis löschen',
             work: 'Arbeit',
             pause: 'Pause',
@@ -90,17 +93,20 @@ export default {
             radius: 'Radius (Meter)',
             instruction: 'Lang drücken, um Arbeitsort festzulegen.',
             permissionDenied: 'Standortberechtigung erforderlich.',
-            permissionBackgroundDenied: 'Hintergrund-Standortberechtigung erforderlich.',
+            permissionBackgroundDenied:
+                'Hintergrund-Standortberechtigung erforderlich.',
             currentLocation: 'Aktuellen Standort verwenden',
             enabled: 'Geofencing aktiviert!',
             startCurrentFailed: 'Starten des Geofencing fehlgeschlagen.',
             stopFailed: 'Stoppen des Geofencing fehlgeschlagen.',
-            updateInstruction: 'Deaktivieren und reaktivieren, um den neuen Standort anzuwenden.',
+            updateInstruction:
+                'Deaktivieren und reaktivieren, um den neuen Standort anzuwenden.',
             active: 'Geofence Aktiv',
         },
         nfc: {
             title: 'NFC Einrichtung',
-            instruction: 'Halten Sie einen Tag bereit. Dieser Tag wird zum Ein-/Auschecken verwendet.',
+            instruction:
+                'Halten Sie einen Tag bereit. Dieser Tag wird zum Ein-/Auschecken verwendet.',
             writeSuccess: 'Tag erfolgreich beschrieben!',
             writeError: 'Schreiben des Tags fehlgeschlagen.',
             reading: 'Bereit zum Scannen...',
@@ -109,4 +115,4 @@ export default {
             setup: 'Einrichtung',
         },
     },
-};
+}

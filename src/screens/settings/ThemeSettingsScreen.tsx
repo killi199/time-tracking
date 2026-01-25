@@ -1,13 +1,13 @@
-import * as React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { RadioButton, List, useTheme } from 'react-native-paper';
-import { useAppTheme } from '../../context/ThemeContext';
-import { useTranslation } from 'react-i18next';
+import * as React from 'react'
+import { View, StyleSheet } from 'react-native'
+import { RadioButton, List, useTheme } from 'react-native-paper'
+import { useAppTheme } from '../../context/ThemeContext'
+import { useTranslation } from 'react-i18next'
 
 export default function ThemeSettingsScreen() {
-    const { themeMode, setThemeMode } = useAppTheme();
-    const theme = useTheme();
-    const { t } = useTranslation();
+    const { themeMode, setThemeMode } = useAppTheme()
+    const theme = useTheme()
+    const { t } = useTranslation()
 
     return (
         <View
@@ -42,7 +42,7 @@ export default function ThemeSettingsScreen() {
                 </RadioButton.Group>
             </List.Section>
         </View>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
@@ -50,4 +50,4 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingLeft: 16,
     },
-});
+})

@@ -1,75 +1,77 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { useTheme, Text, Button, Portal, Dialog } from 'react-native-paper';
-import { useTranslation } from 'react-i18next';
-import NfcManager, { NfcTech, Ndef } from 'react-native-nfc-manager';
+import React, { useState, useEffect, useRef } from 'react'
+import { View, StyleSheet } from 'react-native'
+import { useTheme, Text, Button, Portal, Dialog } from 'react-native-paper'
+import { useTranslation } from 'react-i18next'
+import NfcManager, { NfcTech, Ndef } from 'react-native-nfc-manager'
 
 export default function NFCSetupScreen() {
-    const theme = useTheme();
-    const { t } = useTranslation();
-    const [supported, setSupported] = useState<boolean | null>(null);
-    const [writing, setWriting] = useState(false);
+    const theme = useTheme()
+    const { t } = useTranslation()
+    const [supported, setSupported] = useState<boolean | null>(null)
+    const [writing, setWriting] = useState(false)
 
     // Dialog state
-    const [dialogVisible, setDialogVisible] = useState(false);
-    const [dialogTitle, setDialogTitle] = useState('');
-    const [dialogMessage, setDialogMessage] = useState('');
+    const [dialogVisible, setDialogVisible] = useState(false)
+    const [dialogTitle, setDialogTitle] = useState('')
+    const [dialogMessage, setDialogMessage] = useState('')
 
-    const cancelRef = useRef(false);
+    const cancelRef = useRef(false)
 
     useEffect(() => {
         async function checkNfc() {
-            const isSupported = await NfcManager.isSupported();
-            setSupported(isSupported);
+            const isSupported = await NfcManager.isSupported()
+            setSupported(isSupported)
         }
-        checkNfc();
+        checkNfc()
 
         return () => {
-            NfcManager.cancelTechnologyRequest().catch(() => 0);
-            setWriting(false);
-        };
-    }, []);
+            NfcManager.cancelTechnologyRequest().catch(() => 0)
+            setWriting(false)
+        }
+    }, [])
 
     const showDialog = (title: string, message: string) => {
-        setDialogTitle(title);
-        setDialogMessage(message);
-        setDialogVisible(true);
-    };
+        setDialogTitle(title)
+        setDialogMessage(message)
+        setDialogVisible(true)
+    }
 
-    const hideDialog = () => setDialogVisible(false);
+    const hideDialog = () => setDialogVisible(false)
 
     const writeTag = async () => {
         if (!supported) {
-            showDialog(t('common.error'), t('nfc.notSupported'));
-            return;
+            showDialog(t('common.error'), t('nfc.notSupported'))
+            return
         }
 
         try {
-            setWriting(true);
-            cancelRef.current = false;
-            await NfcManager.requestTechnology(NfcTech.Ndef);
+            setWriting(true)
+            cancelRef.current = false
+            await NfcManager.requestTechnology(NfcTech.Ndef)
 
             const bytes = Ndef.encodeMessage([
                 Ndef.uriRecord('timetracking://nfc'),
-            ]);
+            ])
 
             if (bytes) {
                 // Pass options object to prevent native crash on 'reconnectAfterWrite' lookup
-                await (NfcManager as any).writeNdefMessage(bytes, { reconnectAfterWrite: true });
-                showDialog(t('common.success'), t('nfc.writeSuccess'));
+                await (NfcManager as any).writeNdefMessage(bytes, {
+                    reconnectAfterWrite: true,
+                })
+                showDialog(t('common.success'), t('nfc.writeSuccess'))
             }
         } catch (ex: any) {
             // Don't show error if user cancelled
             if (!cancelRef.current) {
-                console.warn(ex);
-                showDialog(t('common.error'), t('nfc.writeError'));
+                console.warn(ex)
+                showDialog(t('common.error'), t('nfc.writeError'))
             }
         } finally {
             // Ensure we clean up
-            NfcManager.cancelTechnologyRequest().catch(() => 0);
-            setWriting(false);
+            NfcManager.cancelTechnologyRequest().catch(() => 0)
+            setWriting(false)
         }
-    };
+    }
 
     return (
         <View
@@ -104,11 +106,11 @@ export default function NFCSetupScreen() {
 
                         <Button
                             onPress={() => {
-                                cancelRef.current = true;
+                                cancelRef.current = true
                                 NfcManager.cancelTechnologyRequest().catch(
                                     () => 0,
-                                );
-                                setWriting(false);
+                                )
+                                setWriting(false)
                             }}
                             style={{ marginTop: 10, opacity: writing ? 1 : 0 }}
                             disabled={!writing}
@@ -133,7 +135,7 @@ export default function NFCSetupScreen() {
                 </Dialog>
             </Portal>
         </View>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
@@ -157,4 +159,4 @@ const styles = StyleSheet.create({
     writingContainer: {
         alignItems: 'center',
     },
-});
+})

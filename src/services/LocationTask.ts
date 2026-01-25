@@ -1,10 +1,10 @@
-import * as TaskManager from 'expo-task-manager';
-import * as Location from 'expo-location';
-import * as Notifications from 'expo-notifications';
-import { addEvent, getTodayEvents } from '../db/database';
-import { getFormattedTime, getFormattedDate } from '../utils/time';
+import * as TaskManager from 'expo-task-manager'
+import * as Location from 'expo-location'
+import * as Notifications from 'expo-notifications'
+import { addEvent, getTodayEvents } from '../db/database'
+import { getFormattedTime, getFormattedDate } from '../utils/time'
 
-export const LOCATION_TASK_NAME = 'background-geofence-task';
+export const LOCATION_TASK_NAME = 'background-geofence-task'
 
 // Configure notifications
 Notifications.setNotificationHandler({
@@ -14,29 +14,29 @@ Notifications.setNotificationHandler({
         shouldShowBanner: true,
         shouldShowList: true,
     }),
-});
+})
 
 TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
     if (error) {
-        console.error('Location task error:', error);
-        return;
+        console.error('Location task error:', error)
+        return
     }
     if (data) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { eventType } = data as any;
-        const now = new Date();
-        const dateStr = getFormattedDate(now);
-        const timeStr = getFormattedTime(now);
+        const { eventType } = data as any
+        const now = new Date()
+        const dateStr = getFormattedDate(now)
+        const timeStr = getFormattedTime(now)
 
-        const todayEvents = getTodayEvents(dateStr);
-        const isCheckedIn = todayEvents.length % 2 !== 0;
+        const todayEvents = getTodayEvents(dateStr)
+        const isCheckedIn = todayEvents.length % 2 !== 0
 
         if (eventType === Location.GeofencingEventType.Enter) {
-            console.log('Entered geofence');
+            console.log('Entered geofence')
 
             if (!isCheckedIn) {
                 try {
-                    addEvent(dateStr, timeStr, 'Auto check-in geofence');
+                    addEvent(dateStr, timeStr, 'Auto check-in geofence')
 
                     await Notifications.scheduleNotificationAsync({
                         content: {
@@ -44,19 +44,19 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
                             body: `Checked in at ${timeStr}`,
                         },
                         trigger: null, // Send immediately
-                    });
+                    })
                 } catch (err) {
-                    console.error('Failed to auto check-in:', err);
+                    console.error('Failed to auto check-in:', err)
                 }
             } else {
-                console.log('Already checked in, skipping auto check-in');
+                console.log('Already checked in, skipping auto check-in')
             }
         } else if (eventType === Location.GeofencingEventType.Exit) {
-            console.log('Exited geofence');
+            console.log('Exited geofence')
 
             if (isCheckedIn) {
                 try {
-                    addEvent(dateStr, timeStr, 'Auto check-out geofence');
+                    addEvent(dateStr, timeStr, 'Auto check-out geofence')
 
                     await Notifications.scheduleNotificationAsync({
                         content: {
@@ -64,13 +64,13 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
                             body: `Checked out at ${timeStr}`,
                         },
                         trigger: null,
-                    });
+                    })
                 } catch (err) {
-                    console.error('Failed to auto check-out:', err);
+                    console.error('Failed to auto check-out:', err)
                 }
             } else {
-                console.log('Already checked out, skipping auto check-out');
+                console.log('Already checked out, skipping auto check-out')
             }
         }
     }
-});
+})

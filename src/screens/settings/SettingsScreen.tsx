@@ -1,12 +1,12 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { List, useTheme } from 'react-native-paper';
-import { useTranslation } from 'react-i18next';
+import React from 'react'
+import { View, StyleSheet } from 'react-native'
+import { List, useTheme } from 'react-native-paper'
+import { useTranslation } from 'react-i18next'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function SettingsScreen({ navigation }: { navigation: any }) {
-    const theme = useTheme();
-    const { t } = useTranslation();
+    const theme = useTheme()
+    const { t } = useTranslation()
 
     return (
         <View
@@ -30,7 +30,7 @@ export default function SettingsScreen({ navigation }: { navigation: any }) {
                 />
             </List.Section>
         </View>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
@@ -38,4 +38,4 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingLeft: 16,
     },
-});
+})
