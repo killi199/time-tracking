@@ -8726,17 +8726,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-screens@npm:~4.16.0":
-  version: 4.16.0
-  resolution: "react-native-screens@npm:4.16.0"
+"react-native-screens@npm:~4.20.0":
+  version: 4.20.0
+  resolution: "react-native-screens@npm:4.20.0"
   dependencies:
     react-freeze: "npm:^1.0.0"
-    react-native-is-edge-to-edge: "npm:^1.2.1"
     warn-once: "npm:^0.1.0"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 10c0/8ec459ff52cbd317bfca598843a0010b4ca9070d05664f28d792594d8ceabb398b9d68abb578f40295e41f906308efe7ac7359046fba7aaf318a0d9d65446102
+  checksum: 10c0/f5d18bef4bee5b65470f76048dd3511d4ef18d1cf3566b6479a70a67e75c92aca3549342ee96c418e68997380dc562fbf4e63b5d411975c2265f106fecb242cd
   languageName: node
   linkType: hard
 
@@ -10030,7 +10029,7 @@ __metadata:
     react-native-paper-dates: "npm:^0.22.57"
     react-native-reanimated: "npm:~4.1.1"
     react-native-safe-area-context: "npm:~5.6.0"
-    react-native-screens: "npm:~4.16.0"
+    react-native-screens: "npm:~4.20.0"
     react-native-worklets: "npm:0.7.2"
     typescript: "npm:^5.9.3"
     typescript-eslint: "npm:^8.48.0"
