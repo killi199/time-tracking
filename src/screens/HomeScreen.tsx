@@ -469,6 +469,9 @@ export default function HomeScreen({
                 hours={pickerHours}
                 minutes={pickerMinutes}
                 locale={i18n.language}
+                cancelLabel={t('common.cancel')}
+                confirmLabel={t('common.confirm')}
+                label={t('addEntry.timeLabel')}
             />
 
             <DatePickerModal

@@ -49,6 +49,7 @@ export default {
                 'Please fill in required fields (Date, Start Time).',
             timeFormatError: 'Time must be in HH:MM format',
             saveError: 'Failed to save entry.',
+            timeLabel: 'Enter time',
         },
         history: {
             title: 'History',

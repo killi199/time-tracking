@@ -51,6 +51,7 @@ export default {
                 'Bitte füllen Sie die Pflichtfelder aus (Datum, Startzeit).',
             timeFormatError: 'Zeit muss im Format HH:MM sein',
             saveError: 'Eintrag konnte nicht gespeichert werden.',
+            timeLabel: 'Zeit eingeben',
         },
         history: {
             title: 'Verlauf',
