@@ -8202,9 +8202,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-paper@npm:5.14.5":
-  version: 5.14.5
-  resolution: "react-native-paper@npm:5.14.5"
+"react-native-paper@npm:5.15.0":
+  version: 5.15.0
+  resolution: "react-native-paper@npm:5.15.0"
   dependencies:
     "@callstack/react-theme-provider": "npm:^3.0.9"
     color: "npm:^3.1.2"
@@ -8213,7 +8213,7 @@ __metadata:
     react: "*"
     react-native: "*"
     react-native-safe-area-context: "*"
-  checksum: 10c0/acebe9b9ccdc7d9844114defb9f9e3da0930eba0f2ec3fd6c17636ef01bb20aee59d4c5e86c7624e64ac20b0abf336912a8d19c8eafa3df83266572b03e418cd
+  checksum: 10c0/8add9b730f26737422621289cc0d4be020236d190d8f5173c3dadef7ba413f2a7b7b2b173f4c33bbe2c66c8ad7d2477e412f5cf406fd948596657123684febce
   languageName: node
   linkType: hard
 
@@ -9450,7 +9450,7 @@ __metadata:
     react-native-gesture-handler: "npm:~2.28.0"
     react-native-maps: "npm:1.20.1"
     react-native-nfc-manager: "npm:3.17.2"
-    react-native-paper: "npm:5.14.5"
+    react-native-paper: "npm:5.15.0"
     react-native-paper-dates: "npm:0.23.3"
     react-native-reanimated: "npm:~4.1.1"
     react-native-safe-area-context: "npm:5.6.2"
