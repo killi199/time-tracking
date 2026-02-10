@@ -13,29 +13,11 @@ updates:
           default-days: 3
       ignore:
           - dependency-name: 'react-native'
-            update-types:
-                ['version-update:semver-minor', 'version-update:semver-major']
           - dependency-name: 'react'
-            update-types:
-                ['version-update:semver-minor', 'version-update:semver-major']
           - dependency-name: '@types/react'
-            update-types:
-                ['version-update:semver-minor', 'version-update:semver-major']
           - dependency-name: '@react-native-community/slider'
-            update-types:
-                ['version-update:semver-minor', 'version-update:semver-major']
           - dependency-name: 'react-native-gesture-handler'
-            update-types:
-                ['version-update:semver-minor', 'version-update:semver-major']
           - dependency-name: 'react-native-maps'
-            update-types:
-                ['version-update:semver-minor', 'version-update:semver-major']
           - dependency-name: 'react-native-reanimated'
-            update-types:
-                ['version-update:semver-minor', 'version-update:semver-major']
           - dependency-name: 'react-native-screens'
-            update-types:
-                ['version-update:semver-minor', 'version-update:semver-major']
           - dependency-name: 'react-native-worklets'
-            update-types:
-                ['version-update:semver-minor', 'version-update:semver-major']
