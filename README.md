@@ -70,15 +70,6 @@ Use the app in your preferred language.
     yarn install
     ```
 
-2.  **Environment Variables**:
-    You must create an `.env` file in the root directory of the project.
-    Add the following variable with your Google Maps API Key:
-    ```
-    EXPO_PUBLIC_GOOGLE_MAPS_API_KEY=your_api_key_here
-    ```
-    You can obtain an API key from the Google Cloud Console. Make sure to enable the **Maps SDK for Android**.
-    [Get an API Key for Maps SDK for Android](https://developers.google.com/maps/documentation/android-api/?hl=en_US)
-
 ## Running the App
 
 ### Using Expo Go
