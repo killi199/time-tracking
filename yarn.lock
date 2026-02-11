@@ -2352,6 +2352,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@maplibre/maplibre-react-native@npm:10.4.2":
+  version: 10.4.2
+  resolution: "@maplibre/maplibre-react-native@npm:10.4.2"
+  dependencies:
+    "@turf/distance": "npm:^7.1.0"
+    "@turf/helpers": "npm:^7.1.0"
+    "@turf/length": "npm:^7.1.0"
+    "@turf/nearest-point-on-line": "npm:^7.1.0"
+    debounce: "npm:^2.2.0"
+  peerDependencies:
+    "@expo/config-plugins": ">=7"
+    "@types/geojson": ^7946.0.0
+    "@types/react": ">=16.6.1"
+    react: ">=16.6.1"
+    react-native: ">=0.59.9"
+  peerDependenciesMeta:
+    "@expo/config-plugins":
+      optional: true
+    "@types/geojson":
+      optional: true
+    "@types/react":
+      optional: true
+  checksum: 10c0/ac24884a218aaa5a6b08351913a313b373e1365e4ab50d0320ac7d2ce4b34c33617e1b98fa66011b3b5435358f74c64079c792b400e054ff26a196c0a91361c9
+  languageName: node
+  linkType: hard
+
 "@material/material-color-utilities@npm:^0.3.0":
   version: 0.3.0
   resolution: "@material/material-color-utilities@npm:0.3.0"
@@ -2903,6 +2929,77 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@turf/distance@npm:7.3.4, @turf/distance@npm:^7.1.0":
+  version: 7.3.4
+  resolution: "@turf/distance@npm:7.3.4"
+  dependencies:
+    "@turf/helpers": "npm:7.3.4"
+    "@turf/invariant": "npm:7.3.4"
+    "@types/geojson": "npm:^7946.0.10"
+    tslib: "npm:^2.8.1"
+  checksum: 10c0/cb91c32ff6fb41b1e3487537dcade88c1366b7acdc6c9af19732fffb9a463d75be1576aa51783802a03bbb4a36f2d3ba2003cd01a418b74e2aee2ee1c7b49d21
+  languageName: node
+  linkType: hard
+
+"@turf/helpers@npm:7.3.4, @turf/helpers@npm:^7.1.0":
+  version: 7.3.4
+  resolution: "@turf/helpers@npm:7.3.4"
+  dependencies:
+    "@types/geojson": "npm:^7946.0.10"
+    tslib: "npm:^2.8.1"
+  checksum: 10c0/e10cc2e9d4e25c46e79310847a9b1a3c8613558defaa8bcc0b2e8622d106c875e4e4c7895942bc89687ab72b12bdce0835cac10362118f8eeb3c0939042a5ccd
+  languageName: node
+  linkType: hard
+
+"@turf/invariant@npm:7.3.4":
+  version: 7.3.4
+  resolution: "@turf/invariant@npm:7.3.4"
+  dependencies:
+    "@turf/helpers": "npm:7.3.4"
+    "@types/geojson": "npm:^7946.0.10"
+    tslib: "npm:^2.8.1"
+  checksum: 10c0/8c5c420981d42304ebf32a984892b15150c6dcafabacefd165a5950eaf16024551272071426bfa23e5198b03c7c9495a2547ea9ee455ce3ff77d6449f51df1b3
+  languageName: node
+  linkType: hard
+
+"@turf/length@npm:^7.1.0":
+  version: 7.3.4
+  resolution: "@turf/length@npm:7.3.4"
+  dependencies:
+    "@turf/distance": "npm:7.3.4"
+    "@turf/helpers": "npm:7.3.4"
+    "@turf/meta": "npm:7.3.4"
+    "@types/geojson": "npm:^7946.0.10"
+    tslib: "npm:^2.8.1"
+  checksum: 10c0/f3428c7c0d08736802b781c003d38b3e847dd579bdb573eb9773ac617cef81da5f5d8d3e219a8eadeff57d347ff49376298ed048f20eb188fe7df09eca1192de
+  languageName: node
+  linkType: hard
+
+"@turf/meta@npm:7.3.4":
+  version: 7.3.4
+  resolution: "@turf/meta@npm:7.3.4"
+  dependencies:
+    "@turf/helpers": "npm:7.3.4"
+    "@types/geojson": "npm:^7946.0.10"
+    tslib: "npm:^2.8.1"
+  checksum: 10c0/756bb9e227323fbd9262fbe8323962f0d82852a6452e9e4db1ac5f6947081a450b9389a71b15f109d1d0621cc1b45cc1b68ee4b6c8eaf7e01442ef5cb2dee71b
+  languageName: node
+  linkType: hard
+
+"@turf/nearest-point-on-line@npm:^7.1.0":
+  version: 7.3.4
+  resolution: "@turf/nearest-point-on-line@npm:7.3.4"
+  dependencies:
+    "@turf/distance": "npm:7.3.4"
+    "@turf/helpers": "npm:7.3.4"
+    "@turf/invariant": "npm:7.3.4"
+    "@turf/meta": "npm:7.3.4"
+    "@types/geojson": "npm:^7946.0.10"
+    tslib: "npm:^2.8.1"
+  checksum: 10c0/799a3d61ffd7d3130e594e624c0e6ec0fa222b50a6bc02ece07d44a91c232583bd74abbe3a67f5a4e433902436f0ff144bf0d157539bd4f4f0f3159b2bc58361
+  languageName: node
+  linkType: hard
+
 "@types/babel__core@npm:7.20.5, @types/babel__core@npm:^7.1.14":
   version: 7.20.5
   resolution: "@types/babel__core@npm:7.20.5"
@@ -2968,7 +3065,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/geojson@npm:^7946.0.13":
+"@types/geojson@npm:^7946.0.10":
   version: 7946.0.16
   resolution: "@types/geojson@npm:7946.0.16"
   checksum: 10c0/1ff24a288bd5860b766b073ead337d31d73bdc715e5b50a2cee5cb0af57a1ed02cc04ef295f5fa68dc40fe3e4f104dd31282b2b818a5ba3231bc1001ba084e3c
@@ -3237,7 +3334,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitest/eslint-plugin@npm:^1.6.6":
+"@vitest/eslint-plugin@npm:1.6.6":
   version: 1.6.6
   resolution: "@vitest/eslint-plugin@npm:1.6.6"
   dependencies:
@@ -4430,6 +4527,13 @@ __metadata:
     es-errors: "npm:^1.3.0"
     is-data-view: "npm:^1.0.1"
   checksum: 10c0/fa7aa40078025b7810dcffc16df02c480573b7b53ef1205aa6a61533011005c1890e5ba17018c692ce7c900212b547262d33279fde801ad9843edc0863bf78c4
+  languageName: node
+  linkType: hard
+
+"debounce@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "debounce@npm:2.2.0"
+  checksum: 10c0/684536fe9a04c9eea46cf02f119f69aa4071813ba25b9b43370e1503ea60b34fd38d694c7145fa2be504f9d40e7e39354cb9ed155c70954a0eefa391aefe271c
   languageName: node
   linkType: hard
 
@@ -8220,22 +8324,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-maps@npm:1.20.1":
-  version: 1.20.1
-  resolution: "react-native-maps@npm:1.20.1"
-  dependencies:
-    "@types/geojson": "npm:^7946.0.13"
-  peerDependencies:
-    react: ">= 17.0.1"
-    react-native: ">= 0.64.3"
-    react-native-web: ">= 0.11"
-  peerDependenciesMeta:
-    react-native-web:
-      optional: true
-  checksum: 10c0/59c8d5600feb907df179c675b7185ef3bf205bdc85391c7ef530bb17d56d44d03ffd9ab3ae08dcc00cfabe9b14e37041327c7446114104b141efb2c8d4c3e797
-  languageName: node
-  linkType: hard
-
 "react-native-nfc-manager@npm:3.17.2":
   version: 3.17.2
   resolution: "react-native-nfc-manager@npm:3.17.2"
@@ -9507,6 +9595,7 @@ __metadata:
   dependencies:
     "@babel/core": "npm:7.29.0"
     "@eslint/js": "npm:9.39.2"
+    "@maplibre/maplibre-react-native": "npm:10.4.2"
     "@pchmn/expo-material3-theme": "npm:1.4.0"
     "@react-native-community/slider": "npm:5.0.1"
     "@react-navigation/bottom-tabs": "npm:7.12.0"
@@ -9516,7 +9605,7 @@ __metadata:
     "@types/babel__core": "npm:7.20.5"
     "@types/papaparse": "npm:5.5.2"
     "@types/react": "npm:~19.1.17"
-    "@vitest/eslint-plugin": "npm:^1.6.6"
+    "@vitest/eslint-plugin": "npm:1.6.6"
     eslint: "npm:9.39.2"
     eslint-config-prettier: "npm:10.1.8"
     eslint-plugin-react: "npm:7.37.5"
@@ -9540,7 +9629,6 @@ __metadata:
     react-i18next: "npm:16.5.4"
     react-native: "npm:0.81.5"
     react-native-gesture-handler: "npm:~2.28.0"
-    react-native-maps: "npm:1.20.1"
     react-native-nfc-manager: "npm:3.17.2"
     react-native-paper: "npm:5.15.0"
     react-native-paper-dates: "npm:0.23.3"
@@ -9621,6 +9709,13 @@ __metadata:
   version: 0.1.13
   resolution: "ts-interface-checker@npm:0.1.13"
   checksum: 10c0/232509f1b84192d07b81d1e9b9677088e590ac1303436da1e92b296e9be8e31ea042e3e1fd3d29b1742ad2c959e95afe30f63117b8f1bc3a3850070a5142fea7
+  languageName: node
+  linkType: hard
+
+"tslib@npm:^2.8.1":
+  version: 2.8.1
+  resolution: "tslib@npm:2.8.1"
+  checksum: 10c0/9c4759110a19c53f992d9aae23aac5ced636e99887b51b9e61def52611732872ff7668757d4e4c61f19691e36f4da981cd9485e869b4a7408d689f6bf1f14e62
   languageName: node
   linkType: hard
 

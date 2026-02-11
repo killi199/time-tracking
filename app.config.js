@@ -24,11 +24,6 @@ module.exports = {
             predictiveBackGestureEnabled: false,
             package: 'de.killi199.timetracking',
             permissions: ['android.permission.NFC'],
-            config: {
-                googleMaps: {
-                    apiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY,
-                },
-            },
         },
         plugins: [
             './plugins/withNfcIntent',
@@ -39,6 +34,7 @@ module.exports = {
                     isAndroidBackgroundLocationEnabled: true,
                 },
             ],
+            "@maplibre/maplibre-react-native",
         ],
     },
 }
