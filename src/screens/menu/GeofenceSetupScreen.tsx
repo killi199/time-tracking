@@ -12,7 +12,7 @@ import {
     FAB,
     Icon,
 } from 'react-native-paper'
-import MapLibreGL, {
+import {
     Camera,
     MapView,
     PointAnnotation,
@@ -20,6 +20,7 @@ import MapLibreGL, {
     FillLayer,
     LineLayer,
     UserLocation,
+    setAccessToken,
 } from '@maplibre/maplibre-react-native'
 import * as Location from 'expo-location'
 import { useTranslation } from 'react-i18next'
@@ -28,7 +29,7 @@ import { getSetting, setSetting } from '../../db/database'
 import { LOCATION_TASK_NAME } from '../../services/LocationTask'
 
 // Set access token to null since we are using OpenFreeMap (or similar) which handles its own keys or doesn't need one
-MapLibreGL.setAccessToken(null)
+setAccessToken(null)
 
 const { width, height } = Dimensions.get('window')
 
