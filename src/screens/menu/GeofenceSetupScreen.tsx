@@ -317,7 +317,11 @@ export default function GeofenceSetupScreen() {
             <MapView
                 ref={mapRef}
                 style={styles.map}
-                mapStyle="https://tiles.openfreemap.org/styles/bright"
+                mapStyle={
+                    theme.dark
+                        ? 'https://tiles.openfreemap.org/styles/dark'
+                        : 'https://tiles.openfreemap.org/styles/bright'
+                }
                 onLongPress={onMapLongPress}
                 logoEnabled={false}
                 attributionEnabled={false}
