@@ -2291,9 +2291,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-navigation/bottom-tabs@npm:7.12.0":
-  version: 7.12.0
-  resolution: "@react-navigation/bottom-tabs@npm:7.12.0"
+"@react-navigation/bottom-tabs@npm:7.13.0":
+  version: 7.13.0
+  resolution: "@react-navigation/bottom-tabs@npm:7.13.0"
   dependencies:
     "@react-navigation/elements": "npm:^2.9.5"
     color: "npm:^4.2.3"
@@ -2304,7 +2304,7 @@ __metadata:
     react-native: "*"
     react-native-safe-area-context: ">= 4.0.0"
     react-native-screens: ">= 4.0.0"
-  checksum: 10c0/88cf7121f6489392174cd0594e7de52f00dd6e512bc805bc1ccd0fd51f5334bdb74d983590d372c0cee34efb260c69272b252abf9a1d4867bdd3436fccfb2164
+  checksum: 10c0/d64b53900885acee12a969e629d92e710fdf284fa6d1eb3cd1cb7bda539192a4217d809762cec70cca55563495c660aea30f33476176b2207061ec40a2784ec8
   languageName: node
   linkType: hard
 
@@ -9285,7 +9285,7 @@ __metadata:
     "@maplibre/maplibre-react-native": "npm:10.4.2"
     "@pchmn/expo-material3-theme": "npm:1.4.0"
     "@react-native-community/slider": "npm:5.0.1"
-    "@react-navigation/bottom-tabs": "npm:7.12.0"
+    "@react-navigation/bottom-tabs": "npm:7.13.0"
     "@react-navigation/drawer": "npm:7.8.0"
     "@react-navigation/native": "npm:7.1.28"
     "@react-navigation/native-stack": "npm:7.12.0"
