@@ -1,14 +1,19 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState, ComponentProps } from 'react'
 import { useColorScheme } from 'react-native'
 import {
     NavigationContainer,
     DarkTheme as NavDarkTheme,
     DefaultTheme as NavDefaultTheme,
-    DrawerActions, // Import DrawerActions
+    DrawerActions,
+    ParamListBase,
+    RouteProp,
 } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { createDrawerNavigator } from '@react-navigation/drawer' // Import Drawer
+import {
+    createDrawerNavigator,
+    DrawerNavigationProp,
+} from '@react-navigation/drawer'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import {
     useTheme,
@@ -23,11 +28,7 @@ import { useTranslation } from 'react-i18next'
 import { initDatabase } from './db/database'
 import { ThemeProvider, useAppTheme } from './context/ThemeContext'
 import initI18n from './i18n/i18n'
-import { enableScreens } from 'react-native-screens'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
-
-enableScreens(true)
-
 import HomeScreen from './screens/HomeScreen'
 import SettingsScreen from './screens/settings/SettingsScreen'
 import ThemeSettingsScreen from './screens/settings/ThemeSettingsScreen'
@@ -42,13 +43,24 @@ const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator()
 const Drawer = createDrawerNavigator() // Create Drawer
 
-function MainTabs({ navigation }: { navigation: any }) {
+function MainTabs({
+    navigation,
+}: {
+    readonly navigation: DrawerNavigationProp<ParamListBase>
+}) {
     const theme = useTheme()
     const { t } = useTranslation()
 
     const renderIcon = useCallback(
-        ({ route, color }: { route: any; color: string }) => {
-            let iconName = 'help'
+        ({
+            route,
+            color,
+        }: {
+            route: RouteProp<ParamListBase>
+            color: string
+        }) => {
+            let iconName: ComponentProps<typeof MaterialCommunityIcons>['name'] =
+                'help'
             if (route.name === 'Day') {
                 iconName = 'calendar-today'
             } else if (route.name === 'Week') {
@@ -59,7 +71,7 @@ function MainTabs({ navigation }: { navigation: any }) {
 
             return (
                 <MaterialCommunityIcons
-                    name={iconName as any}
+                    name={iconName}
                     size={24}
                     color={color}
                 />
@@ -81,14 +93,13 @@ function MainTabs({ navigation }: { navigation: any }) {
                     renderIcon={renderIcon}
                     getLabelText={({ route }) => {
                         const { options } = descriptors[route.key]
-                        const label =
-                            typeof options.tabBarLabel === 'string'
-                                ? options.tabBarLabel
-                                : typeof options.title === 'string'
-                                  ? options.title
-                                  : route.name
 
-                        return label
+                        if (typeof options.tabBarLabel === 'string') {
+                            return options.tabBarLabel
+                        }
+                        return typeof options.title === 'string'
+                            ? options.title
+                            : route.name
                     }}
                 />
             )}
@@ -96,9 +107,9 @@ function MainTabs({ navigation }: { navigation: any }) {
                 headerLeft: () => (
                     <IconButton
                         icon="menu"
-                        onPress={() =>
+                        onPress={() => {
                             navigation.dispatch(DrawerActions.openDrawer())
-                        }
+                        }}
                     />
                 ),
                 headerStyle: { backgroundColor: theme.colors.background },
@@ -163,7 +174,7 @@ function NavigationWrapper() {
             materialLight: paperTheme,
             materialDark: paperTheme,
         })
-        return (paperTheme.dark ? DarkTheme : LightTheme) as any
+        return paperTheme.dark ? DarkTheme : LightTheme
     }, [paperTheme])
 
     const isDark =
@@ -231,7 +242,7 @@ export default function App() {
                 setIsDbReady(true)
             }
         }
-        init()
+        void init()
     }, [])
 
     // NFC Handling
