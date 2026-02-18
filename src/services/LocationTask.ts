@@ -22,7 +22,6 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
         return
     }
     if (data) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const { eventType } = data as any
         const now = new Date()
         const dateStr = getFormattedDate(now)
