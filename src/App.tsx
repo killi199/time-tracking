@@ -43,11 +43,11 @@ const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator()
 const Drawer = createDrawerNavigator() // Create Drawer
 
-function MainTabs({
-    navigation,
-}: {
+interface AppProps {
     readonly navigation: DrawerNavigationProp<ParamListBase>
-}) {
+}
+
+function MainTabs({ navigation }: AppProps) {
     const theme = useTheme()
     const { t } = useTranslation()
 
