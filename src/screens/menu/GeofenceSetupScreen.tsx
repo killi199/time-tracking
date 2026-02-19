@@ -33,9 +33,17 @@ import { useTranslation } from 'react-i18next'
 import Slider from '@react-native-community/slider'
 import { getSetting, setSetting } from '../../db/database'
 import { LOCATION_TASK_NAME } from '../../services/LocationTask'
+import type { Feature } from 'geojson'
 
 // Set access token to null since we are using OpenFreeMap (or similar) which handles its own keys or doesn't need one
-setAccessToken(null)
+void setAccessToken(null)
+
+interface GeofenceConfig {
+    isEnabled: boolean
+    latitude?: number
+    longitude?: number
+    radius?: number
+}
 
 const { width, height } = Dimensions.get('window')
 
@@ -47,7 +55,6 @@ const createGeoJSONCircle = (
     radiusInMeters: number,
     points: number = 64,
 ) => {
-    if (!center) return null
     const [longitude, latitude] = center
     const km = radiusInMeters / 1000
     const ret = []
@@ -87,8 +94,8 @@ export default function GeofenceSetupScreen() {
         DEFAULT_CENTER_COORDINATE,
     )
     const [zoomLevel, setZoomLevel] = useState(DEFAULT_ZOOM_LEVEL)
-    const cameraRef = useRef<React.ElementRef<typeof Camera>>(null)
-    const mapRef = useRef<React.ElementRef<typeof MapView>>(null)
+    const cameraRef = useRef<React.ComponentRef<typeof Camera>>(null)
+    const mapRef = useRef<React.ComponentRef<typeof MapView>>(null)
 
     const [marker, setMarker] = useState<{
         latitude: number
@@ -121,14 +128,14 @@ export default function GeofenceSetupScreen() {
             await checkPermissions(hasSavedLocation)
             setLoading(false)
         }
-        init()
+        void init()
     }, [])
 
     function loadSettings(): boolean {
         try {
             const configStr = getSetting('geofence_config')
             if (configStr) {
-                const config = JSON.parse(configStr)
+                const config = JSON.parse(configStr) as GeofenceConfig
                 setIsEnabled(config.isEnabled)
                 if (config.latitude && config.longitude) {
                     setMarker({
@@ -152,10 +159,10 @@ export default function GeofenceSetupScreen() {
     async function checkPermissions(hasSavedLocation: boolean) {
         const { status: fgStatus } =
             await Location.getForegroundPermissionsAsync()
-        if (fgStatus !== 'granted') {
+        if (fgStatus !== Location.PermissionStatus.GRANTED) {
             const { status } =
                 await Location.requestForegroundPermissionsAsync()
-            if (status !== 'granted') {
+            if (status !== Location.PermissionStatus.GRANTED) {
                 setPermissionStatus('denied')
                 return
             }
@@ -163,8 +170,8 @@ export default function GeofenceSetupScreen() {
 
         const { status: bgStatus } =
             await Location.getBackgroundPermissionsAsync()
-        if (bgStatus !== 'granted') {
-            setPermissionStatus('granted')
+        if (bgStatus !== Location.PermissionStatus.GRANTED) {
+            setPermissionStatus('denied')
         } else {
             setPermissionStatus('granted')
         }
@@ -194,7 +201,7 @@ export default function GeofenceSetupScreen() {
             // Turning ON
             const { status: bgStatus } =
                 await Location.requestBackgroundPermissionsAsync()
-            if (bgStatus !== 'granted') {
+            if (bgStatus !== Location.PermissionStatus.GRANTED) {
                 showDialog(
                     t('common.error'),
                     t('geofence.permissionBackgroundDenied'),
@@ -243,23 +250,25 @@ export default function GeofenceSetupScreen() {
         setSetting('geofence_config', JSON.stringify(config))
     }
 
-    function onMapLongPress(feature: any) {
-        const coords = feature.geometry.coordinates
-        const newLatitude = coords[1]
-        const newLongitude = coords[0]
+    function onMapLongPress(feature: Feature) {
+        if (feature.geometry.type === 'Point') {
+            const coords = feature.geometry.coordinates
+            const newLatitude = coords[1]
+            const newLongitude = coords[0]
 
-        setMarker({ latitude: newLatitude, longitude: newLongitude })
+            setMarker({ latitude: newLatitude, longitude: newLongitude })
 
-        if (isEnabled) {
-            showDialog(t('common.info'), t('geofence.updateInstruction'))
-        } else {
-            const config = {
-                isEnabled: false,
-                latitude: newLatitude,
-                longitude: newLongitude,
-                radius: radius,
+            if (isEnabled) {
+                showDialog(t('common.info'), t('geofence.updateInstruction'))
+            } else {
+                const config = {
+                    isEnabled: false,
+                    latitude: newLatitude,
+                    longitude: newLongitude,
+                    radius: radius,
+                }
+                setSetting('geofence_config', JSON.stringify(config))
             }
-            setSetting('geofence_config', JSON.stringify(config))
         }
     }
 
@@ -390,25 +399,27 @@ export default function GeofenceSetupScreen() {
 
             <View style={styles.attributionContainer}>
                 <TouchableOpacity
-                    onPress={() => Linking.openURL('https://openfreemap.org/')}
+                    onPress={() =>
+                        void Linking.openURL('https://openfreemap.org/')
+                    }
                 >
                     <Text style={styles.attributionText}>OpenFreeMap</Text>
                 </TouchableOpacity>
                 <Text style={styles.attributionText}> © </Text>
                 <TouchableOpacity
                     onPress={() =>
-                        Linking.openURL('https://www.openmaptiles.org/')
+                        void Linking.openURL('https://www.openmaptiles.org/')
                     }
                 >
                     <Text style={styles.attributionText}>OpenMapTiles</Text>
                 </TouchableOpacity>
                 <Text style={styles.attributionText}> Data from </Text>
                 <TouchableOpacity
-                    onPress={() =>
-                        Linking.openURL(
+                    onPress={() => {
+                        void Linking.openURL(
                             'https://www.openstreetmap.org/copyright',
                         )
-                    }
+                    }}
                 >
                     <Text style={styles.attributionText}>OpenStreetMap</Text>
                 </TouchableOpacity>
@@ -423,7 +434,7 @@ export default function GeofenceSetupScreen() {
                         backgroundColor: theme.colors.surface,
                     },
                 ]}
-                onPress={centerMapOnUser}
+                onPress={() => void centerMapOnUser()}
                 loading={isLocating}
             />
 
@@ -455,7 +466,7 @@ export default function GeofenceSetupScreen() {
                     <Text>{t('geofence.enableAutoCheckIn')}</Text>
                     <Switch
                         value={isEnabled}
-                        onValueChange={handleEnableToggle}
+                        onValueChange={() => void handleEnableToggle()}
                     />
                 </View>
 
@@ -476,15 +487,6 @@ export default function GeofenceSetupScreen() {
                 {!marker && (
                     <HelperText type="info" visible={true}>
                         {t('geofence.instruction')}
-                    </HelperText>
-                )}
-                {marker && isEnabled && (
-                    <HelperText
-                        type="info"
-                        visible={true}
-                        style={{ color: theme.colors.primary }}
-                    >
-                        {t('geofence.active')}
                     </HelperText>
                 )}
             </View>
