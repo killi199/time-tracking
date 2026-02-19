@@ -30,7 +30,7 @@ export default function WeekView({
     onEditEvent,
     onDeleteEvent,
     refreshTrigger,
-}: WeekViewProps) {
+}: Readonly<WeekViewProps>) {
     const [events, setEvents] = useState<ProcessedEvent[]>([])
     const [weekWorked, setWeekWorked] = useState('00:00')
     const [weekBalance, setWeekBalance] = useState('+00:00')
@@ -72,16 +72,18 @@ export default function WeekView({
             const workedDays = new Set<string>()
 
             // Group events by date
-            const eventsByDate: { [key: string]: TimeEvent[] } = {}
+            const eventsByDate: { [key: string]: TimeEvent[] | undefined } = {}
             currentEvents.forEach((event) => {
                 if (!eventsByDate[event.date]) {
                     eventsByDate[event.date] = []
                 }
-                eventsByDate[event.date].push(event)
+                eventsByDate[event.date]?.push(event)
             })
 
             Object.keys(eventsByDate).forEach((d) => {
                 const dayEvents = eventsByDate[d]
+                if (!dayEvents) return
+
                 dayEvents.sort((a, b) => a.time.localeCompare(b.time))
 
                 let dayMinutes = 0
@@ -200,7 +202,12 @@ export default function WeekView({
     }, [date, calculateMetrics, processEvents, getWeekRange])
 
     useEffect(() => {
-        loadData()
+        const timer = setTimeout(() => {
+            loadData()
+        }, 0)
+        return () => {
+            clearTimeout(timer)
+        }
     }, [loadData, refreshTrigger])
 
     useEffect(() => {
@@ -219,7 +226,9 @@ export default function WeekView({
             calculateMetrics(events, start, end)
         }, 60000)
 
-        return () => clearInterval(interval)
+        return () => {
+            clearInterval(interval)
+        }
     }, [events, calculateMetrics, date, getWeekRange])
 
     const renderItem = useCallback(
