@@ -25,7 +25,11 @@ import {
 } from 'react-native-paper'
 import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates'
 import { en, de, registerTranslation } from 'react-native-paper-dates'
-import { useFocusEffect } from '@react-navigation/native'
+import {
+    useFocusEffect,
+    NavigationProp,
+    RouteProp,
+} from '@react-navigation/native'
 import { addEvent, updateEvent, deleteEvent } from '../db/database'
 import { TimeEvent } from '../types'
 import { useTranslation } from 'react-i18next'
@@ -53,13 +57,20 @@ const getWeekRangeData = (dateStr: string) => {
     return { start: first, end: last }
 }
 
-export default function HomeScreen({
-    navigation,
-    route,
-}: {
-    navigation: any
-    route: any
-}) {
+type HomeRouteParams = {
+    viewMode?: 'day' | 'week' | 'month'
+}
+
+type LocalParamList = {
+    [key: string]: HomeRouteParams | undefined
+}
+
+interface HomeScreenProps {
+    readonly navigation: NavigationProp<LocalParamList>
+    readonly route: RouteProp<LocalParamList, string>
+}
+
+export default function HomeScreen({ navigation, route }: HomeScreenProps) {
     const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day')
     const [currentDate, setCurrentDate] = useState<string>(
         getFormattedDate(new Date()),
@@ -248,7 +259,7 @@ export default function HomeScreen({
     }
 
     const handleConfirm = () => {
-        const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
+        const timeRegex = /^([0-1]?\d|2[0-3]):[0-5]\d$/
         if (!timeRegex.test(dialogTime)) {
             alert(t('dialog.invalidTime'))
             return
@@ -428,11 +439,15 @@ export default function HomeScreen({
                 <View style={styles.dateNav}>
                     <IconButton
                         icon="chevron-left"
-                        onPress={() => changeDate(-1)}
+                        onPress={() => {
+                            changeDate(-1)
+                        }}
                     />
                     <TouchableOpacity
                         style={styles.dateTouchable}
-                        onPress={() => setDatePickerVisible(true)}
+                        onPress={() => {
+                            setDatePickerVisible(true)
+                        }}
                     >
                         <Text variant="titleLarge" style={styles.dateText}>
                             {formattedDate}
@@ -440,7 +455,9 @@ export default function HomeScreen({
                     </TouchableOpacity>
                     <IconButton
                         icon="chevron-right"
-                        onPress={() => changeDate(1)}
+                        onPress={() => {
+                            changeDate(1)
+                        }}
                     />
                 </View>
                 <Button
@@ -484,29 +501,37 @@ export default function HomeScreen({
                 startWeekOnMonday
             />
 
-            {viewMode === 'day' ? (
-                <DayView
-                    date={currentDate}
-                    onEditEvent={showEditDialog}
-                    onDeleteEvent={showDeleteDialog}
-                    onAddEvent={handleAddEvent}
-                    refreshTrigger={refreshTrigger}
-                />
-            ) : viewMode === 'week' ? (
-                <WeekView
-                    date={currentDate}
-                    onEditEvent={showEditDialog}
-                    onDeleteEvent={showDeleteDialog}
-                    refreshTrigger={refreshTrigger}
-                />
-            ) : (
-                <MonthView
-                    month={currentMonth}
-                    onEditEvent={showEditDialog}
-                    onDeleteEvent={showDeleteDialog}
-                    refreshTrigger={refreshTrigger}
-                />
-            )}
+            {(() => {
+                if (viewMode === 'day') {
+                    return (
+                        <DayView
+                            date={currentDate}
+                            onEditEvent={showEditDialog}
+                            onDeleteEvent={showDeleteDialog}
+                            onAddEvent={handleAddEvent}
+                            refreshTrigger={refreshTrigger}
+                        />
+                    )
+                } else if (viewMode === 'week') {
+                    return (
+                        <WeekView
+                            date={currentDate}
+                            onEditEvent={showEditDialog}
+                            onDeleteEvent={showDeleteDialog}
+                            refreshTrigger={refreshTrigger}
+                        />
+                    )
+                } else {
+                    return (
+                        <MonthView
+                            month={currentMonth}
+                            onEditEvent={showEditDialog}
+                            onDeleteEvent={showDeleteDialog}
+                            refreshTrigger={refreshTrigger}
+                        />
+                    )
+                }
+            })()}
 
             <Portal>
                 <Dialog visible={visible} onDismiss={hideDialog}>
@@ -565,14 +590,16 @@ export default function HomeScreen({
                             onChangeText={setDialogNote}
                             mode="outlined"
                             returnKeyType="done"
-                            onSubmitEditing={() => Keyboard.dismiss()}
+                            onSubmitEditing={() => {
+                                Keyboard.dismiss()
+                            }}
                         />
                         <Checkbox.Item
                             label={t('addEntry.lateEntryLabel')}
                             status={dialogIsLateEntry ? 'checked' : 'unchecked'}
-                            onPress={() =>
+                            onPress={() => {
                                 setDialogIsLateEntry(!dialogIsLateEntry)
-                            }
+                            }}
                         />
                     </Dialog.Content>
                     <Dialog.Actions>
