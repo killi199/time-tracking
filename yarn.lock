@@ -2326,13 +2326,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-navigation/drawer@npm:7.8.0":
-  version: 7.8.0
-  resolution: "@react-navigation/drawer@npm:7.8.0"
+"@react-navigation/drawer@npm:7.8.1":
+  version: 7.8.1
+  resolution: "@react-navigation/drawer@npm:7.8.1"
   dependencies:
     "@react-navigation/elements": "npm:^2.9.5"
     color: "npm:^4.2.3"
-    react-native-drawer-layout: "npm:^4.2.1"
+    react-native-drawer-layout: "npm:^4.2.2"
     use-latest-callback: "npm:^0.2.4"
   peerDependencies:
     "@react-navigation/native": ^7.1.28
@@ -2342,7 +2342,7 @@ __metadata:
     react-native-reanimated: ">= 2.0.0"
     react-native-safe-area-context: ">= 4.0.0"
     react-native-screens: ">= 4.0.0"
-  checksum: 10c0/b1c7455769460a8dfa17d3d9e04ed98601a7392f38123b606c9c92a4d78824bee3983fae585c152f8ed1f134ac7a9239b529d249c90914f917407968fb6d80aa
+  checksum: 10c0/ae5ecee70949d3beaadbd33898a46e01a5f3b98f74450e44e77b87549c50d9b6502ecbbd9d66c18db0d6894d0ca041ab5d2144553b5edf3925069448dfe5e30e
   languageName: node
   linkType: hard
 
@@ -3021,9 +3021,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitest/eslint-plugin@npm:1.6.7":
-  version: 1.6.7
-  resolution: "@vitest/eslint-plugin@npm:1.6.7"
+"@vitest/eslint-plugin@npm:1.6.9":
+  version: 1.6.9
+  resolution: "@vitest/eslint-plugin@npm:1.6.9"
   dependencies:
     "@typescript-eslint/scope-manager": "npm:^8.55.0"
     "@typescript-eslint/utils": "npm:^8.55.0"
@@ -3036,7 +3036,7 @@ __metadata:
       optional: true
     vitest:
       optional: true
-  checksum: 10c0/8dcfa507da5cf2a63826950770ff83426047560e713dedad25c92a6afcf32564993d2053d143d4accff7b812ac5f3d5159d6aeb0caf12248001e5e11e30fd83b
+  checksum: 10c0/37325e6e50c812fba52477683a8c46fe5a98d2ef441d108736309236889850af466e56af0ec625af0df036cb841005cc5c916266319453c316e661b3ce539a10
   languageName: node
   linkType: hard
 
@@ -5798,9 +5798,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:25.8.7":
-  version: 25.8.7
-  resolution: "i18next@npm:25.8.7"
+"i18next@npm:25.8.8":
+  version: 25.8.8
+  resolution: "i18next@npm:25.8.8"
   dependencies:
     "@babel/runtime": "npm:^7.28.4"
   peerDependencies:
@@ -5808,7 +5808,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/dfb476d1eef4cb8ec2ff9e2d7bdbf54bf3ba2f3cbf1f3a33bb751d66cb116b0436f81189e5e554fb83ffdb33b8916ca5a98798f45db7df7b4bb3d8a163dfcf29
+  checksum: 10c0/137f3fe87cd021396f1a7e02909eca43a7f533799a1ad3be5ff70561ab27c0e568871bf78f7703588f52886e9e6e58aad563a8e0a76ac1a9611d290ddd9ee2e0
   languageName: node
   linkType: hard
 
@@ -7972,9 +7972,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-drawer-layout@npm:^4.2.1":
-  version: 4.2.1
-  resolution: "react-native-drawer-layout@npm:4.2.1"
+"react-native-drawer-layout@npm:^4.2.2":
+  version: 4.2.2
+  resolution: "react-native-drawer-layout@npm:4.2.2"
   dependencies:
     color: "npm:^4.2.3"
     use-latest-callback: "npm:^0.2.4"
@@ -7983,7 +7983,7 @@ __metadata:
     react-native: "*"
     react-native-gesture-handler: ">= 2.0.0"
     react-native-reanimated: ">= 2.0.0"
-  checksum: 10c0/156960cf9947db0628e4ae5f4ba39c85c4fd75825326090eb9a3051aec94bd0b429e6f90e5983e3da64fe124ef41887e344cf08e5f40a27a2d6a81e0ebeec3b2
+  checksum: 10c0/bee3c0c4f01101d6e71ce4e91f3b8910af85bdf08abf6699501f7f09b160be1b1c422f63d45c3f15ba750da59e889f1ea70bdbb72dbd559ad3e11aee45332abf
   languageName: node
   linkType: hard
 
@@ -9286,13 +9286,13 @@ __metadata:
     "@pchmn/expo-material3-theme": "npm:1.4.0"
     "@react-native-community/slider": "npm:5.0.1"
     "@react-navigation/bottom-tabs": "npm:7.13.0"
-    "@react-navigation/drawer": "npm:7.8.0"
+    "@react-navigation/drawer": "npm:7.8.1"
     "@react-navigation/native": "npm:7.1.28"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@types/babel__core": "npm:7.20.5"
     "@types/papaparse": "npm:5.5.2"
     "@types/react": "npm:~19.1.17"
-    "@vitest/eslint-plugin": "npm:1.6.7"
+    "@vitest/eslint-plugin": "npm:1.6.9"
     eslint: "npm:9.39.2"
     eslint-config-prettier: "npm:10.1.8"
     eslint-plugin-react: "npm:7.37.5"
@@ -9309,7 +9309,7 @@ __metadata:
     expo-status-bar: "npm:3.0.9"
     expo-system-ui: "npm:6.0.9"
     expo-task-manager: "npm:14.0.9"
-    i18next: "npm:25.8.7"
+    i18next: "npm:25.8.8"
     papaparse: "npm:5.5.3"
     prettier: "npm:3.8.1"
     react: "npm:19.1.0"
