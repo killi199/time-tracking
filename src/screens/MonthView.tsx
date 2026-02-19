@@ -30,7 +30,7 @@ export default function MonthView({
     onEditEvent,
     onDeleteEvent,
     refreshTrigger,
-}: MonthViewProps) {
+}: Readonly<MonthViewProps>) {
     const [events, setEvents] = useState<ProcessedEvent[]>([])
     const [todayWorked, setTodayWorked] = useState('00:00')
     const [dayBalance, setDayBalance] = useState('+00:00')
@@ -46,16 +46,18 @@ export default function MonthView({
             const workedDays = new Set<string>()
 
             // Group events by date
-            const eventsByDate: { [key: string]: TimeEvent[] } = {}
+            const eventsByDate: { [key: string]: TimeEvent[] | undefined } = {}
             currentEvents.forEach((event) => {
                 if (!eventsByDate[event.date]) {
                     eventsByDate[event.date] = []
                 }
-                eventsByDate[event.date].push(event)
+                eventsByDate[event.date]?.push(event)
             })
 
             Object.keys(eventsByDate).forEach((date) => {
                 const dayEvents = eventsByDate[date]
+                if (!dayEvents) return
+
                 dayEvents.sort((a, b) => a.time.localeCompare(b.time))
 
                 let dayMinutes = 0
@@ -179,7 +181,12 @@ export default function MonthView({
     }, [month, calculateMetrics, processEvents])
 
     useEffect(() => {
-        loadData()
+        const timer = setTimeout(() => {
+            loadData()
+        }, 0)
+        return () => {
+            clearTimeout(timer)
+        }
     }, [loadData, refreshTrigger])
 
     useEffect(() => {
@@ -194,7 +201,9 @@ export default function MonthView({
             calculateMetrics(events)
         }, 60000)
 
-        return () => clearInterval(interval)
+        return () => {
+            clearInterval(interval)
+        }
     }, [events, calculateMetrics])
 
     const renderItem = useCallback(
