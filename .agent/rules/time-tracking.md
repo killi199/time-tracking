@@ -63,6 +63,7 @@ This documentation provides guidelines for AI agents and developers working on t
 ## 3. coding Standards
 
 - **TypeScript**: Strictly type all props, state, and function return values. Avoid `any`.
+- **Component Props**: Always create a Props interface for React components. The interface MUST be named after the file followed by `Props` (e.g., `App.tsx` -> `interface AppProps`).
 - **Hooks**: Use functional components.
 - **File Structure**:
     - `src/screens`: Screen components managed by navigation.
