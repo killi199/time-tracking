@@ -31,4 +31,10 @@ export default defineConfig(
             ...vitest.configs.recommended.rules,
         },
     },
+    {
+        files: ['**/*.{ts,tsx}'],
+        rules: {
+            'react/prop-types': 'off',
+        },
+    },
 )

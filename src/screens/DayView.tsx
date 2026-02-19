@@ -22,7 +22,7 @@ export default function DayView({
     onDeleteEvent,
     onAddEvent,
     refreshTrigger,
-}: DayViewProps) {
+}: Readonly<DayViewProps>) {
     const [events, setEvents] = useState<ProcessedTimeEvent[]>([])
     const [todayWorked, setTodayWorked] = useState('00:00')
     const [dayBalance, setDayBalance] = useState('+00:00')
@@ -144,7 +144,10 @@ export default function DayView({
     }, [date, calculateMetrics, processEvents])
 
     useEffect(() => {
-        loadData()
+        const timer = setTimeout(() => {
+            loadData()
+        }, 0)
+        return () => { clearTimeout(timer) }
     }, [loadData, refreshTrigger])
 
     useEffect(() => {
@@ -158,7 +161,9 @@ export default function DayView({
             }
         }, 60000)
 
-        return () => clearInterval(interval)
+        return () => {
+            clearInterval(interval)
+        }
     }, [events, date, calculateMetrics])
 
     const renderItem = useCallback(
@@ -166,7 +171,6 @@ export default function DayView({
             return (
                 <EventListItem
                     item={item}
-                    // @ts-ignore - ProcessedTimeEvent type vs literal string
                     type={item.type}
                     onEdit={onEditEvent}
                     onDelete={onDeleteEvent}

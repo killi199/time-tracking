@@ -21,7 +21,7 @@ export interface SeparatorData {
 }
 
 export interface ProcessedTimeEvent extends TimeEvent {
-    type?: 'start' | 'end'
+    type: 'start' | 'end'
     showDateHeader?: boolean
     separatorData?: SeparatorData
 }
