@@ -15,7 +15,9 @@ import {
 import { useTranslation } from 'react-i18next'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
-export default function MenuDrawerContent(props: Readonly<DrawerContentComponentProps>) {
+export default function MenuDrawerContent(
+    props: Readonly<DrawerContentComponentProps>,
+) {
     const theme = useTheme()
     const { t } = useTranslation()
 

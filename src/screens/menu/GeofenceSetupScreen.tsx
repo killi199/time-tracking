@@ -1,5 +1,11 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react'
-import { View, StyleSheet, Dimensions, Linking, TouchableOpacity } from 'react-native'
+import {
+    View,
+    StyleSheet,
+    Dimensions,
+    Linking,
+    TouchableOpacity,
+} from 'react-native'
 import {
     useTheme,
     Text,
@@ -158,7 +164,7 @@ export default function GeofenceSetupScreen() {
         const { status: bgStatus } =
             await Location.getBackgroundPermissionsAsync()
         if (bgStatus !== 'granted') {
-            setPermissionStatus('granted') 
+            setPermissionStatus('granted')
         } else {
             setPermissionStatus('granted')
         }
@@ -343,14 +349,28 @@ export default function GeofenceSetupScreen() {
                         coordinate={[marker.longitude, marker.latitude]}
                         anchor={{ x: 0.5, y: 1 }} // Anchor at bottom center of icon
                     >
-                         <View style={{ alignItems: 'center', justifyContent: 'center', width: 40, height: 40 }}>
-                            <Icon source="map-marker" size={40} color={theme.colors.primary} />
-                         </View>
+                        <View
+                            style={{
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: 40,
+                                height: 40,
+                            }}
+                        >
+                            <Icon
+                                source="map-marker"
+                                size={40}
+                                color={theme.colors.primary}
+                            />
+                        </View>
                     </PointAnnotation>
                 )}
 
                 {marker && circleGeoJSON && (
-                    <ShapeSource id="geofence-circle-source" shape={circleGeoJSON}>
+                    <ShapeSource
+                        id="geofence-circle-source"
+                        shape={circleGeoJSON}
+                    >
                         <FillLayer
                             id="geofence-circle-fill"
                             style={{

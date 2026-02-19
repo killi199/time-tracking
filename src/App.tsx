@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useMemo, useState, ComponentProps } from 'react'
+import {
+    useCallback,
+    useEffect,
+    useMemo,
+    useState,
+    ComponentProps,
+} from 'react'
 import { useColorScheme } from 'react-native'
 import {
     NavigationContainer,
@@ -59,8 +65,9 @@ function MainTabs({
             route: RouteProp<ParamListBase>
             color: string
         }) => {
-            let iconName: ComponentProps<typeof MaterialCommunityIcons>['name'] =
-                'help'
+            let iconName: ComponentProps<
+                typeof MaterialCommunityIcons
+            >['name'] = 'help'
             if (route.name === 'Day') {
                 iconName = 'calendar-today'
             } else if (route.name === 'Week') {

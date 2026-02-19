@@ -147,7 +147,9 @@ export default function DayView({
         const timer = setTimeout(() => {
             loadData()
         }, 0)
-        return () => { clearTimeout(timer) }
+        return () => {
+            clearTimeout(timer)
+        }
     }, [loadData, refreshTrigger])
 
     useEffect(() => {
