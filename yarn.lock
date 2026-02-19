@@ -2326,13 +2326,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-navigation/drawer@npm:7.8.0":
-  version: 7.8.0
-  resolution: "@react-navigation/drawer@npm:7.8.0"
+"@react-navigation/drawer@npm:7.8.1":
+  version: 7.8.1
+  resolution: "@react-navigation/drawer@npm:7.8.1"
   dependencies:
     "@react-navigation/elements": "npm:^2.9.5"
     color: "npm:^4.2.3"
-    react-native-drawer-layout: "npm:^4.2.1"
+    react-native-drawer-layout: "npm:^4.2.2"
     use-latest-callback: "npm:^0.2.4"
   peerDependencies:
     "@react-navigation/native": ^7.1.28
@@ -2342,7 +2342,7 @@ __metadata:
     react-native-reanimated: ">= 2.0.0"
     react-native-safe-area-context: ">= 4.0.0"
     react-native-screens: ">= 4.0.0"
-  checksum: 10c0/b1c7455769460a8dfa17d3d9e04ed98601a7392f38123b606c9c92a4d78824bee3983fae585c152f8ed1f134ac7a9239b529d249c90914f917407968fb6d80aa
+  checksum: 10c0/ae5ecee70949d3beaadbd33898a46e01a5f3b98f74450e44e77b87549c50d9b6502ecbbd9d66c18db0d6894d0ca041ab5d2144553b5edf3925069448dfe5e30e
   languageName: node
   linkType: hard
 
@@ -7972,9 +7972,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-drawer-layout@npm:^4.2.1":
-  version: 4.2.1
-  resolution: "react-native-drawer-layout@npm:4.2.1"
+"react-native-drawer-layout@npm:^4.2.2":
+  version: 4.2.2
+  resolution: "react-native-drawer-layout@npm:4.2.2"
   dependencies:
     color: "npm:^4.2.3"
     use-latest-callback: "npm:^0.2.4"
@@ -7983,7 +7983,7 @@ __metadata:
     react-native: "*"
     react-native-gesture-handler: ">= 2.0.0"
     react-native-reanimated: ">= 2.0.0"
-  checksum: 10c0/156960cf9947db0628e4ae5f4ba39c85c4fd75825326090eb9a3051aec94bd0b429e6f90e5983e3da64fe124ef41887e344cf08e5f40a27a2d6a81e0ebeec3b2
+  checksum: 10c0/bee3c0c4f01101d6e71ce4e91f3b8910af85bdf08abf6699501f7f09b160be1b1c422f63d45c3f15ba750da59e889f1ea70bdbb72dbd559ad3e11aee45332abf
   languageName: node
   linkType: hard
 
@@ -9286,7 +9286,7 @@ __metadata:
     "@pchmn/expo-material3-theme": "npm:1.4.0"
     "@react-native-community/slider": "npm:5.0.1"
     "@react-navigation/bottom-tabs": "npm:7.13.0"
-    "@react-navigation/drawer": "npm:7.8.0"
+    "@react-navigation/drawer": "npm:7.8.1"
     "@react-navigation/native": "npm:7.1.28"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@types/babel__core": "npm:7.20.5"
