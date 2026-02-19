@@ -1,10 +1,4 @@
-import {
-    useCallback,
-    useEffect,
-    useMemo,
-    useState,
-    ComponentProps,
-} from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useColorScheme } from 'react-native'
 import {
     NavigationContainer,
@@ -26,8 +20,8 @@ import {
     adaptNavigationTheme,
     BottomNavigation,
     IconButton,
+    Icon,
 } from 'react-native-paper'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { StatusBar } from 'expo-status-bar'
 import { useTranslation } from 'react-i18next'
 
@@ -65,9 +59,7 @@ function MainTabs({
             route: RouteProp<ParamListBase>
             color: string
         }) => {
-            let iconName: ComponentProps<
-                typeof MaterialCommunityIcons
-            >['name'] = 'help'
+            let iconName = 'help'
             if (route.name === 'Day') {
                 iconName = 'calendar-today'
             } else if (route.name === 'Week') {
@@ -76,13 +68,7 @@ function MainTabs({
                 iconName = 'calendar-month'
             }
 
-            return (
-                <MaterialCommunityIcons
-                    name={iconName}
-                    size={24}
-                    color={color}
-                />
-            )
+            return <Icon source={iconName} size={24} color={color} />
         },
         [],
     )
