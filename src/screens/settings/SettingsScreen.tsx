@@ -1,8 +1,13 @@
 import { View, StyleSheet } from 'react-native'
 import { List, useTheme } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
+import { NavigationProp, ParamListBase } from '@react-navigation/native'
 
-export default function SettingsScreen({ navigation }: { navigation: any }) {
+export interface SettingsScreenProps {
+    readonly navigation: NavigationProp<ParamListBase>
+}
+
+export default function SettingsScreen({ navigation }: SettingsScreenProps) {
     const theme = useTheme()
     const { t } = useTranslation()
 
@@ -18,13 +23,17 @@ export default function SettingsScreen({ navigation }: { navigation: any }) {
                     title={t('settings.theme')}
                     left={() => <List.Icon icon="brightness-6" />}
                     right={() => <List.Icon icon="chevron-right" />}
-                    onPress={() => navigation.navigate('ThemeSettings')}
+                    onPress={() => {
+                        navigation.navigate('ThemeSettings')
+                    }}
                 />
                 <List.Item
                     title={t('settings.language')}
                     left={() => <List.Icon icon="translate" />}
                     right={() => <List.Icon icon="chevron-right" />}
-                    onPress={() => navigation.navigate('LanguageSettings')}
+                    onPress={() => {
+                        navigation.navigate('LanguageSettings')
+                    }}
                 />
             </List.Section>
         </View>
