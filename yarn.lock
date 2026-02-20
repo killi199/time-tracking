@@ -2366,9 +2366,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-navigation/native-stack@npm:7.12.0":
-  version: 7.12.0
-  resolution: "@react-navigation/native-stack@npm:7.12.0"
+"@react-navigation/native-stack@npm:7.13.0":
+  version: 7.13.0
+  resolution: "@react-navigation/native-stack@npm:7.13.0"
   dependencies:
     "@react-navigation/elements": "npm:^2.9.5"
     color: "npm:^4.2.3"
@@ -2380,7 +2380,7 @@ __metadata:
     react-native: "*"
     react-native-safe-area-context: ">= 4.0.0"
     react-native-screens: ">= 4.0.0"
-  checksum: 10c0/22a63b5dedd8ce567e0d75eb4332fe66e1b407d8ebaab875376364c065aa29beda1a825ef2ffc651d8330625f06cf6cd649a7fc720af3ea26af3121dff41d2b6
+  checksum: 10c0/2ac22b4c19d5791b9e70fca5346b9bbc92a0fbcc1cc98701446cb52f1693d363f11f41750e77f3f45d8ff034a2e6f1d0d4e2f46247b79fcd61543daca00f30c3
   languageName: node
   linkType: hard
 
@@ -9412,7 +9412,7 @@ __metadata:
     "@react-navigation/bottom-tabs": "npm:7.13.0"
     "@react-navigation/drawer": "npm:7.8.1"
     "@react-navigation/native": "npm:7.1.28"
-    "@react-navigation/native-stack": "npm:7.12.0"
+    "@react-navigation/native-stack": "npm:7.13.0"
     "@types/babel__core": "npm:7.20.5"
     "@types/papaparse": "npm:5.5.2"
     "@types/react": "npm:~19.1.17"
