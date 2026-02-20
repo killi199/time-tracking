@@ -15,7 +15,9 @@ import {
 import { useTranslation } from 'react-i18next'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
-export default function MenuDrawerContent(props: DrawerContentComponentProps) {
+export default function MenuDrawerContent(
+    props: Readonly<DrawerContentComponentProps>,
+) {
     const theme = useTheme()
     const { t } = useTranslation()
 
@@ -29,7 +31,9 @@ export default function MenuDrawerContent(props: DrawerContentComponentProps) {
         setVisible(true)
     }
 
-    const hideDialog = () => setVisible(false)
+    const hideDialog = () => {
+        setVisible(false)
+    }
 
     return (
         <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
@@ -120,20 +124,26 @@ export default function MenuDrawerContent(props: DrawerContentComponentProps) {
                                 size={size}
                             />
                         )}
-                        onPress={async () => {
-                            props.navigation.closeDrawer()
-                            const { exportToCSV } = await import('../utils/csv')
-                            const result = await exportToCSV()
-                            if (!result.success && result.message) {
-                                showDialog(t('common.error'), result.message)
-                            } else if (result.success) {
-                                if (result.message) {
+                        onPress={() => {
+                            void (async () => {
+                                props.navigation.closeDrawer()
+                                const { exportToCSV } =
+                                    await import('../utils/csv')
+                                const result = await exportToCSV()
+                                if (!result.success && result.message) {
                                     showDialog(
-                                        t('common.success'),
+                                        t('common.error'),
                                         result.message,
                                     )
+                                } else if (result.success) {
+                                    if (result.message) {
+                                        showDialog(
+                                            t('common.success'),
+                                            result.message,
+                                        )
+                                    }
                                 }
-                            }
+                            })()
                         }}
                         style={{ backgroundColor: theme.colors.surface }}
                         theme={{
@@ -151,24 +161,26 @@ export default function MenuDrawerContent(props: DrawerContentComponentProps) {
                                 size={size}
                             />
                         )}
-                        onPress={async () => {
-                            props.navigation.closeDrawer()
-                            const { importFromCSV } =
-                                await import('../utils/csv')
-                            const result = await importFromCSV()
-                            if (result.success) {
-                                showDialog(
-                                    t('common.success'),
-                                    result.count !== undefined
-                                        ? `Successfully imported ${result.count} events.`
-                                        : 'Successfully imported events.',
-                                )
-                            } else if (result.message !== 'Cancelled') {
-                                showDialog(
-                                    t('common.error'),
-                                    result.message || 'Unknown error',
-                                )
-                            }
+                        onPress={() => {
+                            void (async () => {
+                                props.navigation.closeDrawer()
+                                const { importFromCSV } =
+                                    await import('../utils/csv')
+                                const result = await importFromCSV()
+                                if (result.success) {
+                                    showDialog(
+                                        t('common.success'),
+                                        result.count !== undefined
+                                            ? `Successfully imported ${result.count.toString()} events.`
+                                            : 'Successfully imported events.',
+                                    )
+                                } else if (result.message !== 'Cancelled') {
+                                    showDialog(
+                                        t('common.error'),
+                                        result.message || 'Unknown error',
+                                    )
+                                }
+                            })()
                         }}
                         style={{ backgroundColor: theme.colors.surface }}
                         theme={{

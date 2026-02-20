@@ -25,12 +25,12 @@ export const initDatabase = (): void => {
 }
 
 export const getSetting = (key: string): string | null => {
-    const result = db.getAllSync(
+    const result = db.getAllSync<{ value: string }>(
         'SELECT value FROM settings WHERE key = $key',
         {
             $key: key,
         },
-    ) as { value: string }[]
+    )
     return result.length > 0 ? result[0].value : null
 }
 
@@ -108,34 +108,68 @@ export const deleteEvent = (id: number): void => {
 }
 
 export const getTodayEvents = (date: string): TimeEvent[] => {
-    return db.getAllSync(
+    return db.getAllSync<TimeEvent>(
         'SELECT * FROM events WHERE date = $date ORDER BY time ASC',
         { $date: date },
-    ) as TimeEvent[]
+    )
+}
+
+export const getTodayEventsAsync = async (
+    date: string,
+): Promise<TimeEvent[]> => {
+    return db.getAllAsync<TimeEvent>(
+        'SELECT * FROM events WHERE date = $date ORDER BY time ASC',
+        { $date: date },
+    )
 }
 
 export const getMonthEvents = (month: string): TimeEvent[] => {
     // month format: 'YYYY-MM'
-    return db.getAllSync(
+    return db.getAllSync<TimeEvent>(
         'SELECT * FROM events WHERE date LIKE $month || "%" ORDER BY date ASC, time ASC',
         { $month: month },
-    ) as TimeEvent[]
+    )
+}
+
+export const getMonthEventsAsync = async (
+    month: string,
+): Promise<TimeEvent[]> => {
+    return db.getAllAsync<TimeEvent>(
+        'SELECT * FROM events WHERE date LIKE $month || "%" ORDER BY date ASC, time ASC',
+        { $month: month },
+    )
 }
 
 export const getEventsRange = (
     startDate: string,
     endDate: string,
 ): TimeEvent[] => {
-    return db.getAllSync(
+    return db.getAllSync<TimeEvent>(
         'SELECT * FROM events WHERE date >= $startDate AND date <= $endDate ORDER BY date ASC, time ASC',
         { $startDate: startDate, $endDate: endDate },
-    ) as TimeEvent[]
+    )
+}
+
+export const getEventsRangeAsync = async (
+    startDate: string,
+    endDate: string,
+): Promise<TimeEvent[]> => {
+    return db.getAllAsync<TimeEvent>(
+        'SELECT * FROM events WHERE date >= $startDate AND date <= $endDate ORDER BY date ASC, time ASC',
+        { $startDate: startDate, $endDate: endDate },
+    )
 }
 
 export const getAllEvents = (): TimeEvent[] => {
-    return db.getAllSync(
+    return db.getAllSync<TimeEvent>(
         'SELECT * FROM events ORDER BY date DESC, time DESC',
-    ) as TimeEvent[]
+    )
+}
+
+export const getAllEventsAsync = async (): Promise<TimeEvent[]> => {
+    return db.getAllAsync<TimeEvent>(
+        'SELECT * FROM events ORDER BY date DESC, time DESC',
+    )
 }
 
 export const getOverallStats = (
@@ -145,7 +179,7 @@ export const getOverallStats = (
     overallBalanceMinutes: number
 } => {
     let query = 'SELECT * FROM events'
-    const params: any = {}
+    const params: Record<string, string | number | null> = {}
 
     if (cutoffDate) {
         query += ' WHERE date <= $cutoffDate'
@@ -154,7 +188,7 @@ export const getOverallStats = (
 
     query += ' ORDER BY date ASC, time ASC'
 
-    const events = db.getAllSync(query, params) as TimeEvent[]
+    const events = db.getAllSync<TimeEvent>(query, params)
 
     let totalMinutesWorked = 0
     const workedDays = new Set<string>()
@@ -162,7 +196,68 @@ export const getOverallStats = (
     // Group events by date
     const eventsByDate: { [key: string]: TimeEvent[] } = {}
     events.forEach((event) => {
-        if (!eventsByDate[event.date]) {
+        if (!Object.prototype.hasOwnProperty.call(eventsByDate, event.date)) {
+            eventsByDate[event.date] = []
+        }
+        eventsByDate[event.date].push(event)
+    })
+
+    Object.keys(eventsByDate).forEach((date) => {
+        const dayEvents = eventsByDate[date]
+        // Sort just in case
+        dayEvents.sort((a, b) => a.time.localeCompare(b.time))
+
+        let dayMinutes = 0
+        for (let i = 0; i < dayEvents.length; i += 2) {
+            if (i + 1 < dayEvents.length) {
+                const start = new Date(`${date}T${dayEvents[i].time}`)
+                const end = new Date(`${date}T${dayEvents[i + 1].time}`)
+                const diff = (end.getTime() - start.getTime()) / 1000 / 60
+                dayMinutes += diff
+            }
+        }
+
+        if (dayMinutes > 0) {
+            totalMinutesWorked += dayMinutes
+            workedDays.add(date)
+        }
+    })
+
+    // Calculate expected minutes (8 hours per worked day)
+    const expectedMinutes = workedDays.size * 8 * 60
+    const overallBalanceMinutes = totalMinutesWorked - expectedMinutes
+
+    return {
+        totalMinutesWorked,
+        overallBalanceMinutes,
+    }
+}
+
+export const getOverallStatsAsync = async (
+    cutoffDate?: string,
+): Promise<{
+    totalMinutesWorked: number
+    overallBalanceMinutes: number
+}> => {
+    let query = 'SELECT * FROM events'
+    const params: Record<string, string | number | null> = {}
+
+    if (cutoffDate) {
+        query += ' WHERE date <= $cutoffDate'
+        params.$cutoffDate = cutoffDate
+    }
+
+    query += ' ORDER BY date ASC, time ASC'
+
+    const events = await db.getAllAsync<TimeEvent>(query, params)
+
+    let totalMinutesWorked = 0
+    const workedDays = new Set<string>()
+
+    // Group events by date
+    const eventsByDate: { [key: string]: TimeEvent[] } = {}
+    events.forEach((event) => {
+        if (!Object.prototype.hasOwnProperty.call(eventsByDate, event.date)) {
             eventsByDate[event.date] = []
         }
         eventsByDate[event.date].push(event)

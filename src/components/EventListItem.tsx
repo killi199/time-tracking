@@ -1,7 +1,10 @@
 import { memo, useRef } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { List, useTheme } from 'react-native-paper'
-import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable'
+import ReanimatedSwipeable, {
+    SwipeableMethods,
+    SwipeDirection,
+} from 'react-native-gesture-handler/ReanimatedSwipeable'
 
 import { useTranslation } from 'react-i18next'
 import { TimeEvent } from '../types'
@@ -13,60 +16,63 @@ interface EventListItemProps {
     onDelete: (event: TimeEvent, close?: () => void) => void
 }
 
-export const EventListItem = memo(
-    ({ item, type, onEdit, onDelete }: EventListItemProps) => {
-        const theme = useTheme()
-        const { t } = useTranslation()
-        const swipeableRef = useRef<any>(null)
+export const EventListItem = memo(function EventListItem({
+    item,
+    type,
+    onEdit,
+    onDelete,
+}: EventListItemProps) {
+    const theme = useTheme()
+    const { t } = useTranslation()
+    const swipeableRef = useRef<SwipeableMethods>(null)
 
-        const renderRightActions = () => (
-            <View style={styles.deleteAction}>
-                <List.Icon icon="delete" color="white" />
-            </View>
-        )
+    const renderRightActions = () => (
+        <View style={styles.deleteAction}>
+            <List.Icon icon="delete" color="white" />
+        </View>
+    )
 
-        const renderLeftActions = () => (
-            <View style={styles.editAction}>
-                <List.Icon icon="pencil" color="white" />
-            </View>
-        )
+    const renderLeftActions = () => (
+        <View style={styles.editAction}>
+            <List.Icon icon="pencil" color="white" />
+        </View>
+    )
 
-        return (
-            <ReanimatedSwipeable
-                ref={swipeableRef}
-                renderRightActions={renderRightActions}
-                renderLeftActions={renderLeftActions}
-                onSwipeableOpen={(direction) => {
-                    const close = () => swipeableRef.current?.close()
-                    if (direction === 'right') {
-                        onEdit(item, close)
-                    } else {
-                        onDelete(item, close)
-                    }
+    return (
+        <ReanimatedSwipeable
+            ref={swipeableRef}
+            renderRightActions={renderRightActions}
+            renderLeftActions={renderLeftActions}
+            onSwipeableOpen={(direction) => {
+                const close = () => swipeableRef.current?.close()
+                if (direction === SwipeDirection.RIGHT) {
+                    onEdit(item, close)
+                } else {
+                    onDelete(item, close)
+                }
+            }}
+        >
+            <List.Item
+                title={`${type === 'start' ? t('home.checkIn') : t('home.checkOut')} ${t('home.at')} ${item.time}${item.isManualEntry ? ' ' + t('home.lateEntry') : ''}`}
+                description={item.note}
+                left={(props) => (
+                    <List.Icon
+                        {...props}
+                        icon={type === 'start' ? 'login' : 'logout'}
+                        color={
+                            type === 'start'
+                                ? theme.colors.primary
+                                : theme.colors.error
+                        }
+                    />
+                )}
+                style={{
+                    backgroundColor: theme.colors.elevation.level1,
                 }}
-            >
-                <List.Item
-                    title={`${type === 'start' ? t('home.checkIn') : t('home.checkOut')} ${t('home.at')} ${item.time}${item.isManualEntry ? ' ' + t('home.lateEntry') : ''}`}
-                    description={item.note}
-                    left={(props) => (
-                        <List.Icon
-                            {...props}
-                            icon={type === 'start' ? 'login' : 'logout'}
-                            color={
-                                type === 'start'
-                                    ? theme.colors.primary
-                                    : theme.colors.error
-                            }
-                        />
-                    )}
-                    style={{
-                        backgroundColor: theme.colors.elevation.level1,
-                    }}
-                />
-            </ReanimatedSwipeable>
-        )
-    },
-)
+            />
+        </ReanimatedSwipeable>
+    )
+})
 
 const styles = StyleSheet.create({
     deleteAction: {

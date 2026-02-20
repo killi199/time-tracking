@@ -34,7 +34,7 @@ module.exports = {
                     isAndroidBackgroundLocationEnabled: true,
                 },
             ],
-            "@maplibre/maplibre-react-native",
+            '@maplibre/maplibre-react-native',
         ],
     },
 }

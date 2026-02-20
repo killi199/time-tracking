@@ -2,7 +2,7 @@ import { Linking, Platform, ToastAndroid, BackHandler } from 'react-native'
 import { getTodayEvents, addEvent } from '../db/database'
 import { getFormattedTime, getFormattedDate } from '../utils/time'
 
-const handleUrl = async (url: string | null) => {
+const handleUrl = (url: string | null) => {
     if (url && url.includes('timetracking')) {
         try {
             const today = getFormattedDate(new Date())
@@ -39,7 +39,9 @@ const handleUrl = async (url: string | null) => {
 
 export const initNfcService = () => {
     // Check initial URL
-    Linking.getInitialURL().then((url) => handleUrl(url))
+    void Linking.getInitialURL().then((url) => {
+        handleUrl(url)
+    })
 
     // Listen for updates
     const subscription = Linking.addEventListener(
@@ -49,5 +51,7 @@ export const initNfcService = () => {
         },
     )
 
-    return () => subscription.remove()
+    return () => {
+        subscription.remove()
+    }
 }

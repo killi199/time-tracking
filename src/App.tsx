@@ -4,30 +4,31 @@ import {
     NavigationContainer,
     DarkTheme as NavDarkTheme,
     DefaultTheme as NavDefaultTheme,
-    DrawerActions, // Import DrawerActions
+    DrawerActions,
+    ParamListBase,
+    RouteProp,
 } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { createDrawerNavigator } from '@react-navigation/drawer' // Import Drawer
+import {
+    createDrawerNavigator,
+    DrawerNavigationProp,
+} from '@react-navigation/drawer'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import {
     useTheme,
     adaptNavigationTheme,
     BottomNavigation,
     IconButton,
+    Icon,
 } from 'react-native-paper'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { StatusBar } from 'expo-status-bar'
 import { useTranslation } from 'react-i18next'
 
 import { initDatabase } from './db/database'
 import { ThemeProvider, useAppTheme } from './context/ThemeContext'
 import initI18n from './i18n/i18n'
-import { enableScreens } from 'react-native-screens'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
-
-enableScreens(true)
-
 import HomeScreen from './screens/HomeScreen'
 import SettingsScreen from './screens/settings/SettingsScreen'
 import ThemeSettingsScreen from './screens/settings/ThemeSettingsScreen'
@@ -42,12 +43,22 @@ const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator()
 const Drawer = createDrawerNavigator() // Create Drawer
 
-function MainTabs({ navigation }: { navigation: any }) {
+interface AppProps {
+    readonly navigation: DrawerNavigationProp<ParamListBase>
+}
+
+function MainTabs({ navigation }: AppProps) {
     const theme = useTheme()
     const { t } = useTranslation()
 
     const renderIcon = useCallback(
-        ({ route, color }: { route: any; color: string }) => {
+        ({
+            route,
+            color,
+        }: {
+            route: RouteProp<ParamListBase>
+            color: string
+        }) => {
             let iconName = 'help'
             if (route.name === 'Day') {
                 iconName = 'calendar-today'
@@ -57,13 +68,7 @@ function MainTabs({ navigation }: { navigation: any }) {
                 iconName = 'calendar-month'
             }
 
-            return (
-                <MaterialCommunityIcons
-                    name={iconName as any}
-                    size={24}
-                    color={color}
-                />
-            )
+            return <Icon source={iconName} size={24} color={color} />
         },
         [],
     )
@@ -81,14 +86,13 @@ function MainTabs({ navigation }: { navigation: any }) {
                     renderIcon={renderIcon}
                     getLabelText={({ route }) => {
                         const { options } = descriptors[route.key]
-                        const label =
-                            typeof options.tabBarLabel === 'string'
-                                ? options.tabBarLabel
-                                : typeof options.title === 'string'
-                                  ? options.title
-                                  : route.name
 
-                        return label
+                        if (typeof options.tabBarLabel === 'string') {
+                            return options.tabBarLabel
+                        }
+                        return typeof options.title === 'string'
+                            ? options.title
+                            : route.name
                     }}
                 />
             )}
@@ -96,9 +100,9 @@ function MainTabs({ navigation }: { navigation: any }) {
                 headerLeft: () => (
                     <IconButton
                         icon="menu"
-                        onPress={() =>
+                        onPress={() => {
                             navigation.dispatch(DrawerActions.openDrawer())
-                        }
+                        }}
                     />
                 ),
                 headerStyle: { backgroundColor: theme.colors.background },
@@ -163,7 +167,7 @@ function NavigationWrapper() {
             materialLight: paperTheme,
             materialDark: paperTheme,
         })
-        return (paperTheme.dark ? DarkTheme : LightTheme) as any
+        return paperTheme.dark ? DarkTheme : LightTheme
     }, [paperTheme])
 
     const isDark =
@@ -231,7 +235,7 @@ export default function App() {
                 setIsDbReady(true)
             }
         }
-        init()
+        void init()
     }, [])
 
     // NFC Handling

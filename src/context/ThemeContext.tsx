@@ -14,7 +14,7 @@ import {
 import { useMaterial3Theme } from '@pchmn/expo-material3-theme'
 import { getSetting, setSetting } from '../db/database'
 
-type ThemeMode = 'auto' | 'light' | 'dark'
+export type ThemeMode = 'auto' | 'light' | 'dark'
 
 interface ThemeContextType {
     themeMode: ThemeMode
