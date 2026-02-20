@@ -22,7 +22,7 @@ export default function NFCSetupScreen() {
             const isSupported = await NfcManager.isSupported()
             setSupported(isSupported)
         }
-        checkNfc()
+        void checkNfc()
 
         return () => {
             NfcManager.cancelTechnologyRequest().catch(() => 0)
@@ -36,7 +36,9 @@ export default function NFCSetupScreen() {
         setDialogVisible(true)
     }
 
-    const hideDialog = () => setDialogVisible(false)
+    const hideDialog = () => {
+        setDialogVisible(false)
+    }
 
     const writeTag = async () => {
         if (!supported) {
@@ -53,14 +55,12 @@ export default function NFCSetupScreen() {
                 Ndef.uriRecord('timetracking://nfc'),
             ])
 
-            if (bytes) {
-                // Pass options object to prevent native crash on 'reconnectAfterWrite' lookup
-                await (NfcManager as any).writeNdefMessage(bytes, {
-                    reconnectAfterWrite: true,
-                })
-                showDialog(t('common.success'), t('nfc.writeSuccess'))
-            }
-        } catch (ex: any) {
+            // Pass options object to prevent native crash on 'reconnectAfterWrite' lookup
+            await NfcManager.ndefHandler.writeNdefMessage(bytes, {
+                reconnectAfterWrite: true,
+            })
+            showDialog(t('common.success'), t('nfc.writeSuccess'))
+        } catch (ex: unknown) {
             // Don't show error if user cancelled
             if (!cancelRef.current) {
                 console.warn(ex)
@@ -97,7 +97,9 @@ export default function NFCSetupScreen() {
                     <View style={styles.buttonContainer}>
                         <Button
                             mode="contained"
-                            onPress={writeTag}
+                            onPress={() => {
+                                void writeTag()
+                            }}
                             loading={writing}
                             disabled={writing}
                         >
