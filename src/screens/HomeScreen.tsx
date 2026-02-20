@@ -458,6 +458,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
                         onPress={() => {
                             changeDate(1)
                         }}
+                        disabled={!showBackToNowCalculated}
                     />
                 </View>
                 <Button
