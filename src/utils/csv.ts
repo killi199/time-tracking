@@ -72,19 +72,26 @@ export const importFromCSV = async (): Promise<CSVResult> => {
         const fileUri = result.assets[0].uri
         const content = await FileSystem.readAsStringAsync(fileUri)
 
-        const parsed = Papa.parse(content, {
+        type CSVRow = {
+            Date?: string
+            Time?: string
+            Note?: string
+            IsManualEntry?: string
+        }
+
+        const parsed = Papa.parse<CSVRow>(content, {
             header: true,
             skipEmptyLines: true,
         })
 
         const eventsToImport: Omit<TimeEvent, 'id'>[] = []
 
-        parsed.data.forEach((row: any) => {
+        parsed.data.forEach((row) => {
             if (row.Date && row.Time) {
                 eventsToImport.push({
                     date: row.Date,
                     time: row.Time,
-                    note: row.Note || null,
+                    note: row.Note ?? null,
                     isManualEntry: row.IsManualEntry === 'true',
                 })
             }
