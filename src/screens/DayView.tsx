@@ -3,7 +3,6 @@ import { View, FlatList, StyleSheet } from 'react-native'
 import { Text, Card, useTheme, FAB } from 'react-native-paper'
 import { EventListItem } from '../components/EventListItem'
 import { TimeSeparator } from '../components/TimeSeparator'
-import { ViewSkeleton } from '../components/ViewSkeleton'
 import { getTodayEventsAsync, getOverallStatsAsync } from '../db/database'
 import { TimeEvent, ProcessedTimeEvent } from '../types'
 import { useTranslation } from 'react-i18next'
@@ -29,13 +28,11 @@ export default function DayView({
 
     const [rawEvents, setRawEvents] = useState<TimeEvent[]>([])
     const [baseOverallBalance, setBaseOverallBalance] = useState<number>(0)
-    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         let isMounted = true
 
         const loadContent = async () => {
-            setIsLoading(true)
             const [loadedEvents, stats] = await Promise.all([
                 getTodayEventsAsync(date),
                 getOverallStatsAsync(date),
@@ -44,7 +41,6 @@ export default function DayView({
             if (isMounted) {
                 setRawEvents(loadedEvents)
                 setBaseOverallBalance(stats.overallBalanceMinutes)
-                setIsLoading(false)
             }
         }
 
@@ -172,10 +168,6 @@ export default function DayView({
         },
         [onEditEvent, onDeleteEvent],
     )
-
-    if (isLoading) {
-        return <ViewSkeleton />
-    }
 
     return (
         <View style={styles.container}>
