@@ -20,7 +20,6 @@ This documentation provides guidelines for AI agents and developers working on t
 
 **Rule**: You MUST use `react-native-paper` for all UI elements to maintain the Material Design 3 aesthetic.
 
-- **Strictly Avoid**: Standard `react-native` components like `<Button>`, `<TextInput>`, `<View>` (for surface/backgrounds), or `<Text>` if a `react-native-paper` equivalent exists.
 - **Typography**: Always use `react-native-paper`'s `<Text variant="...">` for consistent typography.
 - **Theming**: Access the theme using `useTheme()` from `react-native-paper`.
     - implementation location: `src/context/ThemeContext.tsx`
