@@ -3,7 +3,7 @@ import { View, FlatList, StyleSheet } from 'react-native'
 import { Text, Card, useTheme, FAB } from 'react-native-paper'
 import { EventListItem } from '../components/EventListItem'
 import { TimeSeparator } from '../components/TimeSeparator'
-import { getTodayEventsAsync, getOverallStatsAsync } from '../db/database'
+import { getTodayEvents, getOverallStats } from '../db/database'
 import { TimeEvent, ProcessedTimeEvent } from '../types'
 import { useTranslation } from 'react-i18next'
 import { formatTime, getFormattedDate } from '../utils/time'
@@ -29,27 +29,18 @@ export default function DayView({
     const [rawEvents, setRawEvents] = useState<TimeEvent[]>([])
     const [baseOverallBalance, setBaseOverallBalance] = useState<number>(0)
 
+    const loadData = useCallback(() => {
+        const loadedEvents = getTodayEvents(date)
+        const stats = getOverallStats(date)
+
+        setRawEvents(loadedEvents)
+        setBaseOverallBalance(stats.overallBalanceMinutes)
+    }, [date])
+
     useEffect(() => {
-        let isMounted = true
-
-        const loadContent = async () => {
-            const [loadedEvents, stats] = await Promise.all([
-                getTodayEventsAsync(date),
-                getOverallStatsAsync(date),
-            ])
-
-            if (isMounted) {
-                setRawEvents(loadedEvents)
-                setBaseOverallBalance(stats.overallBalanceMinutes)
-            }
-        }
-
-        void loadContent()
-
-        return () => {
-            isMounted = false
-        }
-    }, [date, refreshTrigger])
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        loadData()
+    }, [loadData, refreshTrigger])
 
     const events = useMemo(() => {
         const processed: ProcessedTimeEvent[] = []
