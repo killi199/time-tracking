@@ -8,13 +8,89 @@ export const LOCATION_TASK_NAME = 'background-geofence-task'
 
 // Configure notifications
 Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-        shouldPlaySound: true,
-        shouldSetBadge: false,
-        shouldShowBanner: true,
-        shouldShowList: true,
-    }),
+    handleNotification: () =>
+        Promise.resolve({
+            shouldPlaySound: true,
+            shouldSetBadge: false,
+            shouldShowBanner: true,
+            shouldShowList: true,
+        }),
 })
+
+interface GeofencingData {
+    eventType: Location.GeofencingEventType
+}
+
+const processGeofenceEntry = async (
+    dateStr: string,
+    timeStr: string,
+    isCheckedIn: boolean,
+) => {
+    console.log('Entered geofence')
+
+    if (isCheckedIn) {
+        console.log('Already checked in, skipping auto check-in')
+        return
+    }
+
+    try {
+        addEvent(dateStr, timeStr, 'Auto check-in geofence')
+
+        await Notifications.scheduleNotificationAsync({
+            content: {
+                title: 'Auto check-in',
+                body: `Checked in at ${timeStr}`,
+            },
+            trigger: null,
+        })
+    } catch (err) {
+        console.error('Failed to auto check-in:', err)
+    }
+}
+
+const processGeofenceExit = async (
+    dateStr: string,
+    timeStr: string,
+    isCheckedIn: boolean,
+) => {
+    console.log('Exited geofence')
+
+    if (!isCheckedIn) {
+        console.log('Already checked out, skipping auto check-out')
+        return
+    }
+
+    try {
+        addEvent(dateStr, timeStr, 'Auto check-out geofence')
+
+        await Notifications.scheduleNotificationAsync({
+            content: {
+                title: 'Auto check-out',
+                body: `Checked out at ${timeStr}`,
+            },
+            trigger: null,
+        })
+    } catch (err) {
+        console.error('Failed to auto check-out:', err)
+    }
+}
+
+const handleGeofenceEvent = async (data: unknown) => {
+    const taskData = data as GeofencingData
+    const eventType = taskData.eventType
+    const now = new Date()
+    const dateStr = getFormattedDate(now)
+    const timeStr = getFormattedTime(now)
+
+    const todayEvents = getTodayEvents(dateStr)
+    const isCheckedIn = todayEvents.length % 2 !== 0
+
+    if (eventType === Location.GeofencingEventType.Enter) {
+        await processGeofenceEntry(dateStr, timeStr, isCheckedIn)
+    } else {
+        await processGeofenceExit(dateStr, timeStr, isCheckedIn)
+    }
+}
 
 TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
     if (error) {
@@ -22,54 +98,6 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
         return
     }
     if (data) {
-        const { eventType } = data as any
-        const now = new Date()
-        const dateStr = getFormattedDate(now)
-        const timeStr = getFormattedTime(now)
-
-        const todayEvents = getTodayEvents(dateStr)
-        const isCheckedIn = todayEvents.length % 2 !== 0
-
-        if (eventType === Location.GeofencingEventType.Enter) {
-            console.log('Entered geofence')
-
-            if (!isCheckedIn) {
-                try {
-                    addEvent(dateStr, timeStr, 'Auto check-in geofence')
-
-                    await Notifications.scheduleNotificationAsync({
-                        content: {
-                            title: 'Auto check-in',
-                            body: `Checked in at ${timeStr}`,
-                        },
-                        trigger: null, // Send immediately
-                    })
-                } catch (err) {
-                    console.error('Failed to auto check-in:', err)
-                }
-            } else {
-                console.log('Already checked in, skipping auto check-in')
-            }
-        } else if (eventType === Location.GeofencingEventType.Exit) {
-            console.log('Exited geofence')
-
-            if (isCheckedIn) {
-                try {
-                    addEvent(dateStr, timeStr, 'Auto check-out geofence')
-
-                    await Notifications.scheduleNotificationAsync({
-                        content: {
-                            title: 'Auto check-out',
-                            body: `Checked out at ${timeStr}`,
-                        },
-                        trigger: null,
-                    })
-                } catch (err) {
-                    console.error('Failed to auto check-out:', err)
-                }
-            } else {
-                console.log('Already checked out, skipping auto check-out')
-            }
-        }
+        await handleGeofenceEvent(data)
     }
 })
