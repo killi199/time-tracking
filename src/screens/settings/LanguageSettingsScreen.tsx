@@ -20,9 +20,9 @@ export default function LanguageSettingsScreen() {
 
         if (value === 'auto') {
             const deviceLanguage = Localization.getLocales()[0]?.languageCode
-            i18n.changeLanguage(deviceLanguage === 'de' ? 'de' : 'en')
+            void i18n.changeLanguage(deviceLanguage === 'de' ? 'de' : 'en')
         } else {
-            i18n.changeLanguage(value)
+            void i18n.changeLanguage(value)
         }
     }
 
@@ -42,19 +42,25 @@ export default function LanguageSettingsScreen() {
                         title={t('settings.auto')}
                         left={() => <List.Icon icon="translate" />}
                         right={() => <RadioButton value="auto" />}
-                        onPress={() => handleLanguageChange('auto')}
+                        onPress={() => {
+                            handleLanguageChange('auto')
+                        }}
                     />
                     <List.Item
                         title={t('settings.english')}
                         left={() => <Text variant="titleLarge">🇬🇧</Text>}
                         right={() => <RadioButton value="en" />}
-                        onPress={() => handleLanguageChange('en')}
+                        onPress={() => {
+                            handleLanguageChange('en')
+                        }}
                     />
                     <List.Item
                         title={t('settings.german')}
                         left={() => <Text variant="titleLarge">🇩🇪</Text>}
                         right={() => <RadioButton value="de" />}
-                        onPress={() => handleLanguageChange('de')}
+                        onPress={() => {
+                            handleLanguageChange('de')
+                        }}
                     />
                 </RadioButton.Group>
             </List.Section>
