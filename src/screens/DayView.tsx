@@ -144,12 +144,8 @@ export default function DayView({
     }, [date, calculateMetrics, processEvents])
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            loadData()
-        }, 0)
-        return () => {
-            clearTimeout(timer)
-        }
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        loadData()
     }, [loadData, refreshTrigger])
 
     useEffect(() => {
