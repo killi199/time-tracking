@@ -38,6 +38,7 @@ import NFCSetupScreen from './screens/menu/NFCSetupScreen'
 import MenuDrawerContent from './components/MenuDrawerContent' // Import custom drawer content
 import './services/LocationTask'
 import { initNfcService } from './services/NFCService'
+import { initQuickActions } from './services/QuickActionService'
 
 const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -238,12 +239,16 @@ export default function App() {
         void init()
     }, [])
 
-    // NFC Handling
     useEffect(() => {
         if (!isDbReady) return
 
-        const cleanup = initNfcService()
-        return cleanup
+        const cleanupNfc = initNfcService()
+        const cleanupQuickActions = initQuickActions()
+
+        return () => {
+            cleanupNfc()
+            cleanupQuickActions()
+        }
     }, [isDbReady])
 
     if (!isDbReady) {

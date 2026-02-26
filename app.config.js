@@ -35,6 +35,17 @@ module.exports = {
                 },
             ],
             '@maplibre/maplibre-react-native',
+            [
+                'expo-quick-actions',
+                {
+                    androidIcons: {
+                        shortcut_timer: {
+                            foregroundImage: './assets/adaptive-icon.png',
+                            backgroundColor: '#ffffff',
+                        },
+                    },
+                },
+            ],
         ],
     },
 }

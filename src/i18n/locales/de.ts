@@ -119,5 +119,13 @@ export default {
             checkoutEvent: 'NFC Auschecken',
             checkinEvent: 'NFC Einchecken',
         },
+        quickAction: {
+            title: 'Ein-/Auschecken',
+            subtitle: 'Arbeitsstatus umschalten',
+            checkoutEvent: 'Schnelles Auschecken',
+            checkinEvent: 'Schnelles Einchecken',
+            checkedOutAt: 'Ausgecheckt um',
+            checkedInAt: 'Eingecheckt um',
+        },
     },
 }

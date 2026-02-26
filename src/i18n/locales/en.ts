@@ -116,5 +116,13 @@ export default {
             checkoutEvent: 'NFC check-out',
             checkinEvent: 'NFC check-in',
         },
+        quickAction: {
+            title: 'Check-In / Out',
+            subtitle: 'Toggle your work status',
+            checkoutEvent: 'Quick check-out',
+            checkinEvent: 'Quick check-in',
+            checkedOutAt: 'Checked-out at',
+            checkedInAt: 'Checked-in at',
+        },
     },
 }
