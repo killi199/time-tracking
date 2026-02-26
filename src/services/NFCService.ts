@@ -1,6 +1,7 @@
 import { Linking, Platform, ToastAndroid, BackHandler } from 'react-native'
 import { getTodayEvents, addEvent } from '../db/database'
 import { getFormattedTime, getFormattedDate } from '../utils/time'
+import i18next from 'i18next'
 
 const handleUrl = (url: string | null) => {
     if (url && url.includes('timetracking')) {
@@ -15,15 +16,17 @@ const handleUrl = (url: string | null) => {
             addEvent(
                 today,
                 timeString,
-                isWorking ? 'Auto check-out NFC' : 'Auto check-in NFC',
+                isWorking
+                    ? i18next.t('nfc.checkoutEvent')
+                    : i18next.t('nfc.checkinEvent'),
             )
 
             if (Platform.OS === 'android') {
                 ToastAndroid.show(
                     isWorking
-                        ? `Checked-out at ${timeString}`
-                        : `Checked-in at ${timeString}`,
-                    ToastAndroid.LONG,
+                        ? `${i18next.t('nfc.checkedOutAt')} ${timeString}`
+                        : `${i18next.t('nfc.checkedInAt')} ${timeString}`,
+                    ToastAndroid.SHORT,
                 )
             }
 

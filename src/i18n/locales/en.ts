@@ -111,6 +111,10 @@ export default {
             notSupported: 'NFC is not supported on this device.',
             write: 'Write Tag',
             setup: 'Setup',
+            checkedOutAt: 'Checked-out at',
+            checkedInAt: 'Checked-in at',
+            checkoutEvent: 'NFC check-out',
+            checkinEvent: 'NFC check-in',
         },
     },
 }

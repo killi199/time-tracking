@@ -114,6 +114,10 @@ export default {
             notSupported: 'NFC wird auf diesem Gerät nicht unterstützt.',
             write: 'Tag schreiben',
             setup: 'Einrichtung',
+            checkedOutAt: 'Ausgecheckt um',
+            checkedInAt: 'Eingecheckt um',
+            checkoutEvent: 'NFC Auschecken',
+            checkinEvent: 'NFC Einchecken',
         },
     },
 }
