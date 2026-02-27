@@ -2273,6 +2273,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native/normalize-colors@npm:0.83.2":
+  version: 0.83.2
+  resolution: "@react-native/normalize-colors@npm:0.83.2"
+  checksum: 10c0/eca54405074e9f5ba626f9b099a0d14b0621b6096300a42b06a9b40bbead9c3425f3ae919d7ef5a9fe8742ec9d0856a503804fc2bac29bdef52a708ebca88303
+  languageName: node
+  linkType: hard
+
 "@react-native/virtualized-lists@npm:0.81.5":
   version: 0.81.5
   resolution: "@react-native/virtualized-lists@npm:0.81.5"
@@ -5164,7 +5171,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-quick-actions@npm:^6.0.1":
+"expo-quick-actions@npm:6.0.1":
   version: 6.0.1
   resolution: "expo-quick-actions@npm:6.0.1"
   dependencies:
@@ -5218,11 +5225,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-system-ui@npm:6.0.9":
-  version: 6.0.9
-  resolution: "expo-system-ui@npm:6.0.9"
+"expo-system-ui@npm:55.0.8":
+  version: 55.0.8
+  resolution: "expo-system-ui@npm:55.0.8"
   dependencies:
-    "@react-native/normalize-colors": "npm:0.81.5"
+    "@react-native/normalize-colors": "npm:0.83.2"
     debug: "npm:^4.3.2"
   peerDependencies:
     expo: "*"
@@ -5231,7 +5238,7 @@ __metadata:
   peerDependenciesMeta:
     react-native-web:
       optional: true
-  checksum: 10c0/316882a2fd55c63d46d1c05b15b13764c001c10cd283ae96b7e2dce735a31f21c984fd5a4c01b6bb5fe8588c4acd27709c7b31a57fcd45b6b9b0dac1be9e86c6
+  checksum: 10c0/745f271c82135ccc000a7f10cc2f41dd6795721b2f6abf7117c9e32309a7cf2d1bcdafe735295e56b8a5fcb6da69e38782407baf1ae3226737414f49b700f7ff
   languageName: node
   linkType: hard
 
@@ -9404,11 +9411,11 @@ __metadata:
     expo-localization: "npm:17.0.8"
     expo-location: "npm:19.0.8"
     expo-notifications: "npm:0.32.16"
-    expo-quick-actions: "npm:^6.0.1"
+    expo-quick-actions: "npm:6.0.1"
     expo-sharing: "npm:14.0.8"
     expo-sqlite: "npm:16.0.10"
     expo-status-bar: "npm:3.0.9"
-    expo-system-ui: "npm:6.0.9"
+    expo-system-ui: "npm:55.0.8"
     expo-task-manager: "npm:14.0.9"
     i18next: "npm:25.8.8"
     papaparse: "npm:5.5.3"
