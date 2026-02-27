@@ -23,7 +23,7 @@
         "expo": "54.0.33",
         "expo-document-picker": "14.0.8",
         "expo-file-system": "19.0.21",
-        "expo-localization": "17.0.8",
+        "expo-localization": "55.0.7",
         "expo-location": "19.0.8",
         "expo-notifications": "0.32.16",
         "expo-quick-actions": "6.0.1",

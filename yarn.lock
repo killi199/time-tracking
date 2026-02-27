@@ -5097,15 +5097,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-localization@npm:17.0.8":
-  version: 17.0.8
-  resolution: "expo-localization@npm:17.0.8"
+"expo-localization@npm:55.0.7":
+  version: 55.0.7
+  resolution: "expo-localization@npm:55.0.7"
   dependencies:
     rtl-detect: "npm:^1.0.2"
   peerDependencies:
     expo: "*"
     react: "*"
-  checksum: 10c0/daba7f06bc014bd1c48ce9f39b7a8471b657d9b6dfb4ef1513d163f198d0763d93feaa444168e00b8910eb0595f1baf61e2ee2dcdfced5da84a8575b2b6ed7a1
+  checksum: 10c0/79371136439463ad10e8d9959057485e35aea69f1c21da26815e8a75b0ead8d4d8e442a3eb39767b59d10a8ee0afe7f048b721e0fe8b64bf9fcda043028eabe2
   languageName: node
   linkType: hard
 
@@ -5164,7 +5164,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-quick-actions@npm:^6.0.1":
+"expo-quick-actions@npm:6.0.1":
   version: 6.0.1
   resolution: "expo-quick-actions@npm:6.0.1"
   dependencies:
@@ -9401,10 +9401,10 @@ __metadata:
     expo: "npm:54.0.33"
     expo-document-picker: "npm:14.0.8"
     expo-file-system: "npm:19.0.21"
-    expo-localization: "npm:17.0.8"
+    expo-localization: "npm:55.0.7"
     expo-location: "npm:19.0.8"
     expo-notifications: "npm:0.32.16"
-    expo-quick-actions: "npm:^6.0.1"
+    expo-quick-actions: "npm:6.0.1"
     expo-sharing: "npm:14.0.8"
     expo-sqlite: "npm:16.0.10"
     expo-status-bar: "npm:3.0.9"
