@@ -19,7 +19,7 @@ export default function LanguageSettingsScreen() {
         setSetting('language', value)
 
         if (value === 'auto') {
-            const deviceLanguage = Localization.getLocales()[0]?.languageCode
+            const deviceLanguage = Localization.getLocales()[0].languageCode
             void i18n.changeLanguage(deviceLanguage === 'de' ? 'de' : 'en')
         } else {
             void i18n.changeLanguage(value)

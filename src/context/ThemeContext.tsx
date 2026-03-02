@@ -72,10 +72,8 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     if (!isLoaded) return null // Or a loading spinner
 
     return (
-        <ThemeContext.Provider
-            value={{ themeMode, setThemeMode: handleSetTheme }}
-        >
+        <ThemeContext value={{ themeMode, setThemeMode: handleSetTheme }}>
             <PaperProvider theme={paperTheme}>{children}</PaperProvider>
-        </ThemeContext.Provider>
+        </ThemeContext>
     )
 }
