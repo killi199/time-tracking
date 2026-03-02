@@ -13,6 +13,7 @@ This documentation provides guidelines for AI agents and developers working on t
 - **Language**: TypeScript
 - **State Management**: React Context & Hooks
 - **Navigation**: React Navigation
+- **Package Registry**: Yarn
 
 ## 2. Core Technologies & Rules
 
