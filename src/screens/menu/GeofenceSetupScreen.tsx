@@ -28,6 +28,7 @@ import {
     UserLocation,
     CameraRef,
     PressEvent,
+    useCurrentPosition,
 } from '@maplibre/maplibre-react-native'
 import * as Location from 'expo-location'
 import { useTranslation } from 'react-i18next'
@@ -108,6 +109,7 @@ export default function GeofenceSetupScreen() {
     const [dialogTitle, setDialogTitle] = useState('')
     const [dialogMessage, setDialogMessage] = useState('')
     const [isLocating, setIsLocating] = useState(false)
+    const currentPosition = useCurrentPosition()
 
     function showDialog(title: string, message: string) {
         setDialogTitle(title)
@@ -445,7 +447,7 @@ export default function GeofenceSetupScreen() {
                     },
                 ]}
                 onPress={() => void centerMapOnUser()}
-                loading={isLocating}
+                loading={isLocating || !currentPosition}
             />
 
             {marker && (
