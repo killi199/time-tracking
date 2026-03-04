@@ -350,7 +350,9 @@ export default function GeofenceSetupScreen() {
                     minZoomLevel={5} // Prevent zooming out too much
                 />
 
-                <UserLocation visible={true} />
+                {/* eslint-disable-next-line sonarjs/todo-tag */}
+                {/* TODO: Remove animated={false} after @maplibre/maplibre-react-native upgrade to v11 it was added because of https://github.com/maplibre/maplibre-react-native/issues/1260 */}
+                <UserLocation visible={true} animated={false} />
 
                 {marker && (
                     <PointAnnotation
