@@ -5,6 +5,7 @@ import {
     Dimensions,
     Linking,
     TouchableOpacity,
+    NativeSyntheticEvent,
 } from 'react-native'
 import {
     useTheme,
@@ -20,23 +21,20 @@ import {
 } from 'react-native-paper'
 import {
     Camera,
-    MapView,
-    PointAnnotation,
-    ShapeSource,
-    FillLayer,
-    LineLayer,
+    Map,
+    Marker,
+    GeoJSONSource,
+    Layer,
     UserLocation,
-    setAccessToken,
+    CameraRef,
+    PressEvent,
+    useCurrentPosition,
 } from '@maplibre/maplibre-react-native'
 import * as Location from 'expo-location'
 import { useTranslation } from 'react-i18next'
 import Slider from '@react-native-community/slider'
 import { getSetting, setSetting } from '../../db/database'
 import { LOCATION_TASK_NAME } from '../../services/LocationTask'
-import type { Feature } from 'geojson'
-
-// Set access token to null since we are using OpenFreeMap (or similar) which handles its own keys or doesn't need one
-void setAccessToken(null)
 
 interface GeofenceConfig {
     isEnabled: boolean
@@ -94,8 +92,8 @@ export default function GeofenceSetupScreen() {
         DEFAULT_CENTER_COORDINATE,
     )
     const [zoomLevel, setZoomLevel] = useState(DEFAULT_ZOOM_LEVEL)
-    const cameraRef = useRef<React.ComponentRef<typeof Camera>>(null)
-    const mapRef = useRef<React.ComponentRef<typeof MapView>>(null)
+    const cameraRef = useRef<CameraRef>(null)
+    const mapRef = useRef<React.ComponentRef<typeof Map>>(null)
 
     const [marker, setMarker] = useState<{
         latitude: number
@@ -111,6 +109,7 @@ export default function GeofenceSetupScreen() {
     const [dialogTitle, setDialogTitle] = useState('')
     const [dialogMessage, setDialogMessage] = useState('')
     const [isLocating, setIsLocating] = useState(false)
+    const currentPosition = useCurrentPosition()
 
     function showDialog(title: string, message: string) {
         setDialogTitle(title)
@@ -179,12 +178,23 @@ export default function GeofenceSetupScreen() {
         // Only try to get current location to center map if NO marker is set
         if (!hasSavedLocation) {
             try {
-                const location = await Location.getCurrentPositionAsync({})
-                setCenterCoordinate([
-                    location.coords.longitude,
-                    location.coords.latitude,
-                ])
-                setZoomLevel(15)
+                const location = await Location.getLastKnownPositionAsync({})
+                if (location) {
+                    setCenterCoordinate([
+                        location.coords.longitude,
+                        location.coords.latitude,
+                    ])
+                    setZoomLevel(15)
+                } else {
+                    const currentPos = await Location.getCurrentPositionAsync(
+                        {},
+                    )
+                    setCenterCoordinate([
+                        currentPos.coords.longitude,
+                        currentPos.coords.latitude,
+                    ])
+                    setZoomLevel(15)
+                }
             } catch (error) {
                 console.log('Could not get current location', error)
             }
@@ -250,25 +260,22 @@ export default function GeofenceSetupScreen() {
         setSetting('geofence_config', JSON.stringify(config))
     }
 
-    function onMapLongPress(feature: Feature) {
-        if (feature.geometry.type === 'Point') {
-            const coords = feature.geometry.coordinates
-            const newLatitude = coords[1]
-            const newLongitude = coords[0]
+    function onMapLongPress(event: NativeSyntheticEvent<PressEvent>) {
+        const newLongitude = event.nativeEvent.lngLat[0]
+        const newLatitude = event.nativeEvent.lngLat[1]
 
-            setMarker({ latitude: newLatitude, longitude: newLongitude })
+        setMarker({ latitude: newLatitude, longitude: newLongitude })
 
-            if (isEnabled) {
-                showDialog(t('common.info'), t('geofence.updateInstruction'))
-            } else {
-                const config = {
-                    isEnabled: false,
-                    latitude: newLatitude,
-                    longitude: newLongitude,
-                    radius: radius,
-                }
-                setSetting('geofence_config', JSON.stringify(config))
+        if (isEnabled) {
+            showDialog(t('common.info'), t('geofence.updateInstruction'))
+        } else {
+            const config = {
+                isEnabled: false,
+                latitude: newLatitude,
+                longitude: newLongitude,
+                radius: radius,
             }
+            setSetting('geofence_config', JSON.stringify(config))
         }
     }
 
@@ -288,14 +295,14 @@ export default function GeofenceSetupScreen() {
     async function centerMapOnUser() {
         setIsLocating(true)
         try {
-            const location = await Location.getCurrentPositionAsync({})
-            cameraRef.current?.setCamera({
-                centerCoordinate: [
-                    location.coords.longitude,
-                    location.coords.latitude,
-                ],
-                zoomLevel: 15,
-                animationDuration: 1000,
+            let location = await Location.getLastKnownPositionAsync({})
+            if (!location) {
+                location = await Location.getCurrentPositionAsync({})
+            }
+            cameraRef.current?.easeTo({
+                center: [location.coords.longitude, location.coords.latitude],
+                zoom: 15,
+                duration: 1000,
             })
         } catch (e) {
             console.log('Failed to get location', e)
@@ -306,10 +313,10 @@ export default function GeofenceSetupScreen() {
 
     function centerMapOnMarker() {
         if (marker) {
-            cameraRef.current?.setCamera({
-                centerCoordinate: [marker.longitude, marker.latitude],
-                zoomLevel: 15,
-                animationDuration: 1000,
+            cameraRef.current?.easeTo({
+                center: [marker.longitude, marker.latitude],
+                zoom: 15,
+                duration: 1000,
             })
         }
     }
@@ -329,7 +336,7 @@ export default function GeofenceSetupScreen() {
 
     return (
         <View style={styles.container}>
-            <MapView
+            <Map
                 ref={mapRef}
                 style={styles.map}
                 mapStyle={
@@ -338,25 +345,28 @@ export default function GeofenceSetupScreen() {
                         : 'https://tiles.openfreemap.org/styles/bright'
                 }
                 onLongPress={onMapLongPress}
-                logoEnabled={false}
-                attributionEnabled={false}
+                logo={false}
+                attribution={false}
             >
                 <Camera
                     ref={cameraRef}
-                    defaultSettings={{
-                        centerCoordinate: centerCoordinate,
-                        zoomLevel: zoomLevel,
+                    initialViewState={{
+                        center: [
+                            centerCoordinate[0] ?? 0,
+                            centerCoordinate[1] ?? 0,
+                        ],
+                        zoom: zoomLevel,
                     }}
-                    minZoomLevel={5} // Prevent zooming out too much
+                    minZoom={5} // Prevent zooming out too much
                 />
 
-                <UserLocation visible={true} />
+                <UserLocation />
 
                 {marker && (
-                    <PointAnnotation
+                    <Marker
                         id="selected-location"
-                        coordinate={[marker.longitude, marker.latitude]}
-                        anchor={{ x: 0.5, y: 1 }} // Anchor at bottom center of icon
+                        lngLat={[marker.longitude, marker.latitude]}
+                        anchor="bottom" // Anchor at bottom center of icon
                     >
                         <View
                             style={{
@@ -372,30 +382,32 @@ export default function GeofenceSetupScreen() {
                                 color={theme.colors.primary}
                             />
                         </View>
-                    </PointAnnotation>
+                    </Marker>
                 )}
 
                 {marker && circleGeoJSON && (
-                    <ShapeSource
+                    <GeoJSONSource
                         id="geofence-circle-source"
-                        shape={circleGeoJSON}
+                        data={circleGeoJSON}
                     >
-                        <FillLayer
+                        <Layer
                             id="geofence-circle-fill"
-                            style={{
-                                fillColor: 'rgba(0, 150, 255, 0.2)',
+                            type="fill"
+                            paint={{
+                                'fill-color': 'rgba(0, 150, 255, 0.2)',
                             }}
                         />
-                        <LineLayer
+                        <Layer
                             id="geofence-circle-stroke"
-                            style={{
-                                lineColor: 'rgba(0, 150, 255, 0.5)',
-                                lineWidth: 2,
+                            type="line"
+                            paint={{
+                                'line-color': 'rgba(0, 150, 255, 0.5)',
+                                'line-width': 2,
                             }}
                         />
-                    </ShapeSource>
+                    </GeoJSONSource>
                 )}
-            </MapView>
+            </Map>
 
             <View style={styles.attributionContainer}>
                 <TouchableOpacity
@@ -435,7 +447,7 @@ export default function GeofenceSetupScreen() {
                     },
                 ]}
                 onPress={() => void centerMapOnUser()}
-                loading={isLocating}
+                loading={isLocating || !currentPosition}
             />
 
             {marker && (

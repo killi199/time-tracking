@@ -6,7 +6,10 @@ module.exports = {
         orientation: 'portrait',
         icon: './assets/icon.png',
         userInterfaceStyle: 'automatic',
-        newArchEnabled: true,
+        jsEngine: 'hermes',
+        experiments: {
+            reactCompiler: true,
+        },
         splash: {
             image: './assets/splash-icon.png',
             resizeMode: 'contain',
@@ -14,13 +17,13 @@ module.exports = {
         },
         ios: {
             supportsTablet: true,
+            jsEngine: 'jsc',
         },
         android: {
             adaptiveIcon: {
                 foregroundImage: './assets/adaptive-icon.png',
                 monochromeImage: './assets/adaptive-icon.png',
             },
-            edgeToEdgeEnabled: true,
             predictiveBackGestureEnabled: false,
             package: 'de.killi199.timetracking',
             permissions: ['android.permission.NFC'],

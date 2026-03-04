@@ -18,7 +18,7 @@ const initI18n = async () => {
             language = savedLanguage
         } else {
             // Use device locale
-            const deviceLanguage = Localization.getLocales()[0]?.languageCode
+            const deviceLanguage = Localization.getLocales()[0].languageCode
             if (deviceLanguage === 'de') {
                 language = 'de'
             }
