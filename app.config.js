@@ -6,6 +6,7 @@ module.exports = {
         orientation: 'portrait',
         icon: './assets/icon.png',
         userInterfaceStyle: 'automatic',
+        jsEngine: 'hermes',
         experiments: {
             reactCompiler: true,
         },
@@ -16,6 +17,7 @@ module.exports = {
         },
         ios: {
             supportsTablet: true,
+            jsEngine: 'jsc',
         },
         android: {
             adaptiveIcon: {
