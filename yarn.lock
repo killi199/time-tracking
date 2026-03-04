@@ -23,7 +23,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.20.0, @babel/core@npm:^7.24.4, @babel/core@npm:^7.25.2":
+"@babel/core@npm:7.29.0, @babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.20.0, @babel/core@npm:^7.24.4, @babel/core@npm:^7.25.2":
   version: 7.29.0
   resolution: "@babel/core@npm:7.29.0"
   dependencies:
@@ -2810,7 +2810,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/babel__core@npm:^7.1.14":
+"@types/babel__core@npm:7.20.5, @types/babel__core@npm:^7.1.14":
   version: 7.20.5
   resolution: "@types/babel__core@npm:7.20.5"
   dependencies:
@@ -9496,6 +9496,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "time-tracking@workspace:."
   dependencies:
+    "@babel/core": "npm:7.29.0"
     "@eslint/js": "npm:9.39.2"
     "@maplibre/maplibre-react-native": "npm:10.4.2"
     "@pchmn/expo-material3-theme": "npm:1.4.0"
@@ -9504,6 +9505,7 @@ __metadata:
     "@react-navigation/drawer": "npm:7.8.1"
     "@react-navigation/native": "npm:7.1.28"
     "@react-navigation/native-stack": "npm:7.13.0"
+    "@types/babel__core": "npm:7.20.5"
     "@types/papaparse": "npm:5.5.2"
     "@types/react": "npm:~19.2.10"
     "@vitest/eslint-plugin": "npm:1.6.9"
