@@ -4,9 +4,9 @@
     "main": "index.js",
     "scripts": {
         "start": "expo start",
-        "android": "expo run:android",
+        "android": "expo run:android --variant=debug",
         "android:release": "expo run:android --variant=release",
-        "ios": "expo run:ios",
+        "ios": "expo run:ios --variant=debug",
         "ios:release": "expo run:ios --variant=release",
         "typecheck": "tsc --noEmit",
         "lint": "eslint src",
