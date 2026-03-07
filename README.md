@@ -135,6 +135,14 @@ To lint the codebase:
 yarn lint
 ```
 
+### Generating Licenses
+
+To generate the `src/licenses.json` file containing open source licenses used by the app:
+
+```bash
+yarn generate-licenses
+```
+
 ## Acknowledgments
 
 This app was mainly created by vibe coding using [Google Antigravity](https://antigravity.google/).
