@@ -65,6 +65,17 @@ export default {
             importCSV: 'Import CSV',
             workingLocations: 'Working Location',
             licenses: 'Licenses',
+            privacyPolicy: 'Privacy Policy',
+        },
+        privacy: {
+            title: 'Privacy Policy',
+            intro: 'This app stores data primarily locally on the device. The following sections explain how particular personal and device-related data are handled.',
+            locationTitle: 'Location Data (Geofencing)',
+            locationText: 'To enable automatic check-in and check-out, the app requires background location access. These location records are not transmitted to external servers, but are only evaluated locally on your device to determine entry or exit of the work location.',
+            mapsTitle: 'External Map Services',
+            mapsText: 'To display the map in the Work Location section, we use services such as OpenFreeMap, OpenMapTiles, and OpenStreetMap. When viewing the map, your IP address is sent to their servers, which is technically necessary to retrieve map tiles.',
+            rightsTitle: 'Your Rights & Data Retention',
+            rightsText: 'You have the right and the ability to delete your locally stored data at any time from within the app. Furthermore, you can revoke the location permission in your device\'s system settings at any time.',
         },
         settings: {
             title: 'Settings',

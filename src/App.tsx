@@ -35,6 +35,7 @@ import ThemeSettingsScreen from './screens/settings/ThemeSettingsScreen'
 import LanguageSettingsScreen from './screens/settings/LanguageSettingsScreen'
 import GeofenceSetupScreen from './screens/menu/GeofenceSetupScreen'
 import LicensesScreen from './screens/menu/LicensesScreen'
+import PrivacyPolicyScreen from './screens/menu/PrivacyPolicyScreen'
 import NFCSetupScreen from './screens/menu/NFCSetupScreen'
 import MenuDrawerContent from './components/MenuDrawerContent' // Import custom drawer content
 import './services/LocationTask'
@@ -221,6 +222,11 @@ function NavigationWrapper() {
                         name="Licenses"
                         component={LicensesScreen}
                         options={{ title: t('menu.licenses') }}
+                    />
+                    <Stack.Screen
+                        name="PrivacyPolicy"
+                        component={PrivacyPolicyScreen}
+                        options={{ title: t('menu.privacyPolicy') }}
                     />
                 </Stack.Navigator>
             </NavigationContainer>

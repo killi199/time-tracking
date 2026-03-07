@@ -199,18 +199,40 @@ export default function MenuDrawerContent(
                 style={{
                     paddingBottom: Math.max(insets.bottom, 16),
                     alignItems: 'center',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
                 }}
             >
                 <Button
                     mode="text"
                     textColor={theme.colors.onSurfaceVariant}
-                    labelStyle={{ fontSize: 12 }}
+                    labelStyle={{ fontSize: 12, marginHorizontal: 0 }}
                     onPress={() => {
                         props.navigation.closeDrawer()
                         props.navigation.navigate('Licenses')
                     }}
                 >
                     {t('menu.licenses')}
+                </Button>
+                <Text
+                    style={{
+                        color: theme.colors.onSurfaceVariant,
+                        fontSize: 12,
+                        marginHorizontal: 8,
+                    }}
+                >
+                    •
+                </Text>
+                <Button
+                    mode="text"
+                    textColor={theme.colors.onSurfaceVariant}
+                    labelStyle={{ fontSize: 12, marginHorizontal: 0 }}
+                    onPress={() => {
+                        props.navigation.closeDrawer()
+                        props.navigation.navigate('PrivacyPolicy')
+                    }}
+                >
+                    {t('menu.privacyPolicy')}
                 </Button>
             </View>
 

@@ -67,6 +67,20 @@ export default {
             importCSV: 'CSV Importieren',
             workingLocations: 'Arbeitsort',
             licenses: 'Lizenzen',
+            privacyPolicy: 'Datenschutz',
+        },
+        privacy: {
+            title: 'Datenschutzerklärung',
+            intro: 'Diese App speichert Daten primär lokal auf dem Gerät. Die folgenden Abschnitte erläutern den Umgang mit bestimmten personen- und gerätebezogenen Daten.',
+            locationTitle: 'Standortdaten (Geofencing)',
+            locationText:
+                'Um das automatische Ein- und Auschecken zu ermöglichen, erfordert die App Zugriffsrechte auf Ihren Standort im Hintergrund. Diese Standortverläufe werden nicht an externe Server übertragen, sondern nur lokal auf Ihrem Gerät ausgewertet, um das Betreten oder Verlassen des Arbeitsortes festzustellen.',
+            mapsTitle: 'Externe Kartendienste',
+            mapsText:
+                'Zur Darstellung der Karte im Bereich Arbeitsort greifen wir auf Dienste wie OpenFreeMap, OpenMapTiles und OpenStreetMap zurück. Beim Laden der Karte wird Ihre IP-Adresse an deren Server übermittelt, was technisch für den Abruf der Kartenkacheln notwendig ist.',
+            rightsTitle: 'Ihre Rechte & Speicherdauer',
+            rightsText:
+                'Sie haben jederzeit das Recht und die Möglichkeit, die in der App lokal gespeicherten Daten zu löschen. Zudem können Sie die Standortberechtigung in den Systemeinstellungen des Geräts jederzeit widerrufen.',
         },
         settings: {
             title: 'Einstellungen',
