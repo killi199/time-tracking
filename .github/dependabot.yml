@@ -11,6 +11,7 @@ updates:
           interval: 'daily'
       cooldown:
           default-days: 3
+      open-pull-requests-limit: 10
       ignore:
           - dependency-name: 'react-native'
           - dependency-name: 'react'
