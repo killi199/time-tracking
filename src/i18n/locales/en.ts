@@ -64,6 +64,7 @@ export default {
             exportCSV: 'Export CSV',
             importCSV: 'Import CSV',
             workingLocations: 'Working Location',
+            licenses: 'Licenses',
         },
         settings: {
             title: 'Settings',

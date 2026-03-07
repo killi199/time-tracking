@@ -34,6 +34,7 @@ import SettingsScreen from './screens/settings/SettingsScreen'
 import ThemeSettingsScreen from './screens/settings/ThemeSettingsScreen'
 import LanguageSettingsScreen from './screens/settings/LanguageSettingsScreen'
 import GeofenceSetupScreen from './screens/menu/GeofenceSetupScreen'
+import LicensesScreen from './screens/menu/LicensesScreen'
 import NFCSetupScreen from './screens/menu/NFCSetupScreen'
 import MenuDrawerContent from './components/MenuDrawerContent' // Import custom drawer content
 import './services/LocationTask'
@@ -215,6 +216,11 @@ function NavigationWrapper() {
                         name="NFCSetup"
                         component={NFCSetupScreen}
                         options={{ title: t('nfc.title') }}
+                    />
+                    <Stack.Screen
+                        name="Licenses"
+                        component={LicensesScreen}
+                        options={{ title: t('menu.licenses') }}
                     />
                 </Stack.Navigator>
             </NavigationContainer>

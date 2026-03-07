@@ -14,12 +14,14 @@ import {
 } from '@react-navigation/drawer'
 import { useTranslation } from 'react-i18next'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export default function MenuDrawerContent(
     props: Readonly<DrawerContentComponentProps>,
 ) {
     const theme = useTheme()
     const { t } = useTranslation()
+    const insets = useSafeAreaInsets()
 
     const [visible, setVisible] = useState(false)
     const [dialogTitle, setDialogTitle] = useState('')
@@ -112,6 +114,7 @@ export default function MenuDrawerContent(
                             },
                         }}
                     />
+
                 </Drawer.Section>
 
                 <Drawer.Section>
@@ -191,6 +194,25 @@ export default function MenuDrawerContent(
                     />
                 </Drawer.Section>
             </DrawerContentScrollView>
+
+            <View
+                style={{
+                    paddingBottom: Math.max(insets.bottom, 16),
+                    alignItems: 'center',
+                }}
+            >
+                <Button
+                    mode="text"
+                    textColor={theme.colors.onSurfaceVariant}
+                    labelStyle={{ fontSize: 12 }}
+                    onPress={() => {
+                        props.navigation.closeDrawer()
+                        props.navigation.navigate('Licenses')
+                    }}
+                >
+                    {t('menu.licenses')}
+                </Button>
+            </View>
 
             <Portal>
                 <Dialog visible={visible} onDismiss={hideDialog}>

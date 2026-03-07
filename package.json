@@ -10,7 +10,8 @@
         "ios:release": "expo run:ios --variant=release",
         "typecheck": "tsc --noEmit",
         "lint": "eslint src",
-        "test": "vitest"
+        "test": "vitest",
+        "generate-licenses": "yarn dlx license-checker-rseidelsohn --production --json --out src/licenses.json"
     },
     "expo": {
         "doctor": {
