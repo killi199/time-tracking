@@ -1,0 +1,48 @@
+name: PR Validation
+
+on:
+    pull_request:
+        types: [opened, synchronize, reopened]
+        branches:
+            - 'main'
+
+jobs:
+    validate:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Enable Corepack
+              run: corepack enable
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+                  cache: 'yarn'
+
+            - name: Install dependencies
+              run: yarn install --immutable
+
+            - name: Typecheck
+              run: yarn typecheck
+
+            - name: Lint
+              run: yarn lint
+
+            - name: Build
+              run: yarn expo export
+
+            - name: Test
+              run: yarn test --run
+
+            - name: Expo Doctor
+              run: yarn expo doctor
+
+            - name: Yarn Dedupe Check
+              run: yarn dedupe --check
+
+            - name: Generate License Information Check
+              run: yarn generate-licenses
