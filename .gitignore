@@ -31,3 +31,6 @@ node_modules/
 
 # Licenses
 licenses.json
+
+# Coverage
+coverage/
