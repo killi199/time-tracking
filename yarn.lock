@@ -4874,25 +4874,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-sonarjs@npm:4.0.0":
-  version: 4.0.0
-  resolution: "eslint-plugin-sonarjs@npm:4.0.0"
+"eslint-plugin-sonarjs@npm:4.0.1":
+  version: 4.0.1
+  resolution: "eslint-plugin-sonarjs@npm:4.0.1"
   dependencies:
     "@eslint-community/regexpp": "npm:4.12.2"
     builtin-modules: "npm:3.3.0"
     bytes: "npm:3.1.2"
     functional-red-black-tree: "npm:1.0.1"
-    globals: "npm:17.3.0"
+    globals: "npm:17.4.0"
     jsx-ast-utils-x: "npm:0.1.0"
     lodash.merge: "npm:4.6.2"
-    minimatch: "npm:10.2.1"
+    minimatch: "npm:10.2.4"
     scslre: "npm:0.3.0"
     semver: "npm:7.7.4"
     ts-api-utils: "npm:2.4.0"
     typescript: "npm:>=5"
   peerDependencies:
     eslint: ^8.0.0 || ^9.0.0 || ^10.0.0
-  checksum: 10c0/3da2b067b7fd12df902d473fbc390b93d17d9f557bc1c46826d0c19ce313836dbb4f3095785162c745cf26166605e5b00be0ef6f7fe3c2e377f931fd5cfe647c
+  checksum: 10c0/5e3986c3c66f2b5853f296494530cf7ba47f3bda174209f66df785796a8d888b0b29a5138f6bd32d8e1350952f0ef9aa26b09023bc28e2e216b307488ce9fd90
   languageName: node
   linkType: hard
 
@@ -5693,10 +5693,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globals@npm:17.3.0":
-  version: 17.3.0
-  resolution: "globals@npm:17.3.0"
-  checksum: 10c0/7f21443ecaa60c6e9ff56d9fb6f10a9b5f9514e7f22e5392f715472bb220ce31c865ebf414a32695150e733fb3e1013e6322dbce70fddd1e066f372b8d55a4b8
+"globals@npm:17.4.0":
+  version: 17.4.0
+  resolution: "globals@npm:17.4.0"
+  checksum: 10c0/2be9e8c2b9035836f13d420b22f0247a328db82967d3bebfc01126d888ed609305f06c05895914e969653af5c6ba35fd7a0920f3e6c869afa60666c810630feb
   languageName: node
   linkType: hard
 
@@ -7423,16 +7423,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:10.2.1":
-  version: 10.2.1
-  resolution: "minimatch@npm:10.2.1"
-  dependencies:
-    brace-expansion: "npm:^5.0.2"
-  checksum: 10c0/86c3ed013630e820fda00336ee786a03098723b60bfae452de6306708fc83619df40a99dc6ec59c97d14e25b3b3371669a04e5bf508b1b00339b20229c4907d2
-  languageName: node
-  linkType: hard
-
-"minimatch@npm:^10.1.1, minimatch@npm:^10.2.2":
+"minimatch@npm:10.2.4, minimatch@npm:^10.1.1, minimatch@npm:^10.2.2":
   version: 10.2.4
   resolution: "minimatch@npm:10.2.4"
   dependencies:
@@ -9528,7 +9519,7 @@ __metadata:
     eslint-config-prettier: "npm:10.1.8"
     eslint-plugin-react: "npm:7.37.5"
     eslint-plugin-react-hooks: "npm:7.0.1"
-    eslint-plugin-sonarjs: "npm:4.0.0"
+    eslint-plugin-sonarjs: "npm:4.0.1"
     expo: "npm:^55.0.5"
     expo-document-picker: "npm:~55.0.8"
     expo-file-system: "npm:~55.0.10"
