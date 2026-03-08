@@ -26,6 +26,9 @@ jobs:
             - name: Install dependencies
               run: yarn install --immutable
 
+            - name: Generate License Information Check
+              run: yarn generate-licenses
+
             - name: Typecheck
               run: yarn typecheck
 
@@ -54,6 +57,3 @@ jobs:
 
             - name: Yarn Dedupe Check
               run: yarn dedupe --check
-
-            - name: Generate License Information Check
-              run: yarn generate-licenses
