@@ -1,3 +1,31 @@
+const isFOSS = process.env.EXPO_PUBLIC_FOSS_BUILD === 'true'
+
+const plugins = [
+    './plugins/withNfcIntent',
+    'expo-sqlite',
+    '@maplibre/maplibre-react-native',
+    [
+        'expo-quick-actions',
+        {
+            androidIcons: {
+                shortcut_timer: {
+                    foregroundImage: './assets/adaptive-icon.png',
+                    backgroundColor: '#ffffff',
+                },
+            },
+        },
+    ],
+]
+
+if (!isFOSS) {
+    plugins.push([
+        'expo-location',
+        {
+            isAndroidBackgroundLocationEnabled: true,
+        },
+    ])
+}
+
 module.exports = {
     expo: {
         name: 'time-tracking',
@@ -29,27 +57,6 @@ module.exports = {
             package: 'de.killi199.timetracking',
             permissions: ['android.permission.NFC'],
         },
-        plugins: [
-            './plugins/withNfcIntent',
-            'expo-sqlite',
-            [
-                'expo-location',
-                {
-                    isAndroidBackgroundLocationEnabled: true,
-                },
-            ],
-            '@maplibre/maplibre-react-native',
-            [
-                'expo-quick-actions',
-                {
-                    androidIcons: {
-                        shortcut_timer: {
-                            foregroundImage: './assets/adaptive-icon.png',
-                            backgroundColor: '#ffffff',
-                        },
-                    },
-                },
-            ],
-        ],
+        plugins: plugins,
     },
 }
