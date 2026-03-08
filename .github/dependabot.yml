@@ -22,3 +22,4 @@ updates:
           - dependency-name: 'react-native-reanimated'
           - dependency-name: 'react-native-screens'
           - dependency-name: 'react-native-worklets'
+          - dependency-name: 'react-native-safe-area-context'
