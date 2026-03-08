@@ -36,7 +36,13 @@ jobs:
               run: yarn expo export
 
             - name: Test
-              run: yarn test --run --coverage
+              run: yarn test --run --coverage --reporter=junit --outputFile=test-report.junit.xml
+
+            - name: Upload test results to Codecov
+              if: ${{ !cancelled() }}
+              uses: codecov/test-results-action@v1
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
 
             - name: Upload coverage reports to Codecov
               uses: codecov/codecov-action@v5
