@@ -2,7 +2,8 @@ module.exports = {
     expo: {
         name: 'time-tracking',
         slug: 'time-tracking',
-        version: '1.0.0',
+        // eslint-disable-next-line no-undef, @typescript-eslint/no-unsafe-assignment
+        version: process.env.APP_VERSION || '1.0.0',
         orientation: 'portrait',
         icon: './assets/icon.png',
         userInterfaceStyle: 'automatic',
