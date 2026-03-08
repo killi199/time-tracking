@@ -37,6 +37,8 @@ export default function MenuDrawerContent(
         setVisible(false)
     }
 
+    const isFOSS = process.env.EXPO_PUBLIC_FOSS_BUILD === 'true'
+
     return (
         <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
             <DrawerContentScrollView {...props}>
@@ -52,26 +54,28 @@ export default function MenuDrawerContent(
                 </Drawer.Section>
 
                 <Drawer.Section>
-                    <Drawer.Item
-                        label={t('menu.workingLocations')}
-                        icon={({ color, size }) => (
-                            <MaterialCommunityIcons
-                                name="map-marker-radius"
-                                color={color}
-                                size={size}
-                            />
-                        )}
-                        onPress={() => {
-                            props.navigation.closeDrawer()
-                            props.navigation.navigate('GeofenceSetup')
-                        }}
-                        style={{ backgroundColor: theme.colors.surface }}
-                        theme={{
-                            colors: {
-                                onSurfaceVariant: theme.colors.onSurface,
-                            },
-                        }}
-                    />
+                    {!isFOSS && (
+                        <Drawer.Item
+                            label={t('menu.workingLocations')}
+                            icon={({ color, size }) => (
+                                <MaterialCommunityIcons
+                                    name="map-marker-radius"
+                                    color={color}
+                                    size={size}
+                                />
+                            )}
+                            onPress={() => {
+                                props.navigation.closeDrawer()
+                                props.navigation.navigate('GeofenceSetup')
+                            }}
+                            style={{ backgroundColor: theme.colors.surface }}
+                            theme={{
+                                colors: {
+                                    onSurfaceVariant: theme.colors.onSurface,
+                                },
+                            }}
+                        />
+                    )}
 
                     <Drawer.Item
                         label={t('nfc.title')}

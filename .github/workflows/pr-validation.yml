@@ -12,6 +12,9 @@ permissions:
 jobs:
     validate:
         runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                variant: [default, foss]
 
         steps:
             - name: Checkout code
@@ -26,38 +29,54 @@ jobs:
                   node-version: 24
                   cache: 'yarn'
 
-            - name: Install dependencies
+            - name: Install dependencies (Default Variant)
+              if: matrix.variant == 'default'
               run: yarn install --immutable
+
+            - name: Prepare and Install Dependencies (FOSS Variant)
+              if: matrix.variant == 'foss'
+              run: |
+                  sudo apt-get install -y jq
+                  jq 'del(.dependencies["expo-location", "expo-notifications"])' package.json > temp.json && mv temp.json package.json
+                  yarn install --no-immutable
 
             - name: Generate License Information Check
               run: yarn generate-licenses
 
             - name: Typecheck
+              if: matrix.variant == 'default'
               run: yarn typecheck
 
             - name: Lint
+              if: matrix.variant == 'default'
               run: yarn lint
 
             - name: Build
               run: yarn expo export
+              env:
+                  EXPO_PUBLIC_FOSS_BUILD: ${{ matrix.variant == 'foss' && 'true' || 'false' }}
 
             - name: Test
+              if: matrix.variant == 'default'
               run: yarn test --run --coverage --reporter=junit --outputFile=test-report.junit.xml
 
             - name: Upload test results to Codecov
-              if: ${{ !cancelled() }}
+              if: ${{ !cancelled() && matrix.variant == 'default' }}
               uses: codecov/codecov-action@v5
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
                   report_type: test_results
 
             - name: Upload coverage reports to Codecov
+              if: matrix.variant == 'default'
               uses: codecov/codecov-action@v5
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
 
             - name: Expo Doctor
+              if: matrix.variant == 'default'
               run: npx expo-doctor
 
             - name: Yarn Dedupe Check
+              if: matrix.variant == 'default'
               run: yarn dedupe --check
