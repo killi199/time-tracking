@@ -12,6 +12,9 @@ permissions:
 jobs:
     validate:
         runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                variant: [default, foss]
 
         steps:
             - name: Checkout code
@@ -29,17 +32,28 @@ jobs:
             - name: Install dependencies
               run: yarn install --immutable
 
+            - name: Prepare FOSS Variant
+              if: matrix.variant == 'foss'
+              run: |
+                  sudo apt-get install -y jq
+                  jq 'del(.dependencies["expo-location", "expo-notifications"])' package.json > temp.json && mv temp.json package.json
+                  yarn install
+
             - name: Generate License Information Check
               run: yarn generate-licenses
 
             - name: Typecheck
+              if: matrix.variant == 'default' # Typecheck fails on FOSS because the packages are physically uninstalled
               run: yarn typecheck
 
             - name: Lint
+              if: matrix.variant == 'default'
               run: yarn lint
 
             - name: Build
               run: yarn expo export
+              env:
+                  EXPO_PUBLIC_FOSS_BUILD: ${{ matrix.variant == 'foss' && 'true' || 'false' }}
 
             - name: Test
               run: yarn test --run --coverage --reporter=junit --outputFile=test-report.junit.xml
@@ -57,6 +71,7 @@ jobs:
                   token: ${{ secrets.CODECOV_TOKEN }}
 
             - name: Expo Doctor
+              if: matrix.variant == 'default'
               run: npx expo-doctor
 
             - name: Yarn Dedupe Check
