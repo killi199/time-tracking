@@ -34,7 +34,7 @@ jobs:
               uses: actions/setup-java@v4
               with:
                   distribution: 'zulu'
-                  java-version: '25'
+                  java-version: '17'
 
             - name: Set APP_VERSION
               run: echo "APP_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
