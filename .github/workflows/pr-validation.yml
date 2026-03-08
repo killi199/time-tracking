@@ -54,7 +54,7 @@ jobs:
                   token: ${{ secrets.CODECOV_TOKEN }}
 
             - name: Expo Doctor
-              run: yarn expo doctor
+              run: npx expo-doctor
 
             - name: Yarn Dedupe Check
               run: yarn dedupe --check
