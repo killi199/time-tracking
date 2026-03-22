@@ -10,25 +10,19 @@ jobs:
         runs-on: ubuntu-latest
         permissions:
             contents: write
+        strategy:
+            fail-fast: false
+            matrix:
+                variant: [default, foss]
 
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
 
-            - name: Enable Corepack
-              run: corepack enable
-
-            - name: Setup Node.js
-              uses: actions/setup-node@v4
+            - name: Setup Environment and Install Dependencies
+              uses: ./.github/actions/setup-environment
               with:
-                  node-version: 24
-                  cache: 'yarn'
-
-            - name: Install dependencies
-              run: yarn install --immutable
-
-            - name: Generate License Information Check
-              run: yarn generate-licenses
+                  variant: ${{ matrix.variant }}
 
             - name: Setup Java
               uses: actions/setup-java@v4
@@ -41,15 +35,20 @@ jobs:
 
             - name: Prebuild Android
               run: npx expo prebuild --platform android --clean
+              env:
+                  EXPO_PUBLIC_FOSS_BUILD: ${{ matrix.variant == 'foss' && 'true' || 'false' }}
 
             - name: Build Android APK
               working-directory: android
               run: ./gradlew assembleRelease
 
+            - name: Rename APK
+              run: find android/app/build/outputs/apk/release -name "*.apk" -exec mv {} android/app/build/outputs/apk/release/time-tracking-${{ matrix.variant }}.apk \;
+
             - name: Publish Release to GitHub
               uses: softprops/action-gh-release@v2
               with:
-                  files: android/app/build/outputs/apk/release/*.apk
+                  files: android/app/build/outputs/apk/release/time-tracking-${{ matrix.variant }}.apk
                   name: Release ${{ env.APP_VERSION }}
                   generate_release_notes: true
               env:
