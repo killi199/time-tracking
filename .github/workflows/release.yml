@@ -12,6 +12,9 @@ jobs:
             fail-fast: false
             matrix:
                 variant: [default, foss]
+        env:
+            EXPO_PUBLIC_FOSS_BUILD: ${{ matrix.variant == 'foss' && 'true' || 'false' }}
+            NODE_ENV: production
 
         steps:
             - name: Checkout code
@@ -30,8 +33,6 @@ jobs:
 
             - name: Prebuild Android
               run: npx expo prebuild --platform android --clean
-              env:
-                  EXPO_PUBLIC_FOSS_BUILD: ${{ matrix.variant == 'foss' && 'true' || 'false' }}
 
             - name: Build Android APK
               working-directory: android
