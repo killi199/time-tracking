@@ -3,6 +3,8 @@ const isFOSS = process.env.EXPO_PUBLIC_FOSS_BUILD === 'true'
 const plugins = [
     './plugins/withNfcIntent',
     'expo-sqlite',
+    'expo-sharing',
+    'expo-localization',
     '@maplibre/maplibre-react-native',
     [
         'expo-quick-actions',
