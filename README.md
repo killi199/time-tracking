@@ -109,6 +109,16 @@ yarn android:release
 
 This command runs `expo run:android --variant=release`.
 
+### Building the FOSS Version
+
+The application supports a FOSS (Free and Open Source Software) build flavor. This build removes proprietary dependencies (such as `expo-location` and `expo-notifications`) and disables features relying on them, making the app compatible with platforms like F-Droid.
+
+To build and install the FOSS release version on your connected Android device:
+
+```bash
+yarn android:release-foss
+```
+
 ## Scripts
 
 ### Running Tests

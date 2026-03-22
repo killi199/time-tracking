@@ -20,28 +20,10 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v4
 
-            - name: Enable Corepack
-              run: corepack enable
-
-            - name: Setup Node.js
-              uses: actions/setup-node@v4
+            - name: Setup Environment and Install Dependencies
+              uses: ./.github/actions/setup-environment
               with:
-                  node-version: 24
-                  cache: 'yarn'
-
-            - name: Install dependencies (Default Variant)
-              if: matrix.variant == 'default'
-              run: yarn install --immutable
-
-            - name: Prepare and Install Dependencies (FOSS Variant)
-              if: matrix.variant == 'foss'
-              run: |
-                  sudo apt-get install -y jq
-                  jq 'del(.dependencies["expo-location", "expo-notifications"])' package.json > temp.json && mv temp.json package.json
-                  yarn install --no-immutable
-
-            - name: Generate License Information Check
-              run: yarn generate-licenses
+                  variant: ${{ matrix.variant }}
 
             - name: Typecheck
               if: matrix.variant == 'default'
