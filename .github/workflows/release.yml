@@ -6,10 +6,8 @@ on:
             - 'v*'
 
 jobs:
-    build-and-release:
+    build:
         runs-on: ubuntu-latest
-        permissions:
-            contents: write
         strategy:
             fail-fast: false
             matrix:
@@ -30,9 +28,6 @@ jobs:
                   distribution: 'zulu'
                   java-version: '17'
 
-            - name: Set APP_VERSION
-              run: echo "APP_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
-
             - name: Prebuild Android
               run: npx expo prebuild --platform android --clean
               env:
@@ -45,10 +40,33 @@ jobs:
             - name: Rename APK
               run: find android/app/build/outputs/apk/release -name "*.apk" -exec mv {} android/app/build/outputs/apk/release/time-tracking-${{ matrix.variant }}.apk \;
 
+            - name: Upload APK Artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: apk-${{ matrix.variant }}
+                  path: android/app/build/outputs/apk/release/time-tracking-${{ matrix.variant }}.apk
+                  if-no-files-found: error
+
+    release:
+        needs: build
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+        steps:
+            - name: Set APP_VERSION
+              run: echo "APP_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+
+            - name: Download all APKs
+              uses: actions/download-artifact@v4
+              with:
+                  pattern: apk-*
+                  merge-multiple: true
+                  path: release-apks/
+
             - name: Publish Release to GitHub
               uses: softprops/action-gh-release@v2
               with:
-                  files: android/app/build/outputs/apk/release/time-tracking-${{ matrix.variant }}.apk
+                  files: release-apks/*.apk
                   name: Release ${{ env.APP_VERSION }}
                   generate_release_notes: true
               env:
