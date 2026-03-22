@@ -2,6 +2,7 @@ import { ScrollView, StyleSheet, View } from 'react-native'
 import { Text, useTheme } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
 
+const isFOSS = process.env.EXPO_PUBLIC_FOSS_BUILD === 'true'
 export default function PrivacyPolicyScreen() {
     const theme = useTheme()
     const { t } = useTranslation()
@@ -22,29 +23,42 @@ export default function PrivacyPolicyScreen() {
                     {t('privacy.intro')}
                 </Text>
 
-                <Text
-                    variant="titleMedium"
-                    style={[styles.sectionTitle, { color: theme.colors.primary }]}
-                >
-                    {t('privacy.locationTitle')}
-                </Text>
-                <Text variant="bodyMedium" style={styles.paragraph}>
-                    {t('privacy.locationText')}
-                </Text>
+                {!isFOSS && (
+                    <>
+                        <Text
+                            variant="titleMedium"
+                            style={[
+                                styles.sectionTitle,
+                                { color: theme.colors.primary },
+                            ]}
+                        >
+                            {t('privacy.locationTitle')}
+                        </Text>
+                        <Text variant="bodyMedium" style={styles.paragraph}>
+                            {t('privacy.locationText')}
+                        </Text>
+
+                        <Text
+                            variant="titleMedium"
+                            style={[
+                                styles.sectionTitle,
+                                { color: theme.colors.primary },
+                            ]}
+                        >
+                            {t('privacy.mapsTitle')}
+                        </Text>
+                        <Text variant="bodyMedium" style={styles.paragraph}>
+                            {t('privacy.mapsText')}
+                        </Text>
+                    </>
+                )}
 
                 <Text
                     variant="titleMedium"
-                    style={[styles.sectionTitle, { color: theme.colors.primary }]}
-                >
-                    {t('privacy.mapsTitle')}
-                </Text>
-                <Text variant="bodyMedium" style={styles.paragraph}>
-                    {t('privacy.mapsText')}
-                </Text>
-
-                <Text
-                    variant="titleMedium"
-                    style={[styles.sectionTitle, { color: theme.colors.primary }]}
+                    style={[
+                        styles.sectionTitle,
+                        { color: theme.colors.primary },
+                    ]}
                 >
                     {t('privacy.rightsTitle')}
                 </Text>
