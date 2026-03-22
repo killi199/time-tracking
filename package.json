@@ -65,7 +65,7 @@
         "@types/babel__core": "7.20.5",
         "@types/papaparse": "5.5.2",
         "@types/react": "~19.2.14",
-        "@vitest/coverage-v8": "4.0.18",
+        "@vitest/coverage-v8": "4.1.0",
         "@vitest/eslint-plugin": "1.6.12",
         "babel-plugin-module-resolver": "5.0.2",
         "cross-env": "10.1.0",
