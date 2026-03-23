@@ -12,6 +12,10 @@ updates:
       cooldown:
           default-days: 3
       open-pull-requests-limit: 10
+      groups:
+          react-navigation:
+              patterns:
+                  - "@react-navigation/*"
       ignore:
           - dependency-name: 'react-native'
           - dependency-name: 'react'
