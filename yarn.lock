@@ -2286,20 +2286,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-navigation/bottom-tabs@npm:7.15.5":
-  version: 7.15.5
-  resolution: "@react-navigation/bottom-tabs@npm:7.15.5"
+"@react-navigation/bottom-tabs@npm:7.15.6":
+  version: 7.15.6
+  resolution: "@react-navigation/bottom-tabs@npm:7.15.6"
   dependencies:
-    "@react-navigation/elements": "npm:^2.9.10"
+    "@react-navigation/elements": "npm:^2.9.11"
     color: "npm:^4.2.3"
     sf-symbols-typescript: "npm:^2.1.0"
   peerDependencies:
-    "@react-navigation/native": ^7.1.33
+    "@react-navigation/native": ^7.1.34
     react: ">= 18.2.0"
     react-native: "*"
     react-native-safe-area-context: ">= 4.0.0"
     react-native-screens: ">= 4.0.0"
-  checksum: 10c0/e9f244d5e9fefb2e2a1c8814eb6df4ce8efebdb839ecd7da0f313416228145338dc75c0cdedb674c6999e6f67450cdd785a6e887dd0d730757a09801128144a4
+  checksum: 10c0/7a1083b6a960f3eb5beb9f41f17db5439f3c221620bcd682c34698882478ef9cfc3f8fbba557997ac0eaaa26acabf5a3e73a9bf82ef72823be97d2546e8b5e3f
   languageName: node
   linkType: hard
 
@@ -2358,6 +2358,26 @@ __metadata:
     "@react-native-masked-view/masked-view":
       optional: true
   checksum: 10c0/812ac7d143551a4f283b88530c23dc5c1afb65ba2ea2fab746601335649486fcfa6a001384815527ebe5556359253b966406517333e6596cb5f27dd3123d7487
+  languageName: node
+  linkType: hard
+
+"@react-navigation/elements@npm:^2.9.11":
+  version: 2.9.11
+  resolution: "@react-navigation/elements@npm:2.9.11"
+  dependencies:
+    color: "npm:^4.2.3"
+    use-latest-callback: "npm:^0.2.4"
+    use-sync-external-store: "npm:^1.5.0"
+  peerDependencies:
+    "@react-native-masked-view/masked-view": ">= 0.2.0"
+    "@react-navigation/native": ^7.1.34
+    react: ">= 18.2.0"
+    react-native: "*"
+    react-native-safe-area-context: ">= 4.0.0"
+  peerDependenciesMeta:
+    "@react-native-masked-view/masked-view":
+      optional: true
+  checksum: 10c0/82c3245d203989f38f66775b76052448901180b1b53eabe4b5c4a8554267cc4458efd18f2422c5f76b3e1f07cafb063846917c780db53680e6f2fd922db35a9a
   languageName: node
   linkType: hard
 
@@ -9426,7 +9446,7 @@ __metadata:
     "@maplibre/maplibre-react-native": "npm:11.0.0-beta.10"
     "@pchmn/expo-material3-theme": "npm:1.4.0"
     "@react-native-community/slider": "npm:5.1.2"
-    "@react-navigation/bottom-tabs": "npm:7.15.5"
+    "@react-navigation/bottom-tabs": "npm:7.15.6"
     "@react-navigation/drawer": "npm:7.9.4"
     "@react-navigation/native": "npm:7.1.33"
     "@react-navigation/native-stack": "npm:7.14.4"
