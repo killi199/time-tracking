@@ -2005,9 +2005,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@maplibre/maplibre-react-native@npm:11.0.0-beta.12":
-  version: 11.0.0-beta.12
-  resolution: "@maplibre/maplibre-react-native@npm:11.0.0-beta.12"
+"@maplibre/maplibre-react-native@npm:11.0.0-beta.15":
+  version: 11.0.0-beta.15
+  resolution: "@maplibre/maplibre-react-native@npm:11.0.0-beta.15"
   dependencies:
     "@maplibre/maplibre-gl-style-spec": "npm:24.4.1"
     "@turf/distance": "npm:^7.1.0"
@@ -2027,7 +2027,7 @@ __metadata:
       optional: true
     "@types/react":
       optional: true
-  checksum: 10c0/1e69ba1c25c53098f57cf3a65f7fab399df5732e8c1a47f0003d03262ca9d3bb46336bb7b929d6de5a03283235e503626e0c40ab449a350f7722698cf3a9cf35
+  checksum: 10c0/422b157c19fff54ead1140e9e9e1e645bd66151cd7cb726b829063b533df926864c262f1fa26314f594c4c35fa10292ea4b1cbafe9615ebe38a04c238afa9b68
   languageName: node
   linkType: hard
 
@@ -9423,7 +9423,7 @@ __metadata:
   dependencies:
     "@babel/core": "npm:7.29.0"
     "@eslint/js": "npm:9.39.2"
-    "@maplibre/maplibre-react-native": "npm:11.0.0-beta.12"
+    "@maplibre/maplibre-react-native": "npm:11.0.0-beta.15"
     "@pchmn/expo-material3-theme": "npm:1.4.0"
     "@react-native-community/slider": "npm:5.1.2"
     "@react-navigation/bottom-tabs": "npm:7.15.6"
