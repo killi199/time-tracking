@@ -1,0 +1,24 @@
+Mühelose Zeiterfassung:
+Behalte präzise und einfach den Überblick über deine Arbeitszeiten.
+- Manuelle Eingabe: Füge Zeiteinträge mit eigenen Notizen hinzu, bearbeite oder entferne sie.
+- Visuelle Übersicht: Wechsle zwischen Tages-, Wochen- und Monatsansicht, um deine Produktivität zu analysieren.
+- Intelligente Logik: Berechnet automatisch die Dauer und hält deine Aufzeichnungen organisiert.
+
+Smarter Auto-Check-in:
+Vergiss manuelles Stempeln. Lass dein Smartphone das für dich erledigen.
+- NFC-Tag-Unterstützung: Check-in mit einem einfachen Tippen. Scanne einen NFC-Tag, um sofort deinen Status umzuschalten – perfekt für schnelle Check-ins, ohne die App manuell öffnen zu müssen.
+
+Datenfreiheit:
+Deine Daten gehören dir.
+- CSV-Export: Generiere umfassende Berichte deiner Arbeitshistorie im Standard-CSV-Format, bereit für Excel oder Google Sheets.
+- Einfacher Import: Migriere deine Daten oder stelle Backups nahtlos via CSV wieder her.
+
+Adaptive UI-Integration:
+Eine Benutzeroberfläche, die sich auf deinem Gerät sofort vertraut anfühlt.
+- Dark & Light Mode: Wechselt nahtlos zwischen hellem und dunklem Design, basierend auf deinen Systemeinstellungen oder manuellen Präferenzen.
+- Material You: Unterstützt das dynamische Farbsystem von Android und passt die Farbpalette der App an dein Hintergrundbild und Systemdesign an, für einen personalisierten Look.
+
+Mehrsprachigkeit:
+Nutze die App in deiner bevorzugten Sprache.
+- Sprachen: Unterstützt derzeit Englisch und Deutsch.
+- Automatische Erkennung: Erkennt automatisch die Spracheinstellungen deines Geräts.
