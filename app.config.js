@@ -51,6 +51,10 @@ module.exports = {
             jsEngine: 'jsc',
         },
         android: {
+            // eslint-disable-next-line no-undef
+            versionCode: process.env.APP_VERSION_CODE
+                ? Number(process.env.APP_VERSION_CODE)
+                : 1,
             adaptiveIcon: {
                 foregroundImage: './assets/adaptive-icon.png',
                 monochromeImage: './assets/adaptive-icon.png',

@@ -31,8 +31,10 @@ jobs:
                   distribution: 'zulu'
                   java-version: '17'
 
-            - name: Set APP_VERSION
-              run: echo "APP_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+            - name: Set APP_VERSION and APP_VERSION_CODE
+              run: |
+                  echo "APP_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+                  echo "APP_VERSION_CODE=${{ github.run_number }}" >> $GITHUB_ENV
 
             - name: Prebuild Android
               run: npx expo prebuild --platform android --clean
