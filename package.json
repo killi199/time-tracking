@@ -15,6 +15,13 @@
         "generate-licenses": "yarn dlx license-checker-rseidelsohn --production --json --out src/licenses.json"
     },
     "expo": {
+        "autolinking": {
+            "android": {
+                "buildFromSource": [
+                    ".*"
+                ]
+            }
+        },
         "doctor": {
             "reactNativeDirectoryCheck": {
                 "exclude": [
