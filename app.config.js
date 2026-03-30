@@ -17,6 +17,21 @@ const plugins = [
             },
         },
     ],
+    [
+        (config) => {
+            // eslint-disable-next-line @typescript-eslint/no-require-imports, no-undef
+            const { withGradleProperties } = require('expo/config-plugins')
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            return withGradleProperties(config, (c) => {
+                c.modResults.push({
+                    type: 'property',
+                    key: 'android.injected.dependenciesInfo.includeInApk',
+                    value: 'false',
+                })
+                return c
+            })
+        },
+    ],
 ]
 
 if (!isFOSS) {
