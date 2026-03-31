@@ -2,6 +2,7 @@ const isFOSS = process.env.EXPO_PUBLIC_FOSS_BUILD === 'true'
 
 const plugins = [
     './plugins/withNfcIntent',
+    './plugins/withDisableDependencyMetadata',
     'expo-sqlite',
     'expo-sharing',
     'expo-localization',
@@ -15,21 +16,6 @@ const plugins = [
                     backgroundColor: '#ffffff',
                 },
             },
-        },
-    ],
-    [
-        (config) => {
-            // eslint-disable-next-line @typescript-eslint/no-require-imports, no-undef
-            const { withGradleProperties } = require('expo/config-plugins')
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-            return withGradleProperties(config, (c) => {
-                c.modResults.push({
-                    type: 'property',
-                    key: 'android.injected.dependenciesInfo.includeInApk',
-                    value: 'false',
-                })
-                return c
-            })
         },
     ],
 ]
