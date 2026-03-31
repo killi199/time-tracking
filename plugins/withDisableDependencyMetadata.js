@@ -1,20 +1,20 @@
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-require-imports */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-const { withGradleProperties } = require('@expo/config-plugins')
+const { withAppBuildGradle } = require('@expo/config-plugins')
 
 const withDisableDependencyMetadata = (config) => {
-    return withGradleProperties(config, (config) => {
-        config.modResults.push({
-            type: 'property',
-            key: 'android.dependenciesInfo.includeInApk',
-            value: 'false',
-        })
-        config.modResults.push({
-            type: 'property',
-            key: 'android.dependenciesInfo.includeInBundle',
-            value: 'false',
-        })
+    return withAppBuildGradle(config, (config) => {
+        if (!config.modResults.contents.includes('dependenciesInfo {')) {
+            config.modResults.contents = config.modResults.contents.replace(
+                /android\s*\{/,
+                `android {
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }`,
+            )
+        }
         return config
     })
 }
