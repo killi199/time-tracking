@@ -1,4 +1,5 @@
 const isFOSS = process.env.EXPO_PUBLIC_FOSS_BUILD === 'true'
+import { version, versionCode } from './package.json'
 
 const plugins = [
     './plugins/withNfcIntent',
@@ -33,8 +34,7 @@ module.exports = {
     expo: {
         name: 'time-tracking',
         slug: 'time-tracking',
-        // eslint-disable-next-line no-undef, @typescript-eslint/no-unsafe-assignment
-        version: process.env.APP_VERSION || '1.0.0',
+        version,
         orientation: 'portrait',
         icon: './assets/icon.png',
         userInterfaceStyle: 'automatic',
@@ -52,10 +52,7 @@ module.exports = {
             jsEngine: 'jsc',
         },
         android: {
-            // eslint-disable-next-line no-undef
-            versionCode: process.env.APP_VERSION_CODE
-                ? Number(process.env.APP_VERSION_CODE)
-                : 1,
+            versionCode,
             adaptiveIcon: {
                 foregroundImage: './assets/adaptive-icon.png',
                 monochromeImage: './assets/adaptive-icon.png',
