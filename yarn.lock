@@ -5403,7 +5403,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-constants@npm:55.0.9, expo-constants@npm:~55.0.8, expo-constants@npm:~55.0.9":
+"expo-constants@npm:~55.0.8, expo-constants@npm:~55.0.9":
   version: 55.0.9
   resolution: "expo-constants@npm:55.0.9"
   dependencies:
@@ -5486,7 +5486,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-linking@npm:55.0.9":
+"expo-linking@npm:~55.0.9":
   version: 55.0.9
   resolution: "expo-linking@npm:55.0.9"
   dependencies:
@@ -5578,7 +5578,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-router@npm:55.0.8":
+"expo-router@npm:~55.0.8":
   version: 55.0.8
   resolution: "expo-router@npm:55.0.8"
   dependencies:
@@ -10173,15 +10173,15 @@ __metadata:
     eslint-plugin-react-hooks: "npm:7.0.1"
     eslint-plugin-sonarjs: "npm:4.0.2"
     expo: "npm:^55.0.8"
-    expo-constants: "npm:55.0.9"
+    expo-constants: "npm:~55.0.9"
     expo-document-picker: "npm:~55.0.9"
     expo-file-system: "npm:~55.0.11"
-    expo-linking: "npm:55.0.9"
+    expo-linking: "npm:~55.0.9"
     expo-localization: "npm:~55.0.9"
     expo-location: "npm:~55.1.4"
     expo-notifications: "npm:~55.0.13"
     expo-quick-actions: "npm:6.0.1"
-    expo-router: "npm:55.0.8"
+    expo-router: "npm:~55.0.8"
     expo-sharing: "npm:~55.0.14"
     expo-sqlite: "npm:~55.0.11"
     expo-status-bar: "npm:~55.0.4"
