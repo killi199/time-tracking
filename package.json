@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "start": "expo start",
-        "android": "expo run:android --variant=debug",
+        "android": "cross-env EXPO_PUBLIC_FOSS_BUILD=false expo run:android --variant=debug",
         "android:release": "cross-env EXPO_PUBLIC_FOSS_BUILD=false expo run:android --variant=release",
         "android:release-foss": "expo run:android --variant=release",
         "ios": "expo run:ios --variant=debug",
