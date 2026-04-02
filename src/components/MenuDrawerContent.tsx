@@ -37,7 +37,7 @@ export default function MenuDrawerContent(
         setVisible(false)
     }
 
-    const isFOSS = process.env.EXPO_PUBLIC_FOSS_BUILD === 'true'
+    const isFOSS = process.env.EXPO_PUBLIC_FOSS_BUILD !== 'false'
 
     return (
         <View style={{ flex: 1, backgroundColor: theme.colors.background }}>

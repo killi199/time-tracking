@@ -36,7 +36,7 @@ jobs:
             - name: Build
               run: yarn expo export
               env:
-                  EXPO_PUBLIC_FOSS_BUILD: ${{ matrix.variant == 'foss' && 'true' || 'false' }}
+                  EXPO_PUBLIC_FOSS_BUILD: ${{ matrix.variant == 'default' && 'false' || 'true' }}
 
             - name: Test
               if: matrix.variant == 'default'

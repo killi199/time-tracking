@@ -1,7 +1,7 @@
 module.exports = function (api) {
     api.cache(true)
 
-    const isFOSS = process.env.EXPO_PUBLIC_FOSS_BUILD === 'true'
+    const isFOSS = process.env.EXPO_PUBLIC_FOSS_BUILD !== 'false'
     const plugins = []
 
     if (isFOSS) {

@@ -2,7 +2,7 @@ import { ScrollView, StyleSheet, View } from 'react-native'
 import { Text, useTheme } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
 
-const isFOSS = process.env.EXPO_PUBLIC_FOSS_BUILD === 'true'
+const isFOSS = process.env.EXPO_PUBLIC_FOSS_BUILD !== 'false'
 export default function PrivacyPolicyScreen() {
     const theme = useTheme()
     const { t } = useTranslation()

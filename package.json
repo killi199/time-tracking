@@ -6,8 +6,8 @@
     "scripts": {
         "start": "expo start",
         "android": "expo run:android --variant=debug",
-        "android:release": "expo run:android --variant=release",
-        "android:release-foss": "cross-env EXPO_PUBLIC_FOSS_BUILD=true expo run:android --variant=release",
+        "android:release": "cross-env EXPO_PUBLIC_FOSS_BUILD=false expo run:android --variant=release",
+        "android:release-foss": "expo run:android --variant=release",
         "ios": "expo run:ios --variant=debug",
         "ios:release": "expo run:ios --variant=release",
         "typecheck": "tsc --noEmit",

@@ -13,7 +13,7 @@ jobs:
             matrix:
                 variant: [default, foss]
         env:
-            EXPO_PUBLIC_FOSS_BUILD: ${{ matrix.variant == 'foss' && 'true' || 'false' }}
+            EXPO_PUBLIC_FOSS_BUILD: ${{ matrix.variant == 'default' && 'false' || 'true' }}
             NODE_ENV: production
 
         steps:
