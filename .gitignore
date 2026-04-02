@@ -10,7 +10,10 @@ web-build/
 *.p12
 *.key
 *.mobileprovision
-/android/
+/android/*
+!/android/app/
+/android/app/*
+!/android/app/.gitkeep
 /ios/
 
 # Metro
