@@ -5,13 +5,13 @@ import {
     useContext,
     ReactNode,
 } from 'react'
-import { useColorScheme } from 'react-native'
+import { useColorScheme, Platform } from 'react-native'
 import {
     MD3LightTheme,
     MD3DarkTheme,
     Provider as PaperProvider,
 } from 'react-native-paper'
-import { useMaterial3Theme } from '@pchmn/expo-material3-theme'
+import { Color } from 'expo-router'
 import { getSetting, setSetting } from '../db/database'
 
 export type ThemeMode = 'auto' | 'light' | 'dark'
@@ -57,16 +57,47 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         setSetting('themeMode', mode)
     }
 
-    const { theme } = useMaterial3Theme()
-
     const paperTheme = (() => {
-        const derivedTheme =
+        const isDark =
             themeMode === 'dark' ||
             (themeMode === 'auto' && systemColorScheme === 'dark')
-                ? { ...MD3DarkTheme, colors: theme.dark }
-                : { ...MD3LightTheme, colors: theme.light }
 
-        return derivedTheme
+        const baseTheme = isDark ? MD3DarkTheme : MD3LightTheme
+
+        let customColors = {}
+        if (Platform.OS === 'android') {
+            customColors = {
+                primary: Color.android.dynamic.primary,
+                onPrimary: Color.android.dynamic.onPrimary,
+                primaryContainer: Color.android.dynamic.primaryContainer,
+                onPrimaryContainer: Color.android.dynamic.onPrimaryContainer,
+                secondary: Color.android.dynamic.secondary,
+                onSecondary: Color.android.dynamic.onSecondary,
+                secondaryContainer: Color.android.dynamic.secondaryContainer,
+                onSecondaryContainer: Color.android.dynamic.onSecondaryContainer,
+                tertiary: Color.android.dynamic.tertiary,
+                onTertiary: Color.android.dynamic.onTertiary,
+                tertiaryContainer: Color.android.dynamic.tertiaryContainer,
+                onTertiaryContainer: Color.android.dynamic.onTertiaryContainer,
+                error: Color.android.dynamic.error,
+                onError: Color.android.dynamic.onError,
+                errorContainer: Color.android.dynamic.errorContainer,
+                onErrorContainer: Color.android.dynamic.onErrorContainer,
+                outline: Color.android.dynamic.outline,
+                outlineVariant: Color.android.dynamic.outlineVariant,
+                shadow: Color.android.dynamic.shadow,
+                scrim: Color.android.dynamic.scrim,
+                inversePrimary: Color.android.dynamic.inversePrimary,
+            }
+        }
+
+        return {
+            ...baseTheme,
+            colors: {
+                ...baseTheme.colors,
+                ...customColors,
+            },
+        }
     })()
 
     if (!isLoaded) return null // Or a loading spinner
