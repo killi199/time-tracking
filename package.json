@@ -1,7 +1,7 @@
 {
     "name": "time-tracking",
-    "version": "1.2.8",
-    "versionCode": 15,
+    "version": "1.2.9",
+    "versionCode": 16,
     "main": "index.js",
     "scripts": {
         "start": "expo start",
