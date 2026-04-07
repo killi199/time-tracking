@@ -19,14 +19,6 @@ const plugins = [
             },
         },
     ],
-    [
-        'expo-build-properties',
-        {
-            android: {
-                buildReactNativeFromSource: true,
-            },
-        },
-    ],
 ]
 
 if (!isFOSS) {

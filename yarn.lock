@@ -5403,19 +5403,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-build-properties@npm:55.0.10":
-  version: 55.0.10
-  resolution: "expo-build-properties@npm:55.0.10"
-  dependencies:
-    "@expo/schema-utils": "npm:^55.0.2"
-    resolve-from: "npm:^5.0.0"
-    semver: "npm:^7.6.0"
-  peerDependencies:
-    expo: "*"
-  checksum: 10c0/14198bd5eb15b4a6ae94132306c1b164edff4858b6e9019860c3db1de3cc6800ce515e7da8fc609e2a5d373d337d030a52555800c3e698b7618adf286db802d8
-  languageName: node
-  linkType: hard
-
 "expo-constants@npm:~55.0.8, expo-constants@npm:~55.0.9":
   version: 55.0.9
   resolution: "expo-constants@npm:55.0.9"
@@ -10186,7 +10173,6 @@ __metadata:
     eslint-plugin-react-hooks: "npm:7.0.1"
     eslint-plugin-sonarjs: "npm:4.0.2"
     expo: "npm:^55.0.8"
-    expo-build-properties: "npm:55.0.10"
     expo-constants: "npm:~55.0.9"
     expo-document-picker: "npm:~55.0.9"
     expo-file-system: "npm:~55.0.11"
