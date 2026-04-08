@@ -28,7 +28,7 @@ runs:
           if: inputs.variant == 'foss'
           run: |
               sudo apt-get install -y jq
-              jq 'del(.dependencies["expo-location", "expo-notifications"])' package.json > temp.json && mv temp.json package.json
+              jq 'del(.dependencies["expo-location", "expo-notifications", "@maplibre/maplibre-react-native"])' package.json > temp.json && mv temp.json package.json
               yarn install --no-immutable
           shell: bash
 

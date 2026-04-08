@@ -7,7 +7,6 @@ const plugins = [
     'expo-sqlite',
     'expo-sharing',
     'expo-localization',
-    '@maplibre/maplibre-react-native',
     [
         'expo-quick-actions',
         {
@@ -28,6 +27,7 @@ if (!isFOSS) {
             isAndroidBackgroundLocationEnabled: true,
         },
     ])
+    plugins.push('@maplibre/maplibre-react-native')
 }
 
 module.exports = {
