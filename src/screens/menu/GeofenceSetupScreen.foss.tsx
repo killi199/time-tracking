@@ -1,4 +1,3 @@
-import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Text, useTheme } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
@@ -8,12 +7,24 @@ export default function GeofenceSetupScreen() {
     const { t } = useTranslation()
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-            <Text variant="titleLarge" style={{ textAlign: 'center', margin: 20 }}>
+        <View
+            style={[
+                styles.container,
+                { backgroundColor: theme.colors.background },
+            ]}
+        >
+            <Text
+                variant="titleLarge"
+                style={{ textAlign: 'center', margin: 20 }}
+            >
                 {t('menu.workingLocations')}
             </Text>
-            <Text variant="bodyLarge" style={{ textAlign: 'center', marginHorizontal: 20 }}>
-                This feature is not available in the FOSS version of the app due to reliance on proprietary mapping and location services.
+            <Text
+                variant="bodyLarge"
+                style={{ textAlign: 'center', marginHorizontal: 20 }}
+            >
+                This feature is not available in the FOSS version of the app due
+                to reliance on proprietary mapping and location services.
             </Text>
         </View>
     )
