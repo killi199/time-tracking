@@ -33,6 +33,10 @@ jobs:
               if: matrix.variant == 'default'
               run: yarn lint
 
+            - name: Prettier
+              if: matrix.variant == 'default'
+              run: npx prettier . --check
+
             - name: Build
               run: yarn expo export
               env:

@@ -15,7 +15,7 @@ updates:
       groups:
           react-navigation:
               patterns:
-                  - "@react-navigation/*"
+                  - '@react-navigation/*'
       ignore:
           - dependency-name: 'react-native'
           - dependency-name: 'react'

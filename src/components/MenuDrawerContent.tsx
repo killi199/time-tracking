@@ -118,7 +118,6 @@ export default function MenuDrawerContent(
                             },
                         }}
                     />
-
                 </Drawer.Section>
 
                 <Drawer.Section>

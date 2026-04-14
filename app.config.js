@@ -7,6 +7,7 @@ const plugins = [
     'expo-sqlite',
     'expo-sharing',
     'expo-localization',
+    'expo-router',
     [
         'expo-quick-actions',
         {
