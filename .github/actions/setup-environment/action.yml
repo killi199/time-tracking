@@ -7,7 +7,7 @@ inputs:
         default: 'default'
 
 runs:
-    using: "composite"
+    using: 'composite'
     steps:
         - name: Enable Corepack
           run: corepack enable

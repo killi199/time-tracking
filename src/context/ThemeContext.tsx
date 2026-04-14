@@ -74,7 +74,8 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
                 secondary: Color.android.dynamic.secondary,
                 onSecondary: Color.android.dynamic.onSecondary,
                 secondaryContainer: Color.android.dynamic.secondaryContainer,
-                onSecondaryContainer: Color.android.dynamic.onSecondaryContainer,
+                onSecondaryContainer:
+                    Color.android.dynamic.onSecondaryContainer,
                 tertiary: Color.android.dynamic.tertiary,
                 onTertiary: Color.android.dynamic.onTertiary,
                 tertiaryContainer: Color.android.dynamic.tertiaryContainer,
