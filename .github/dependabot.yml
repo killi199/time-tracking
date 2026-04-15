@@ -16,6 +16,10 @@ updates:
           react-navigation:
               patterns:
                   - '@react-navigation/*'
+          vitest:
+              patterns:
+                  - 'vitest'
+                  - '@vitest/coverage*'
       ignore:
           - dependency-name: 'react-native'
           - dependency-name: 'react'
