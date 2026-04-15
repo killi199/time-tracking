@@ -8575,9 +8575,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-paper-dates@npm:0.23.5":
-  version: 0.23.5
-  resolution: "react-native-paper-dates@npm:0.23.5"
+"react-native-paper-dates@npm:0.23.6":
+  version: 0.23.6
+  resolution: "react-native-paper-dates@npm:0.23.6"
   dependencies:
     color: "npm:^5.0.3"
   peerDependencies:
@@ -8585,7 +8585,7 @@ __metadata:
     react-native: "*"
     react-native-paper: "*"
     react-native-safe-area-context: "*"
-  checksum: 10c0/a040cea3a8f507ed71f19b804d2db29fe3bf0d294f0d3d54b403423b406f97b00c7156865ef4e6c856ea573ec1be7053c52880e4dd419f8e9d08d87201f1138c
+  checksum: 10c0/a5476c40405372646bfd7c98889690f09320d8f4545ad9516d5751f0908e964147846671029aa91eccfdfafa8843fb4739a00570677de7640dc728fd16b57e92
   languageName: node
   linkType: hard
 
@@ -9848,7 +9848,7 @@ __metadata:
     react-native-gesture-handler: "npm:~2.30.0"
     react-native-nfc-manager: "npm:3.17.2"
     react-native-paper: "npm:5.15.0"
-    react-native-paper-dates: "npm:0.23.5"
+    react-native-paper-dates: "npm:0.23.6"
     react-native-reanimated: "npm:4.2.1"
     react-native-safe-area-context: "npm:5.6.2"
     react-native-screens: "npm:~4.23.0"
