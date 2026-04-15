@@ -1998,9 +1998,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@maplibre/maplibre-gl-style-spec@npm:24.4.1":
-  version: 24.4.1
-  resolution: "@maplibre/maplibre-gl-style-spec@npm:24.4.1"
+"@maplibre/maplibre-gl-style-spec@npm:24.8.1":
+  version: 24.8.1
+  resolution: "@maplibre/maplibre-gl-style-spec@npm:24.8.1"
   dependencies:
     "@mapbox/jsonlint-lines-primitives": "npm:~2.0.2"
     "@mapbox/unitbezier": "npm:^0.0.1"
@@ -2013,15 +2013,15 @@ __metadata:
     gl-style-format: dist/gl-style-format.mjs
     gl-style-migrate: dist/gl-style-migrate.mjs
     gl-style-validate: dist/gl-style-validate.mjs
-  checksum: 10c0/68c2f0607ab742ee7638ca5ecf90904e714a4215759d1862dbfc1024e92323df2322b926caf3c83237baf1dc50351a43fcab06b2b4f850597c00524a43ab74c2
+  checksum: 10c0/07d2ebabe07a0c93113bc1450fa4698fda20e6570a83941cb776f70d0ab75af83e3cc61d8da5c336f45c9eab1bac67bb2b4f2f0ac22865cbb66abcc9e3db622e
   languageName: node
   linkType: hard
 
-"@maplibre/maplibre-react-native@npm:11.0.0-beta.12":
-  version: 11.0.0-beta.12
-  resolution: "@maplibre/maplibre-react-native@npm:11.0.0-beta.12"
+"@maplibre/maplibre-react-native@npm:11.0.0-beta.30":
+  version: 11.0.0-beta.30
+  resolution: "@maplibre/maplibre-react-native@npm:11.0.0-beta.30"
   dependencies:
-    "@maplibre/maplibre-gl-style-spec": "npm:24.4.1"
+    "@maplibre/maplibre-gl-style-spec": "npm:24.8.1"
     "@turf/distance": "npm:^7.1.0"
     "@turf/helpers": "npm:^7.1.0"
     "@turf/length": "npm:^7.1.0"
@@ -2039,7 +2039,7 @@ __metadata:
       optional: true
     "@types/react":
       optional: true
-  checksum: 10c0/1e69ba1c25c53098f57cf3a65f7fab399df5732e8c1a47f0003d03262ca9d3bb46336bb7b929d6de5a03283235e503626e0c40ab449a350f7722698cf3a9cf35
+  checksum: 10c0/e063b886e631687282ab4c545d6cc44eee08af7932e032156a7b0085e947c0a6c5a15688fab2b7c0c61f9db346087d530cce59bc8c491c096cc2ac6a47965ec4
   languageName: node
   linkType: hard
 
@@ -9809,7 +9809,7 @@ __metadata:
   dependencies:
     "@babel/core": "npm:7.29.0"
     "@eslint/js": "npm:9.39.2"
-    "@maplibre/maplibre-react-native": "npm:11.0.0-beta.12"
+    "@maplibre/maplibre-react-native": "npm:11.0.0-beta.30"
     "@react-native-community/slider": "npm:5.1.2"
     "@react-navigation/bottom-tabs": "npm:^7.15.5"
     "@react-navigation/drawer": "npm:^7.9.4"
