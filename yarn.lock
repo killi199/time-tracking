@@ -8481,17 +8481,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-i18next@npm:16.6.2":
-  version: 16.6.2
-  resolution: "react-i18next@npm:16.6.2"
+"react-i18next@npm:17.0.2":
+  version: 17.0.2
+  resolution: "react-i18next@npm:17.0.2"
   dependencies:
     "@babel/runtime": "npm:^7.29.2"
     html-parse-stringify: "npm:^3.0.1"
     use-sync-external-store: "npm:^1.6.0"
   peerDependencies:
-    i18next: ">= 25.6.2"
+    i18next: ">= 26.0.1"
     react: ">= 16.8.0"
-    typescript: ^5
+    typescript: ^5 || ^6
   peerDependenciesMeta:
     react-dom:
       optional: true
@@ -8499,7 +8499,7 @@ __metadata:
       optional: true
     typescript:
       optional: true
-  checksum: 10c0/6a6059cdaa0f9cd80345dedc4d54d14636097fd3d70d1dfdefd63ada50709836da9cef57257d9ce1ddfea7884253b4b33dc2688963e917e542187f22b45bb986
+  checksum: 10c0/6bbaeccb919726a7f4fda1e547fa58936f1004e122b99234ac1a65d35077563864af7062c51ab9b8b0190be4cb384cd2ed7aeaa895d2785c1783c39cdae64ecd
   languageName: node
   linkType: hard
 
@@ -9843,7 +9843,7 @@ __metadata:
     papaparse: "npm:5.5.3"
     prettier: "npm:3.8.2"
     react: "npm:19.2.0"
-    react-i18next: "npm:16.6.2"
+    react-i18next: "npm:17.0.2"
     react-native: "npm:0.83.4"
     react-native-gesture-handler: "npm:~2.30.0"
     react-native-nfc-manager: "npm:3.17.2"
