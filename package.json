@@ -56,7 +56,7 @@
         "i18next": "26.0.4",
         "papaparse": "5.5.3",
         "react": "19.2.0",
-        "react-i18next": "17.0.2",
+        "react-i18next": "17.0.3",
         "react-native": "0.83.4",
         "react-native-gesture-handler": "~2.30.0",
         "react-native-nfc-manager": "3.17.2",
