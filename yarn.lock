@@ -6316,9 +6316,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:26.0.4":
-  version: 26.0.4
-  resolution: "i18next@npm:26.0.4"
+"i18next@npm:26.0.5":
+  version: 26.0.5
+  resolution: "i18next@npm:26.0.5"
   dependencies:
     "@babel/runtime": "npm:^7.29.2"
   peerDependencies:
@@ -6326,7 +6326,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/987046f1eb5670824a25f665ca963633434005e0d93b1da9f7b4cf310771c43d08359a6faa1971c4ee8eff1cdfd36cc833a0d5376f04f75c50d31fc49fbaad91
+  checksum: 10c0/4e4f7801c4caff597a2c454c3405f3e151a64bcd22424d5671041eaebeaaa8c964804aa5ea36eb512c616f6334d6e671b02174c7abefebbe31487b0fc3d07244
   languageName: node
   linkType: hard
 
@@ -9842,7 +9842,7 @@ __metadata:
     expo-status-bar: "npm:~55.0.5"
     expo-system-ui: "npm:~55.0.15"
     expo-task-manager: "npm:~55.0.14"
-    i18next: "npm:26.0.4"
+    i18next: "npm:26.0.5"
     papaparse: "npm:5.5.3"
     prettier: "npm:3.8.3"
     react: "npm:19.2.0"
