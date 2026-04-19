@@ -32,3 +32,4 @@ updates:
           - dependency-name: 'react-native-worklets'
           - dependency-name: 'react-native-safe-area-context'
           - dependency-name: '@react-navigation/native-stack'
+          - dependency-name: 'typescript'
