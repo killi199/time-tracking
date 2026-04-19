@@ -23,7 +23,7 @@ export default function PrivacyPolicyScreen() {
                     {t('privacy.intro')}
                 </Text>
 
-                {!isFOSS && (
+                {!isFOSS ? (
                     <>
                         <Text
                             variant="titleMedium"
@@ -51,7 +51,7 @@ export default function PrivacyPolicyScreen() {
                             {t('privacy.mapsText')}
                         </Text>
                     </>
-                )}
+                ) : null}
 
                 <Text
                     variant="titleMedium"

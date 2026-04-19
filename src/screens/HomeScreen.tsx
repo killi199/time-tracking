@@ -108,7 +108,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
             'change',
             (nextAppState) => {
                 if (
-                    appState.current.match(/inactive|background/) &&
+                    /inactive|background/.exec(appState.current) &&
                     nextAppState === 'active'
                 ) {
                     const now = new Date()
@@ -542,7 +542,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
                             : t('addEntry.addTitle')}
                     </Dialog.Title>
                     <Dialog.Content>
-                        {!editingEvent && (
+                        {!editingEvent ? (
                             <TouchableOpacity
                                 onPress={() => {
                                     Keyboard.dismiss()
@@ -565,7 +565,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
                                     />
                                 </View>
                             </TouchableOpacity>
-                        )}
+                        ) : null}
                         <TouchableOpacity
                             onPress={() => {
                                 Keyboard.dismiss()

@@ -54,7 +54,7 @@ export default function MenuDrawerContent(
                 </Drawer.Section>
 
                 <Drawer.Section>
-                    {!isFOSS && (
+                    {!isFOSS ? (
                         <Drawer.Item
                             label={t('menu.workingLocations')}
                             icon={({ color, size }) => (
@@ -75,7 +75,7 @@ export default function MenuDrawerContent(
                                 },
                             }}
                         />
-                    )}
+                    ) : null}
 
                     <Drawer.Item
                         label={t('nfc.title')}

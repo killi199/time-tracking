@@ -23,7 +23,7 @@ export const TimeSeparator = ({ leadingItem }: TimeSeparatorProps) => {
     } else {
         // Fallback or empty state if no separator data is present
         // This effectively means we just return null or default
-        return null
+        return <></>
     }
 
     if (isSimpleDivider) {

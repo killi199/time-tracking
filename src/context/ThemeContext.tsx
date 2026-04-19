@@ -101,7 +101,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         }
     })()
 
-    if (!isLoaded) return null // Or a loading spinner
+    if (!isLoaded) return <></> // Or a loading spinner
 
     return (
         <ThemeContext value={{ themeMode, setThemeMode: handleSetTheme }}>

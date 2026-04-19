@@ -231,7 +231,7 @@ export default function WeekView({
         ({ item }: { item: ProcessedEvent; index: number }) => {
             return (
                 <View>
-                    {item.showDateHeader && (
+                    {item.showDateHeader ? (
                         <List.Subheader>
                             {new Date(item.date).toLocaleDateString(
                                 i18n.language,
@@ -242,7 +242,7 @@ export default function WeekView({
                                 },
                             )}
                         </List.Subheader>
-                    )}
+                    ) : null}
                     <EventListItem
                         item={item}
                         type={item.type}

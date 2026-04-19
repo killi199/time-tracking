@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState, ReactNode } from 'react'
 import { useColorScheme } from 'react-native'
 import {
     NavigationContainer,
@@ -234,7 +234,7 @@ function NavigationWrapper() {
     )
 }
 
-export default function App() {
+export default function App(): ReactNode {
     const [isDbReady, setIsDbReady] = useState(false)
 
     useEffect(() => {
@@ -264,7 +264,7 @@ export default function App() {
     }, [isDbReady])
 
     if (!isDbReady) {
-        return null
+        return <></>
     }
 
     return (
