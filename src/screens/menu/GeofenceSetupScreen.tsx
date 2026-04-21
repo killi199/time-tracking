@@ -121,15 +121,6 @@ export default function GeofenceSetupScreen() {
         setDialogVisible(false)
     }
 
-    useEffect(() => {
-        async function init() {
-            const hasSavedLocation = loadSettings()
-            await checkPermissions(hasSavedLocation)
-            setLoading(false)
-        }
-        void init()
-    }, [])
-
     function loadSettings(): boolean {
         try {
             const configStr = getSetting('geofence_config')
@@ -200,6 +191,15 @@ export default function GeofenceSetupScreen() {
             }
         }
     }
+
+    useEffect(() => {
+        async function init() {
+            const hasSavedLocation = loadSettings()
+            await checkPermissions(hasSavedLocation)
+            setLoading(false)
+        }
+        void init()
+    }, [])
 
     async function handleEnableToggle() {
         if (!marker) {

@@ -1,10 +1,4 @@
-import {
-    createContext,
-    useState,
-    useEffect,
-    useContext,
-    ReactNode,
-} from 'react'
+import { createContext, useState, useContext, ReactNode } from 'react'
 import { useColorScheme, Platform } from 'react-native'
 import {
     MD3LightTheme,
@@ -30,11 +24,7 @@ export const useAppTheme = () => useContext(ThemeContext)
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     const systemColorScheme = useColorScheme()
-    const [themeMode, setThemeMode] = useState<ThemeMode>('auto')
-    const [isLoaded, setIsLoaded] = useState(false)
-
-    useEffect(() => {
-        // Load saved theme
+    const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
         try {
             const savedTheme = getSetting('themeMode')
             if (
@@ -43,14 +33,13 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
                     savedTheme === 'light' ||
                     savedTheme === 'dark')
             ) {
-                setThemeMode(savedTheme as ThemeMode)
+                return savedTheme
             }
         } catch (e) {
             console.error('Failed to load theme setting', e)
-        } finally {
-            setIsLoaded(true)
         }
-    }, [])
+        return 'auto'
+    })
 
     const handleSetTheme = (mode: ThemeMode) => {
         setThemeMode(mode)
@@ -100,8 +89,6 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
             },
         }
     })()
-
-    if (!isLoaded) return null // Or a loading spinner
 
     return (
         <ThemeContext value={{ themeMode, setThemeMode: handleSetTheme }}>
