@@ -3148,6 +3148,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-dom@npm:~19.1.7":
+  version: 19.1.11
+  resolution: "@types/react-dom@npm:19.1.11"
+  peerDependencies:
+    "@types/react": ^19.0.0
+  checksum: 10c0/417da6414f43ea2e416ab19666f78f8a29b349f4273ee6d8d468516606c65ee0e6f31939cd3255dfaf466a50a5cdf16b6fd988cf7e9aaf678c61d1fff81e5c20
+  languageName: node
+  linkType: hard
+
 "@types/react@npm:~19.2.14":
   version: 19.2.14
   resolution: "@types/react@npm:19.2.14"
@@ -8468,6 +8477,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-dom@npm:19.2.0":
+  version: 19.2.0
+  resolution: "react-dom@npm:19.2.0"
+  dependencies:
+    scheduler: "npm:^0.27.0"
+  peerDependencies:
+    react: ^19.2.0
+  checksum: 10c0/fa2cae05248d01288e91523b590ce4e7635b1e13f1344e225f850d722a8da037bf0782f63b1c1d46353334e0c696909b82e582f8cad607948fde6f7646cc18d9
+  languageName: node
+  linkType: hard
+
 "react-fast-compare@npm:^3.2.2":
   version: 3.2.2
   resolution: "react-fast-compare@npm:3.2.2"
@@ -9136,7 +9156,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"scheduler@npm:0.27.0":
+"scheduler@npm:0.27.0, scheduler@npm:^0.27.0":
   version: 0.27.0
   resolution: "scheduler@npm:0.27.0"
   checksum: 10c0/4f03048cb05a3c8fddc45813052251eca00688f413a3cee236d984a161da28db28ba71bd11e7a3dd02f7af84ab28d39fb311431d3b3772fed557945beb00c452
@@ -9809,6 +9829,7 @@ __metadata:
   dependencies:
     "@babel/core": "npm:7.29.0"
     "@eslint/js": "npm:9.39.2"
+    "@expo/log-box": "npm:55.0.11"
     "@maplibre/maplibre-react-native": "npm:11.0.0"
     "@react-native-community/slider": "npm:5.1.2"
     "@react-navigation/bottom-tabs": "npm:^7.15.5"
@@ -9818,6 +9839,7 @@ __metadata:
     "@types/babel__core": "npm:7.20.5"
     "@types/papaparse": "npm:5.5.2"
     "@types/react": "npm:~19.2.14"
+    "@types/react-dom": "npm:~19.1.7"
     "@vitest/coverage-v8": "npm:4.1.4"
     "@vitest/eslint-plugin": "npm:1.6.16"
     babel-plugin-module-resolver: "npm:5.0.3"
@@ -9846,6 +9868,7 @@ __metadata:
     papaparse: "npm:5.5.3"
     prettier: "npm:3.8.3"
     react: "npm:19.2.0"
+    react-dom: "npm:19.2.0"
     react-i18next: "npm:17.0.4"
     react-native: "npm:0.83.6"
     react-native-gesture-handler: "npm:~2.30.0"
