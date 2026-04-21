@@ -4,6 +4,7 @@ const { getDefaultConfig } = require('expo/metro-config')
 /** @type {import('expo/metro-config').MetroConfig} */
 const config = getDefaultConfig(__dirname)
 
+config.resolver.assetExts.push('wasm')
 const isFOSS = process.env.EXPO_PUBLIC_FOSS_BUILD !== 'false'
 
 if (isFOSS) {
