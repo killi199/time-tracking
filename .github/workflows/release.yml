@@ -68,7 +68,7 @@ jobs:
                   path: release-apks/
 
             - name: Publish Release to GitHub
-              uses: softprops/action-gh-release@v2
+              uses: softprops/action-gh-release@v3
               with:
                   files: release-apks/*.apk
                   name: Release ${{ env.APP_VERSION }}
