@@ -42,7 +42,7 @@ jobs:
               run: find android/app/build/outputs/apk/release -name "*.apk" -exec mv {} android/app/build/outputs/apk/release/time-tracking-${{ matrix.variant }}.apk \;
 
             - name: Upload APK Artifact
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v7
               with:
                   name: apk-${{ matrix.variant }}
                   path: android/app/build/outputs/apk/release/time-tracking-${{ matrix.variant }}.apk
