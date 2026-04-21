@@ -48,14 +48,14 @@ jobs:
 
             - name: Upload test results to Codecov
               if: ${{ !cancelled() && matrix.variant == 'default' }}
-              uses: codecov/codecov-action@v5
+              uses: codecov/codecov-action@v6
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
                   report_type: test_results
 
             - name: Upload coverage reports to Codecov
               if: matrix.variant == 'default'
-              uses: codecov/codecov-action@v5
+              uses: codecov/codecov-action@v6
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
 
