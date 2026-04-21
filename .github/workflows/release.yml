@@ -18,7 +18,7 @@ jobs:
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             - name: Setup Environment and Install Dependencies
               uses: ./.github/actions/setup-environment
@@ -55,7 +55,7 @@ jobs:
             contents: write
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             - name: Get version from package.json
               run: echo "APP_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
