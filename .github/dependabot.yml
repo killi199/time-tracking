@@ -37,6 +37,8 @@ updates:
           - dependency-name: 'typescript'
 
     - package-ecosystem: 'github-actions'
-      directory: '/'
+      directories:
+          - '/'
+          - '/.github/actions/*'
       schedule:
           interval: 'daily'
