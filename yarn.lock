@@ -1296,9 +1296,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/cli@npm:55.0.25":
-  version: 55.0.25
-  resolution: "@expo/cli@npm:55.0.25"
+"@expo/cli@npm:55.0.26":
+  version: 55.0.26
+  resolution: "@expo/cli@npm:55.0.26"
   dependencies:
     "@expo/code-signing-certificates": "npm:^0.0.6"
     "@expo/config": "npm:~55.0.15"
@@ -1368,7 +1368,7 @@ __metadata:
       optional: true
   bin:
     expo-internal: build/bin/cli
-  checksum: 10c0/64cf9726abd3ff4bff74932eb0131aa54c00903b6724a34f2a45e09cf321660499fc9058cbe3760a0629c52eff0f7c702b24691a044e33bfb53195166b595abc
+  checksum: 10c0/71da47cbc5df5a0d20df92972d56e8ecb7e32819a0572daceb58a6fdb9011a235943c4eca9f32779367544042d58f87c5924451aa0c7985334c9a673c453bcde
   languageName: node
   linkType: hard
 
@@ -3278,12 +3278,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:~19.1.7":
-  version: 19.1.11
-  resolution: "@types/react-dom@npm:19.1.11"
+"@types/react-dom@npm:~19.2.0":
+  version: 19.2.3
+  resolution: "@types/react-dom@npm:19.2.3"
   peerDependencies:
-    "@types/react": ^19.0.0
-  checksum: 10c0/417da6414f43ea2e416ab19666f78f8a29b349f4273ee6d8d468516606c65ee0e6f31939cd3255dfaf466a50a5cdf16b6fd988cf7e9aaf678c61d1fff81e5c20
+    "@types/react": ^19.2.0
+  checksum: 10c0/b486ebe0f4e2fb35e2e108df1d8fc0927ca5d6002d5771e8a739de11239fe62d0e207c50886185253c99eb9dedfeeb956ea7429e5ba17f6693c7acb4c02f8cd1
   languageName: node
   linkType: hard
 
@@ -5812,12 +5812,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo@npm:~55.0.16":
-  version: 55.0.16
-  resolution: "expo@npm:55.0.16"
+"expo@npm:~55.0.17":
+  version: 55.0.17
+  resolution: "expo@npm:55.0.17"
   dependencies:
     "@babel/runtime": "npm:^7.20.0"
-    "@expo/cli": "npm:55.0.25"
+    "@expo/cli": "npm:55.0.26"
     "@expo/config": "npm:~55.0.15"
     "@expo/config-plugins": "npm:~55.0.8"
     "@expo/devtools": "npm:55.0.2"
@@ -5856,7 +5856,7 @@ __metadata:
     expo: bin/cli
     expo-modules-autolinking: bin/autolinking
     fingerprint: bin/fingerprint
-  checksum: 10c0/a7d84fa32119dbc77340db9ca43e899793453f5cfaddad1f1db59f67d69a3451b87daac3b698f2144d7ec19cc373fd604317e4ca9f439c5d3da609909352e541
+  checksum: 10c0/4df82bb1f379d76e457d0b36f7507e45daeb12bacfa3d76c714832298e58308da1a5e00070809460c71e30f8ac598b8843e66c54a16c3aad7d14f76317ac0ce3
   languageName: node
   linkType: hard
 
@@ -10435,7 +10435,7 @@ __metadata:
     "@types/babel__core": "npm:7.20.5"
     "@types/papaparse": "npm:5.5.2"
     "@types/react": "npm:~19.2.14"
-    "@types/react-dom": "npm:~19.1.7"
+    "@types/react-dom": "npm:~19.2.0"
     "@types/react-native-web": "npm:0.19.2"
     "@vitest/coverage-v8": "npm:4.1.4"
     "@vitest/eslint-plugin": "npm:1.6.16"
@@ -10446,7 +10446,7 @@ __metadata:
     eslint-plugin-react: "npm:7.37.5"
     eslint-plugin-react-hooks: "npm:7.1.1"
     eslint-plugin-sonarjs: "npm:4.0.3"
-    expo: "npm:~55.0.16"
+    expo: "npm:~55.0.17"
     expo-constants: "npm:~55.0.15"
     expo-document-picker: "npm:~55.0.13"
     expo-file-system: "npm:~55.0.17"
