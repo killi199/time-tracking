@@ -2017,9 +2017,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@maplibre/maplibre-react-native@npm:11.0.0":
-  version: 11.0.0
-  resolution: "@maplibre/maplibre-react-native@npm:11.0.0"
+"@maplibre/maplibre-react-native@npm:11.0.1":
+  version: 11.0.1
+  resolution: "@maplibre/maplibre-react-native@npm:11.0.1"
   dependencies:
     "@maplibre/maplibre-gl-style-spec": "npm:24.8.1"
     "@turf/distance": "npm:^7.1.0"
@@ -2039,7 +2039,7 @@ __metadata:
       optional: true
     "@types/react":
       optional: true
-  checksum: 10c0/5da8d37c52f599e187eb230a87dca1585f8ceefaf53e46a49beaa4f064950f7b8f89681781e1211a22a97441ce36a7c12b89c5c000862b5206f66e0fa4820c23
+  checksum: 10c0/a1891854e98ec1c7463abafe1615751b35764cf1a20c88c3540813e362a2d695d4c3c83f08cbac0e5e5ec89240f42a14eb2ea770327dd6934aba205137e5ae46
   languageName: node
   linkType: hard
 
@@ -10426,7 +10426,7 @@ __metadata:
     "@babel/core": "npm:7.29.0"
     "@eslint/js": "npm:9.39.2"
     "@expo/log-box": "npm:55.0.11"
-    "@maplibre/maplibre-react-native": "npm:11.0.0"
+    "@maplibre/maplibre-react-native": "npm:11.0.1"
     "@react-native-community/slider": "npm:5.1.2"
     "@react-navigation/bottom-tabs": "npm:^7.15.5"
     "@react-navigation/drawer": "npm:^7.9.4"
