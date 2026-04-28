@@ -2794,6 +2794,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-navigation/bottom-tabs@npm:^7.15.10":
+  version: 7.15.10
+  resolution: "@react-navigation/bottom-tabs@npm:7.15.10"
+  dependencies:
+    "@react-navigation/elements": "npm:^2.9.15"
+    color: "npm:^4.2.3"
+    sf-symbols-typescript: "npm:^2.1.0"
+  peerDependencies:
+    "@react-navigation/native": ^7.2.2
+    react: ">= 18.2.0"
+    react-native: "*"
+    react-native-safe-area-context: ">= 4.0.0"
+    react-native-screens: ">= 4.0.0"
+  checksum: 10c0/cd3831b773923c9774a584f1677651c93a8403090919bbda6281b4ab9df6f3e43eb51ed181d825de04e3c73e80da832749749755fd091ddd20f8853978bd5fa8
+  languageName: node
+  linkType: hard
+
 "@react-navigation/bottom-tabs@npm:^7.15.5":
   version: 7.15.9
   resolution: "@react-navigation/bottom-tabs@npm:7.15.9"
@@ -2829,11 +2846,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-navigation/drawer@npm:^7.9.4":
-  version: 7.9.8
-  resolution: "@react-navigation/drawer@npm:7.9.8"
+"@react-navigation/drawer@npm:^7.9.9":
+  version: 7.9.9
+  resolution: "@react-navigation/drawer@npm:7.9.9"
   dependencies:
-    "@react-navigation/elements": "npm:^2.9.14"
+    "@react-navigation/elements": "npm:^2.9.15"
     color: "npm:^4.2.3"
     react-native-drawer-layout: "npm:^4.2.2"
     use-latest-callback: "npm:^0.2.4"
@@ -2845,7 +2862,7 @@ __metadata:
     react-native-reanimated: ">= 2.0.0"
     react-native-safe-area-context: ">= 4.0.0"
     react-native-screens: ">= 4.0.0"
-  checksum: 10c0/84bc2457bac4796a5231e5c73ab5cd3dba372ef094d33ad1f56f59a8ef49405d1b7c95338e8205eca85238a74dfd1bb7adf17bd770046e0f05c049a726cbecd5
+  checksum: 10c0/1a3a38e5317ccab601b4f2212e663f04eba972b00b44bd93d98ab0f1d6ba485960377d8ba0bf91c03037724d2d3a6691345fb8cd4b026482192dad4f73ca018a
   languageName: node
   linkType: hard
 
@@ -2866,6 +2883,26 @@ __metadata:
     "@react-native-masked-view/masked-view":
       optional: true
   checksum: 10c0/c2602f5be41caaad8ea81a9bdfde654d4a89d83c627a910f5d166bd8cac2700399fce805f6bf15faaf06c2bbc776325269bc0ec1fbbe917b615e17a0a5d371e1
+  languageName: node
+  linkType: hard
+
+"@react-navigation/elements@npm:^2.9.15":
+  version: 2.9.15
+  resolution: "@react-navigation/elements@npm:2.9.15"
+  dependencies:
+    color: "npm:^4.2.3"
+    use-latest-callback: "npm:^0.2.4"
+    use-sync-external-store: "npm:^1.5.0"
+  peerDependencies:
+    "@react-native-masked-view/masked-view": ">= 0.2.0"
+    "@react-navigation/native": ^7.2.2
+    react: ">= 18.2.0"
+    react-native: "*"
+    react-native-safe-area-context: ">= 4.0.0"
+  peerDependenciesMeta:
+    "@react-native-masked-view/masked-view":
+      optional: true
+  checksum: 10c0/0fce662e717573b85028626edfe7100af2bfc5ee32a4ca17f6216ad8091091baa4a14d6acc27ead48d3f700610d81a93dd85013d5643cca2bfeae7bfa88826b2
   languageName: node
   linkType: hard
 
@@ -10426,8 +10463,8 @@ __metadata:
     "@expo/log-box": "npm:55.0.11"
     "@maplibre/maplibre-react-native": "npm:11.0.1"
     "@react-native-community/slider": "npm:5.1.2"
-    "@react-navigation/bottom-tabs": "npm:^7.15.5"
-    "@react-navigation/drawer": "npm:^7.9.4"
+    "@react-navigation/bottom-tabs": "npm:^7.15.10"
+    "@react-navigation/drawer": "npm:^7.9.9"
     "@react-navigation/native": "npm:^7.1.33"
     "@react-navigation/native-stack": "npm:^7.14.5"
     "@types/babel__core": "npm:7.20.5"
