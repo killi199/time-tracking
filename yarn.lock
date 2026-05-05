@@ -5625,9 +5625,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-notifications@npm:~55.0.20":
-  version: 55.0.20
-  resolution: "expo-notifications@npm:55.0.20"
+"expo-notifications@npm:~55.0.22":
+  version: 55.0.22
+  resolution: "expo-notifications@npm:55.0.22"
   dependencies:
     "@expo/image-utils": "npm:^0.8.13"
     abort-controller: "npm:^3.0.0"
@@ -5638,7 +5638,7 @@ __metadata:
     expo: "*"
     react: "*"
     react-native: "*"
-  checksum: 10c0/074fe1d18632309ba2181d37e267c97d2f0492524582b247d9e0aaab5220c29b7e385befb84a5c73e34a4599227001147345a05a31ebec98d7e97e92659918f9
+  checksum: 10c0/bafba7def1917b21eaf6f3a057a82ab3e0faa6415d6a9fc8cd3d4b9a6f07e5967db2321fbbef156fabc5095f2c7c28e1a26e787f9872de23baf04f343be99c30
   languageName: node
   linkType: hard
 
@@ -10451,7 +10451,7 @@ __metadata:
     expo-linking: "npm:~55.0.14"
     expo-localization: "npm:~55.0.13"
     expo-location: "npm:~55.1.8"
-    expo-notifications: "npm:~55.0.20"
+    expo-notifications: "npm:~55.0.22"
     expo-quick-actions: "npm:6.0.1"
     expo-router: "npm:~55.0.13"
     expo-sharing: "npm:~55.0.18"
