@@ -2815,7 +2815,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-navigation/bottom-tabs@npm:^7.15.11":
+"@react-navigation/bottom-tabs@npm:^7.15.11, @react-navigation/bottom-tabs@npm:^7.15.5":
   version: 7.15.11
   resolution: "@react-navigation/bottom-tabs@npm:7.15.11"
   dependencies:
@@ -2829,23 +2829,6 @@ __metadata:
     react-native-safe-area-context: ">= 4.0.0"
     react-native-screens: ">= 4.0.0"
   checksum: 10c0/aebf26e8784b8054b931082cd5ee549205e1de6eeaf10fceed9ca273590a84b9a7dd6edd1949f34c781e2558a37b0cc9351628f0c443888b7ff5a36a01a6ab23
-  languageName: node
-  linkType: hard
-
-"@react-navigation/bottom-tabs@npm:^7.15.5":
-  version: 7.15.9
-  resolution: "@react-navigation/bottom-tabs@npm:7.15.9"
-  dependencies:
-    "@react-navigation/elements": "npm:^2.9.14"
-    color: "npm:^4.2.3"
-    sf-symbols-typescript: "npm:^2.1.0"
-  peerDependencies:
-    "@react-navigation/native": ^7.2.2
-    react: ">= 18.2.0"
-    react-native: "*"
-    react-native-safe-area-context: ">= 4.0.0"
-    react-native-screens: ">= 4.0.0"
-  checksum: 10c0/e3526cfe67ef19f59d9676bfea3b000bc489c77faee87e8d9ffbab084b0ea3ac70894605414185371fe607f0fa776769b6593b15a297c8842ee33eef186a9dae
   languageName: node
   linkType: hard
 
@@ -2887,27 +2870,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-navigation/elements@npm:^2.9.14":
-  version: 2.9.14
-  resolution: "@react-navigation/elements@npm:2.9.14"
-  dependencies:
-    color: "npm:^4.2.3"
-    use-latest-callback: "npm:^0.2.4"
-    use-sync-external-store: "npm:^1.5.0"
-  peerDependencies:
-    "@react-native-masked-view/masked-view": ">= 0.2.0"
-    "@react-navigation/native": ^7.2.2
-    react: ">= 18.2.0"
-    react-native: "*"
-    react-native-safe-area-context: ">= 4.0.0"
-  peerDependenciesMeta:
-    "@react-native-masked-view/masked-view":
-      optional: true
-  checksum: 10c0/c2602f5be41caaad8ea81a9bdfde654d4a89d83c627a910f5d166bd8cac2700399fce805f6bf15faaf06c2bbc776325269bc0ec1fbbe917b615e17a0a5d371e1
-  languageName: node
-  linkType: hard
-
-"@react-navigation/elements@npm:^2.9.15":
+"@react-navigation/elements@npm:^2.9.14, @react-navigation/elements@npm:^2.9.15":
   version: 2.9.15
   resolution: "@react-navigation/elements@npm:2.9.15"
   dependencies:
