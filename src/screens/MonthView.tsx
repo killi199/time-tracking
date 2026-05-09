@@ -83,7 +83,7 @@ export default function MonthView({
                     }
                 }
 
-                if (dayMinutes > 0) {
+                if (dayEvents.length > 0) {
                     totalMinutesMonth += dayMinutes
                     workedDays.add(date)
                 }

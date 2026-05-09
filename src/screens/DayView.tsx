@@ -64,7 +64,8 @@ export default function DayView({
             setTodayWorked(formatTime(totalMinutesToday))
 
             // 2. Day Balance (Target: 8 hours = 480 minutes)
-            const dayBalanceMinutes = totalMinutesToday - 480
+            const dayBalanceMinutes =
+                sortedEvents.length > 0 ? totalMinutesToday - 480 : 0
             setDayBalance(formatTime(dayBalanceMinutes, true))
 
             // 3. Overall Balance

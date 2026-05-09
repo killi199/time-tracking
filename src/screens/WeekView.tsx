@@ -107,7 +107,7 @@ export default function WeekView({
                     }
                 }
 
-                if (dayMinutes > 0) {
+                if (dayEvents.length > 0) {
                     totalMinutesWeek += dayMinutes
                     workedDays.add(d)
                 }
