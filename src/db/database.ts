@@ -183,7 +183,7 @@ export const getOverallStats = (
             }
         }
 
-        if (dayMinutes > 0) {
+        if (dayEvents.length > 0) {
             totalMinutesWorked += dayMinutes
             workedDays.add(date)
         }
