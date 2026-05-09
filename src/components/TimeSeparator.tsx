@@ -27,7 +27,7 @@ export const TimeSeparator = ({ leadingItem }: TimeSeparatorProps) => {
     }
 
     if (isSimpleDivider) {
-        return <Divider />
+        return null
     }
 
     return (

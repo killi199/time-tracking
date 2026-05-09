@@ -54,7 +54,12 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         const baseTheme = isDark ? MD3DarkTheme : MD3LightTheme
 
         let customColors = {}
-        if (Platform.OS === 'android') {
+        const isAppThemeMatchingSystem =
+            themeMode === 'auto' ||
+            (themeMode === 'dark' && systemColorScheme === 'dark') ||
+            (themeMode === 'light' && systemColorScheme !== 'dark')
+
+        if (Platform.OS === 'android' && isAppThemeMatchingSystem) {
             customColors = {
                 primary: Color.android.dynamic.primary,
                 onPrimary: Color.android.dynamic.onPrimary,
