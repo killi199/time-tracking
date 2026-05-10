@@ -83,6 +83,25 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
                 shadow: Color.android.dynamic.shadow,
                 scrim: Color.android.dynamic.scrim,
                 inversePrimary: Color.android.dynamic.inversePrimary,
+                background: Color.android.dynamic.background,
+                onBackground: Color.android.dynamic.onBackground,
+                surface: Color.android.dynamic.surface,
+                onSurface: Color.android.dynamic.onSurface,
+                surfaceVariant: Color.android.dynamic.surfaceVariant,
+                onSurfaceVariant: Color.android.dynamic.onSurfaceVariant,
+                inverseSurface: Color.android.dynamic.surfaceInverse,
+                inverseOnSurface: Color.android.dynamic.onSurfaceInverse,
+                surfaceDisabled: Color.android.dynamic.surfaceVariant, // Fallback
+                onSurfaceDisabled: Color.android.dynamic.onSurfaceVariant, // Fallback
+                backdrop: Color.android.dynamic.scrim,
+                elevation: {
+                    level0: 'transparent',
+                    level1: Color.android.dynamic.surfaceContainerLow,
+                    level2: Color.android.dynamic.surfaceContainer,
+                    level3: Color.android.dynamic.surfaceContainerHigh,
+                    level4: Color.android.dynamic.surfaceContainerHighest,
+                    level5: Color.android.dynamic.surfaceContainerHighest,
+                },
             }
         }
 

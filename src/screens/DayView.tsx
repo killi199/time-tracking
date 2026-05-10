@@ -183,7 +183,7 @@ export default function DayView({
     const isCheckedIn = events.length % 2 !== 0
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
             <Card style={styles.card}>
                 <Card.Content>
                     <View style={styles.metricsRow}>
