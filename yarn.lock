@@ -1772,7 +1772,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/ui@npm:^55.0.15":
+"@expo/ui@npm:55.0.15":
   version: 55.0.15
   resolution: "@expo/ui@npm:55.0.15"
   dependencies:
@@ -10408,7 +10408,7 @@ __metadata:
     "@babel/core": "npm:7.29.0"
     "@eslint/js": "npm:9.39.2"
     "@expo/log-box": "npm:55.0.12"
-    "@expo/ui": "npm:^55.0.15"
+    "@expo/ui": "npm:55.0.15"
     "@maplibre/maplibre-react-native": "npm:11.0.2"
     "@react-native-community/slider": "npm:5.1.2"
     "@react-navigation/bottom-tabs": "npm:^7.15.5"
