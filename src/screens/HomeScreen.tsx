@@ -23,8 +23,7 @@ import {
     useTheme,
     Checkbox,
 } from 'react-native-paper'
-import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates'
-import { en, de, registerTranslation } from 'react-native-paper-dates'
+import AdaptiveDateTimePicker from '../components/AdaptiveDateTimePicker'
 import {
     useFocusEffect,
     NavigationProp,
@@ -42,9 +41,6 @@ import {
 import DayView from './DayView'
 import MonthView from './MonthView'
 import WeekView from './WeekView'
-
-registerTranslation('en', en)
-registerTranslation('de', de)
 
 // Helper to get week range text
 const getWeekRangeData = (dateStr: string) => {
@@ -475,40 +471,55 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
                 </Button>
             </View>
 
-            <DatePickerModal
-                locale={i18n.language}
-                mode="single"
+            <AdaptiveDateTimePicker
                 visible={datePickerVisible}
                 onDismiss={onDismissDatePicker}
-                date={validDateForPicker}
-                onConfirm={onConfirmDatePicker}
-                startWeekOnMonday
-            />
-
-            <TimePickerModal
-                visible={timePickerVisible}
-                onDismiss={onDismissTimePicker}
-                onConfirm={onConfirmTimePicker}
-                hours={pickerHours}
-                minutes={pickerMinutes}
+                onConfirm={(date) => {
+                    onConfirmDatePicker({ date })
+                }}
+                value={validDateForPicker}
+                mode="date"
                 locale={i18n.language}
                 cancelLabel={t('common.cancel')}
                 confirmLabel={t('common.confirm')}
-                label={t('addEntry.timeLabel')}
             />
 
-            <DatePickerModal
+            <AdaptiveDateTimePicker
+                visible={timePickerVisible}
+                onDismiss={onDismissTimePicker}
+                onConfirm={(date) => {
+                    onConfirmTimePicker({
+                        hours: date.getHours(),
+                        minutes: date.getMinutes(),
+                    })
+                }}
+                value={(() => {
+                    const d = new Date()
+                    d.setHours(pickerHours, pickerMinutes, 0, 0)
+                    return d
+                })()}
+                mode="time"
+                is24Hour={true}
                 locale={i18n.language}
-                mode="single"
+                cancelLabel={t('common.cancel')}
+                confirmLabel={t('common.confirm')}
+            />
+
+            <AdaptiveDateTimePicker
                 visible={createDatePickerVisible}
                 onDismiss={onDismissCreateDatePicker}
-                date={(() => {
+                onConfirm={(date) => {
+                    onConfirmCreateDatePicker({ date })
+                }}
+                value={(() => {
                     if (!dialogDate) return new Date()
                     const [y, m, d] = dialogDate.split('-').map(Number)
                     return new Date(y, m - 1, d)
                 })()}
-                onConfirm={onConfirmCreateDatePicker}
-                startWeekOnMonday
+                mode="date"
+                locale={i18n.language}
+                cancelLabel={t('common.cancel')}
+                confirmLabel={t('common.confirm')}
             />
 
             {(() => {
