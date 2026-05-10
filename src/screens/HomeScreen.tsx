@@ -192,13 +192,10 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
     const formattedDate = useMemo(() => {
         if (viewMode === 'month') {
             const [y, m] = currentMonth.split('-').map(Number)
-            return new Date(y, m - 1, 1).toLocaleDateString(
-                i18n.language,
-                {
-                    year: 'numeric',
-                    month: 'long',
-                },
-            )
+            return new Date(y, m - 1, 1).toLocaleDateString(i18n.language, {
+                year: 'numeric',
+                month: 'long',
+            })
         } else if (viewMode === 'week') {
             const { start, end } = getWeekRangeData(currentDate)
             const startStr = start.toLocaleDateString(i18n.language, {
