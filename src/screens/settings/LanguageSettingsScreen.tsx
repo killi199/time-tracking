@@ -26,7 +26,7 @@ export default function LanguageSettingsScreen() {
     }
 
     return (
-        <View style={[styles.container]}>
+        <View style={styles.container}>
             <List.Section title={t('settings.language')}>
                 <RadioButton.Group
                     onValueChange={handleLanguageChange}

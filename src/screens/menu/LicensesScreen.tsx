@@ -90,7 +90,7 @@ export default function LicensesScreen() {
     )
 
     return (
-        <View style={[styles.container]}>
+        <View style={styles.container}>
             <FlatList
                 data={licensesList}
                 keyExtractor={(item) => item.name}

@@ -8,7 +8,7 @@ export default function ThemeSettingsScreen() {
     const { t } = useTranslation()
 
     return (
-        <View style={[styles.container]}>
+        <View style={styles.container}>
             <List.Section title={t('settings.theme')}>
                 <RadioButton.Group
                     onValueChange={(value) => {

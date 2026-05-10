@@ -6,7 +6,7 @@ export default function GeofenceSetupScreen() {
     const { t } = useTranslation()
 
     return (
-        <View style={[styles.container]}>
+        <View style={styles.container}>
             <Text
                 variant="titleLarge"
                 style={{ textAlign: 'center', margin: 20 }}

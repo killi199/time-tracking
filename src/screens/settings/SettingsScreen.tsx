@@ -11,7 +11,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
     const { t } = useTranslation()
 
     return (
-        <View style={[styles.container]}>
+        <View style={styles.container}>
             <List.Section>
                 <List.Item
                     title={t('settings.theme')}
