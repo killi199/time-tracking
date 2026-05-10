@@ -7,6 +7,7 @@ Keep track of your working hours with precision and ease.
 Smart Auto Check-in:
 Forget about manual clocking. Let your phone do it for you.
 - NFC Tag Support: Check in with a simple tap. Scan an NFC tag to instantly toggle your status—perfect for quick check-ins without manually opening the app.
+- Android Quick Actions: Long-press the app icon on your home screen to instantly toggle your status. You can also drag the action to your home screen to create a dedicated shortcut for one-tap check-ins.
 
 Data Freedom:
 Your data belongs to you.

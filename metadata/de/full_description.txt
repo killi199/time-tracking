@@ -7,6 +7,7 @@ Behalte präzise und einfach den Überblick über deine Arbeitszeiten.
 Smarter Auto-Check-in:
 Vergiss manuelles Stempeln. Lass dein Smartphone das für dich erledigen.
 - NFC-Tag-Unterstützung: Check-in mit einem einfachen Tippen. Scanne einen NFC-Tag, um sofort deinen Status umzuschalten – perfekt für schnelle Check-ins, ohne die App manuell öffnen zu müssen.
+- Android Quick Actions: Schalte deinen Status durch langes Drücken auf das App-Icon um oder erstelle eine Verknüpfung auf deinem Startbildschirm für den Schnellzugriff mit nur einem Tippen.
 
 Datenfreiheit:
 Deine Daten gehören dir.

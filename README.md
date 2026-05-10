@@ -22,6 +22,7 @@ Forget about manual clocking. Let your phone do it for you.
 - **GPS Geofencing**: Automatically clock in when you arrive at work and clock out when you leave. You'll receive a notification confirming your status.
 - **NFC Tag Support**: Check in with a simple tap. Scan an NFC tag to instantly toggle your status—perfect for quick check-ins without manually opening the app.
     - _How it works_: Tapping the tag triggers a deep link that updates your status and confirms with a quick notification.
+- **Android Quick Actions**: Long-press the app icon on your home screen to instantly toggle your status. You can also drag the action to your home screen to create a dedicated shortcut for one-tap check-ins.
 
 <div style="display: flex; gap: 10px;">
   <img src="docs/images/geofence.png" width="300" alt="Screenshot of geofence setup">
