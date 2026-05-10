@@ -44,6 +44,18 @@ export const getFormattedDate = (date: Date): string => {
 }
 
 /**
+ * Formats a Date object into a month string (YYYY-MM).
+ *
+ * @param date - The date to format.
+ * @returns A string representing the month in YYYY-MM format.
+ */
+export const getFormattedMonth = (date: Date): string => {
+    const year = date.getFullYear().toString()
+    const month = (date.getMonth() + 1).toString().padStart(2, '0')
+    return `${year}-${month}`
+}
+
+/**
  * Formats a date string (YYYY-MM-DD) into a locale-aware date string.
  *
  * @param dateStr - The date string to format (YYYY-MM-DD).

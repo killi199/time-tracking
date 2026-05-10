@@ -36,6 +36,7 @@ import { useTranslation } from 'react-i18next'
 import {
     getFormattedTime,
     getFormattedDate,
+    getFormattedMonth,
     getLocaleDateString,
 } from '../utils/time'
 import DayView from './DayView'
@@ -76,7 +77,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
         getFormattedDate(new Date()),
     )
     const [currentMonth, setCurrentMonth] = useState<string>(
-        new Date().toISOString().slice(0, 7), // YYYY-MM
+        getFormattedMonth(new Date()), // YYYY-MM
     )
 
     // Refresh trigger to force updates in child components
@@ -101,7 +102,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
     // Track app state and date to auto-update on resume
     const appState = useRef(AppState.currentState)
     const lastActiveDateRef = useRef(getFormattedDate(new Date()))
-    const lastActiveMonthRef = useRef(new Date().toISOString().slice(0, 7))
+    const lastActiveMonthRef = useRef(getFormattedMonth(new Date()))
 
     useEffect(() => {
         const subscription = AppState.addEventListener(
@@ -113,7 +114,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
                 ) {
                     const now = new Date()
                     const newToday = getFormattedDate(now)
-                    const newMonth = now.toISOString().slice(0, 7)
+                    const newMonth = getFormattedMonth(now)
 
                     // If real day changed and we were viewing "Today", update to new "Today"
                     if (newToday !== lastActiveDateRef.current) {
@@ -168,9 +169,9 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
 
     const changeDate = (step: number) => {
         if (viewMode === 'month') {
-            const date = new Date(`${currentMonth}-01`)
-            date.setMonth(date.getMonth() + step)
-            setCurrentMonth(date.toISOString().slice(0, 7))
+            const [year, month] = currentMonth.split('-').map(Number)
+            const date = new Date(year, month - 1 + step, 1)
+            setCurrentMonth(getFormattedMonth(date))
         } else if (viewMode === 'week') {
             const date = new Date(currentDate)
             date.setDate(date.getDate() + step * 7)
@@ -178,25 +179,23 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
         } else {
             const date = new Date(currentDate)
             date.setDate(date.getDate() + step)
-            setCurrentDate(date.toISOString().split('T')[0])
+            setCurrentDate(getFormattedDate(date))
         }
     }
 
     const goToToday = () => {
         const now = new Date()
         setCurrentDate(getFormattedDate(now))
-        setCurrentMonth(now.toISOString().slice(0, 7))
+        setCurrentMonth(getFormattedMonth(now))
     }
 
     const formattedDate = useMemo(() => {
         if (viewMode === 'month') {
-            return new Date(`${currentMonth}-01`).toLocaleDateString(
-                i18n.language,
-                {
-                    year: 'numeric',
-                    month: 'long',
-                },
-            )
+            const [y, m] = currentMonth.split('-').map(Number)
+            return new Date(y, m - 1, 1).toLocaleDateString(i18n.language, {
+                year: 'numeric',
+                month: 'long',
+            })
         } else if (viewMode === 'week') {
             const { start, end } = getWeekRangeData(currentDate)
             const startStr = start.toLocaleDateString(i18n.language, {
@@ -209,7 +208,8 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
             })
             return `${startStr} - ${endStr}`
         } else {
-            return new Date(currentDate).toLocaleDateString(i18n.language, {
+            const [y, m, d] = currentDate.split('-').map(Number)
+            return new Date(y, m - 1, d).toLocaleDateString(i18n.language, {
                 weekday: 'short',
                 year: 'numeric',
                 month: 'numeric',
@@ -351,7 +351,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
     const showBackToNowCalculated = useMemo(() => {
         const today = new Date()
         const todayStr = getFormattedDate(today)
-        const currentMonthStr = today.toISOString().slice(0, 7)
+        const currentMonthStr = getFormattedMonth(today)
 
         if (viewMode === 'month') {
             return currentMonth !== currentMonthStr
@@ -390,7 +390,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
             if (params.date) {
                 if (viewMode === 'month') {
                     // Update month
-                    const newMonth = params.date.toISOString().slice(0, 7)
+                    const newMonth = getFormattedMonth(params.date)
                     setCurrentMonth(newMonth)
                 } else {
                     // Update date
@@ -402,10 +402,15 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
         [setDatePickerVisible, viewMode, setCurrentMonth, setCurrentDate],
     )
 
-    const dateForPicker =
-        viewMode === 'month'
-            ? new Date(`${currentMonth}-01`)
-            : new Date(currentDate)
+    const dateForPicker = useMemo(() => {
+        if (viewMode === 'month') {
+            const [y, m] = currentMonth.split('-').map(Number)
+            return new Date(y, m - 1, 1)
+        } else {
+            const [y, m, d] = currentDate.split('-').map(Number)
+            return new Date(y, m - 1, d)
+        }
+    }, [viewMode, currentMonth, currentDate])
 
     // Ensure the date is valid (fallback to now if invalid)
     const validDateForPicker = isNaN(dateForPicker.getTime())
@@ -497,7 +502,11 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
                 mode="single"
                 visible={createDatePickerVisible}
                 onDismiss={onDismissCreateDatePicker}
-                date={new Date(dialogDate || new Date().toISOString())}
+                date={(() => {
+                    if (!dialogDate) return new Date()
+                    const [y, m, d] = dialogDate.split('-').map(Number)
+                    return new Date(y, m - 1, d)
+                })()}
                 onConfirm={onConfirmCreateDatePicker}
                 startWeekOnMonday
             />

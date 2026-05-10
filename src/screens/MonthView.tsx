@@ -208,14 +208,19 @@ export default function MonthView({
                 <View>
                     {item.showDateHeader && (
                         <List.Subheader>
-                            {new Date(item.date).toLocaleDateString(
-                                i18n.language,
-                                {
-                                    weekday: 'short',
-                                    day: 'numeric',
-                                    month: 'numeric',
-                                },
-                            )}
+                            {(() => {
+                                const [y, m, d] = item.date
+                                    .split('-')
+                                    .map(Number)
+                                return new Date(y, m - 1, d).toLocaleDateString(
+                                    i18n.language,
+                                    {
+                                        weekday: 'short',
+                                        day: 'numeric',
+                                        month: 'numeric',
+                                    },
+                                )
+                            })()}
                         </List.Subheader>
                     )}
                     <EventListItem
