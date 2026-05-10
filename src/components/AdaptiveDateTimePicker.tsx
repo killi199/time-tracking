@@ -104,7 +104,9 @@ const AdaptiveDateTimePicker = ({
             presentation="dialog"
             is24Hour={is24Hour}
             onValueChange={(_, selectedDate) => {
-                onConfirm(mode === 'date' ? shiftToLocal(selectedDate) : selectedDate)
+                onConfirm(
+                    mode === 'date' ? shiftToLocal(selectedDate) : selectedDate,
+                )
             }}
             onDismiss={onDismiss}
         />
