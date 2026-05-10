@@ -335,7 +335,7 @@ export default function GeofenceSetupScreen() {
     }
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={[styles.container]}>
             <Map
                 ref={mapRef}
                 style={styles.map}

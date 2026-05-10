@@ -90,12 +90,7 @@ export default function LicensesScreen() {
     )
 
     return (
-        <View
-            style={[
-                styles.container,
-                { backgroundColor: theme.colors.background },
-            ]}
-        >
+        <View style={[styles.container]}>
             <FlatList
                 data={licensesList}
                 keyExtractor={(item) => item.name}

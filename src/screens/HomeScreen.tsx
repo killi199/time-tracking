@@ -434,7 +434,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
     const { hours: pickerHours, minutes: pickerMinutes } = getPickerTime()
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={[styles.container]}>
             <View style={styles.header}>
                 <View style={styles.dateNav}>
                     <IconButton

@@ -1,18 +1,12 @@
 import { View, StyleSheet } from 'react-native'
-import { Text, useTheme } from 'react-native-paper'
+import { Text } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
 
 export default function GeofenceSetupScreen() {
-    const theme = useTheme()
     const { t } = useTranslation()
 
     return (
-        <View
-            style={[
-                styles.container,
-                { backgroundColor: theme.colors.background },
-            ]}
-        >
+        <View style={[styles.container]}>
             <Text
                 variant="titleLarge"
                 style={{ textAlign: 'center', margin: 20 }}

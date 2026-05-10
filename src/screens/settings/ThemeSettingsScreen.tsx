@@ -1,20 +1,14 @@
 import { View, StyleSheet } from 'react-native'
-import { RadioButton, List, useTheme } from 'react-native-paper'
+import { RadioButton, List } from 'react-native-paper'
 import { useAppTheme, ThemeMode } from '../../context/ThemeContext'
 import { useTranslation } from 'react-i18next'
 
 export default function ThemeSettingsScreen() {
     const { themeMode, setThemeMode } = useAppTheme()
-    const theme = useTheme()
     const { t } = useTranslation()
 
     return (
-        <View
-            style={[
-                styles.container,
-                { backgroundColor: theme.colors.background },
-            ]}
-        >
+        <View style={[styles.container]}>
             <List.Section title={t('settings.theme')}>
                 <RadioButton.Group
                     onValueChange={(value) => {
