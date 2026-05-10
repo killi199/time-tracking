@@ -15,6 +15,30 @@ export interface AdaptiveDateTimePickerProps {
     confirmLabel: string
 }
 
+const shiftToUTC = (date: Date) => {
+    return new Date(
+        Date.UTC(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate(),
+            date.getHours(),
+            date.getMinutes(),
+            date.getSeconds(),
+        ),
+    )
+}
+
+const shiftToLocal = (date: Date) => {
+    return new Date(
+        date.getUTCFullYear(),
+        date.getUTCMonth(),
+        date.getUTCDate(),
+        date.getUTCHours(),
+        date.getUTCMinutes(),
+        date.getUTCSeconds(),
+    )
+}
+
 const AdaptiveDateTimePicker = ({
     visible,
     onDismiss,
@@ -71,14 +95,16 @@ const AdaptiveDateTimePicker = ({
         )
     }
 
+    const androidValue = mode === 'date' ? shiftToUTC(value) : value
+
     return (
         <DateTimePicker
-            value={value}
+            value={androidValue}
             mode={mode}
             presentation="dialog"
             is24Hour={is24Hour}
             onValueChange={(_, selectedDate) => {
-                onConfirm(selectedDate)
+                onConfirm(mode === 'date' ? shiftToLocal(selectedDate) : selectedDate)
             }}
             onDismiss={onDismiss}
         />
