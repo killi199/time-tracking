@@ -23,6 +23,8 @@ import {
     useTheme,
     Checkbox,
 } from 'react-native-paper'
+import { Gesture, GestureDetector } from 'react-native-gesture-handler'
+import { scheduleOnRN } from 'react-native-worklets'
 import AdaptiveDateTimePicker from '../components/AdaptiveDateTimePicker'
 import {
     useFocusEffect,
@@ -434,6 +436,19 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
 
     const { hours: pickerHours, minutes: pickerMinutes } = getPickerTime()
 
+    const swipeGesture = Gesture.Pan()
+        .activeOffsetX([-30, 30])
+        .failOffsetY([-30, 30])
+        .onEnd((e) => {
+            if (e.translationX < -50) {
+                if (showBackToNowCalculated) {
+                    scheduleOnRN(changeDate, 1) // Swipe left -> Next day/week/month
+                }
+            } else if (e.translationX > 50) {
+                scheduleOnRN(changeDate, -1) // Swipe right -> Previous day/week/month
+            }
+        })
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -522,37 +537,41 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
                 confirmLabel={t('common.confirm')}
             />
 
-            {(() => {
-                if (viewMode === 'day') {
-                    return (
-                        <DayView
-                            date={currentDate}
-                            onEditEvent={showEditDialog}
-                            onDeleteEvent={showDeleteDialog}
-                            onAddEvent={handleAddEvent}
-                            refreshTrigger={refreshTrigger}
-                        />
-                    )
-                } else if (viewMode === 'week') {
-                    return (
-                        <WeekView
-                            date={currentDate}
-                            onEditEvent={showEditDialog}
-                            onDeleteEvent={showDeleteDialog}
-                            refreshTrigger={refreshTrigger}
-                        />
-                    )
-                } else {
-                    return (
-                        <MonthView
-                            month={currentMonth}
-                            onEditEvent={showEditDialog}
-                            onDeleteEvent={showDeleteDialog}
-                            refreshTrigger={refreshTrigger}
-                        />
-                    )
-                }
-            })()}
+            <GestureDetector gesture={swipeGesture}>
+                <View style={{ flex: 1 }}>
+                    {(() => {
+                        if (viewMode === 'day') {
+                            return (
+                                <DayView
+                                    date={currentDate}
+                                    onEditEvent={showEditDialog}
+                                    onDeleteEvent={showDeleteDialog}
+                                    onAddEvent={handleAddEvent}
+                                    refreshTrigger={refreshTrigger}
+                                />
+                            )
+                        } else if (viewMode === 'week') {
+                            return (
+                                <WeekView
+                                    date={currentDate}
+                                    onEditEvent={showEditDialog}
+                                    onDeleteEvent={showDeleteDialog}
+                                    refreshTrigger={refreshTrigger}
+                                />
+                            )
+                        } else {
+                            return (
+                                <MonthView
+                                    month={currentMonth}
+                                    onEditEvent={showEditDialog}
+                                    onDeleteEvent={showDeleteDialog}
+                                    refreshTrigger={refreshTrigger}
+                                />
+                            )
+                        }
+                    })()}
+                </View>
+            </GestureDetector>
 
             <Portal>
                 <Dialog visible={visible} onDismiss={hideDialog}>
