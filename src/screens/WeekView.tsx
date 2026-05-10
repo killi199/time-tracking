@@ -40,12 +40,8 @@ export default function WeekView({
     const { t, i18n } = useTranslation()
 
     const getWeekRange = useCallback((dateStr: string) => {
-        const curr = new Date(dateStr)
-        // If the date string parsing results in a different local day due to timezone,
-        // we should be careful. strict YYYY-MM-DD parsing is usually safe if specific noon.
-        // But simply new Date('2023-01-01') is UTC in some contexts or local in others.
-        // Given existing code uses new Date(dateStr), let's stick to it but ensure consistency.
-
+        const [y, m, d] = dateStr.split('-').map(Number)
+        const curr = new Date(y, m - 1, d)
         const day = curr.getDay() // 0 (Sun) to 6 (Sat)
         // Mondays as start
         // if Sunday (0), we equate it to 7 to subtract 6 days to get Monday.
@@ -233,14 +229,19 @@ export default function WeekView({
                 <View>
                     {item.showDateHeader && (
                         <List.Subheader>
-                            {new Date(item.date).toLocaleDateString(
-                                i18n.language,
-                                {
-                                    weekday: 'short',
-                                    day: 'numeric',
-                                    month: 'numeric',
-                                },
-                            )}
+                            {(() => {
+                                const [y, m, d] = item.date
+                                    .split('-')
+                                    .map(Number)
+                                return new Date(y, m - 1, d).toLocaleDateString(
+                                    i18n.language,
+                                    {
+                                        weekday: 'short',
+                                        day: 'numeric',
+                                        month: 'numeric',
+                                    },
+                                )
+                            })()}
                         </List.Subheader>
                     )}
                     <EventListItem
