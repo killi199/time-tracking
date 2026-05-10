@@ -1,5 +1,5 @@
 import { View, StyleSheet } from 'react-native'
-import { List, useTheme } from 'react-native-paper'
+import { List } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
 import { NavigationProp, ParamListBase } from '@react-navigation/native'
 
@@ -8,16 +8,10 @@ export interface SettingsScreenProps {
 }
 
 export default function SettingsScreen({ navigation }: SettingsScreenProps) {
-    const theme = useTheme()
     const { t } = useTranslation()
 
     return (
-        <View
-            style={[
-                styles.container,
-                { backgroundColor: theme.colors.background },
-            ]}
-        >
+        <View style={styles.container}>
             <List.Section>
                 <List.Item
                     title={t('settings.theme')}

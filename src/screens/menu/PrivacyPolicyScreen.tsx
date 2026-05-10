@@ -8,12 +8,7 @@ export default function PrivacyPolicyScreen() {
     const { t } = useTranslation()
 
     return (
-        <ScrollView
-            style={[
-                styles.container,
-                { backgroundColor: theme.colors.background },
-            ]}
-        >
+        <ScrollView style={styles.container}>
             <View style={styles.content}>
                 <Text variant="headlineMedium" style={styles.title}>
                     {t('privacy.title')}

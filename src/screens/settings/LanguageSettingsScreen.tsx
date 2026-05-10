@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
-import { RadioButton, List, useTheme, Text } from 'react-native-paper'
+import { RadioButton, List, Text } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
 import { getSetting, setSetting } from '../../db/database'
 import i18n from 'i18next'
 import * as Localization from 'expo-localization'
 
 export default function LanguageSettingsScreen() {
-    const theme = useTheme()
     const { t } = useTranslation()
     const [language, setLanguage] = useState(() => {
         const saved = getSetting('language')
@@ -27,12 +26,7 @@ export default function LanguageSettingsScreen() {
     }
 
     return (
-        <View
-            style={[
-                styles.container,
-                { backgroundColor: theme.colors.background },
-            ]}
-        >
+        <View style={styles.container}>
             <List.Section title={t('settings.language')}>
                 <RadioButton.Group
                     onValueChange={handleLanguageChange}

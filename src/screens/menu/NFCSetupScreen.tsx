@@ -74,12 +74,7 @@ export default function NFCSetupScreen() {
     }
 
     return (
-        <View
-            style={[
-                styles.container,
-                { backgroundColor: theme.colors.background },
-            ]}
-        >
+        <View style={styles.container}>
             <Text variant="titleLarge" style={styles.title}>
                 {t('nfc.title')}
             </Text>
