@@ -33,6 +33,7 @@ updates:
           - dependency-name: '@react-navigation/*'
           - dependency-name: 'typescript'
           - dependency-name: 'expo-*'
+          - dependency-name: '@expo/*'
 
     - package-ecosystem: 'github-actions'
       directories:
