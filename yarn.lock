@@ -5507,6 +5507,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-file-system@npm:~56.0.4":
+  version: 56.0.5
+  resolution: "expo-file-system@npm:56.0.5"
+  peerDependencies:
+    expo: "*"
+    react-native: "*"
+  checksum: 10c0/a7906022bc782e2c250b3e53e50c5f4fb50cec543195937c87d63cecc8fe9d1bb8a3d5521eb21fdbd675727a0e633ec5e09f1ed4f6ef8c97fb2ca69b1b9211da
+  languageName: node
+  linkType: hard
+
 "expo-font@npm:~55.0.7":
   version: 55.0.7
   resolution: "expo-font@npm:55.0.7"
@@ -10432,7 +10442,7 @@ __metadata:
     expo: "npm:~55.0.24"
     expo-constants: "npm:~55.0.16"
     expo-document-picker: "npm:~55.0.13"
-    expo-file-system: "npm:~55.0.20"
+    expo-file-system: "npm:~56.0.4"
     expo-linking: "npm:~55.0.15"
     expo-localization: "npm:~55.0.14"
     expo-location: "npm:~55.1.10"
