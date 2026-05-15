@@ -1523,6 +1523,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@expo/image-utils@npm:^0.9.3":
+  version: 0.9.3
+  resolution: "@expo/image-utils@npm:0.9.3"
+  dependencies:
+    "@expo/require-utils": "npm:^56.1.1"
+    "@expo/spawn-async": "npm:^1.7.2"
+    chalk: "npm:^4.0.0"
+    getenv: "npm:^2.0.0"
+    jimp-compact: "npm:0.16.1"
+    parse-png: "npm:^2.1.0"
+    semver: "npm:^7.6.0"
+  checksum: 10c0/4a871127900e137dee5d5b46a5852c49f558c2567085bfbdbacf4033d968c6c70a056e5b144d8fea2df4bd97c49be94ebd30826ac5ebed7ce874533e4c52e88c
+  languageName: node
+  linkType: hard
+
 "@expo/json-file@npm:^10.0.14, @expo/json-file@npm:^10.1.0":
   version: 10.1.1
   resolution: "@expo/json-file@npm:10.1.1"
@@ -1711,6 +1726,22 @@ __metadata:
     typescript:
       optional: true
   checksum: 10c0/5d6828a77a693f0e7c7ccdfff7da8c2fe05045fa21831966e92879f0946e4e3beddabe3f3bfab8e2d4ea27b8c324167aa8e167d8e6842a2cebebd67a59bebab1
+  languageName: node
+  linkType: hard
+
+"@expo/require-utils@npm:^56.1.1":
+  version: 56.1.1
+  resolution: "@expo/require-utils@npm:56.1.1"
+  dependencies:
+    "@babel/code-frame": "npm:^7.20.0"
+    "@babel/core": "npm:^7.25.2"
+    "@babel/plugin-transform-modules-commonjs": "npm:^7.24.8"
+  peerDependencies:
+    typescript: ^5.0.0 || ^5.0.0-0 || ^6.0.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/91131aa888c483489280c571f39d7b217302699f4d5aaa374e06314722d2e910c6ea600230a58fa8598bf78765365e53b6101e37bc3425e81fb50694b0cf1be7
   languageName: node
   linkType: hard
 
@@ -5583,14 +5614,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-location@npm:~55.1.10":
-  version: 55.1.10
-  resolution: "expo-location@npm:55.1.10"
+"expo-location@npm:~56.0.6":
+  version: 56.0.9
+  resolution: "expo-location@npm:56.0.9"
   dependencies:
-    "@expo/image-utils": "npm:^0.8.14"
+    "@expo/image-utils": "npm:^0.9.3"
   peerDependencies:
     expo: "*"
-  checksum: 10c0/da8c2548cab3e90c27ea5415156577e0577deffb1b300a0147b487bbaac149e7a491283d173828217d5c83bb4c519339491d9a3081b893351a48ea83f298c813
+  checksum: 10c0/9b219aa431ad96fce32d3aa4367d3833341d96990f74b8d466fc63417c9e510f33b9a05e4487647c61491369b4feca31b897a4eca8fa2de30cfad68817d1d0e5
   languageName: node
   linkType: hard
 
@@ -10435,7 +10466,7 @@ __metadata:
     expo-file-system: "npm:~55.0.20"
     expo-linking: "npm:~55.0.15"
     expo-localization: "npm:~55.0.14"
-    expo-location: "npm:~55.1.10"
+    expo-location: "npm:~56.0.6"
     expo-notifications: "npm:~55.0.23"
     expo-quick-actions: "npm:6.0.1"
     expo-router: "npm:~55.0.14"
