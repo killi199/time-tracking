@@ -30,10 +30,9 @@ updates:
           - dependency-name: 'react-native-screens'
           - dependency-name: 'react-native-worklets'
           - dependency-name: 'react-native-safe-area-context'
-          - dependency-name: '@react-navigation/native-stack'
-          - dependency-name: '@react-navigation/bottom-tabs'
-          - dependency-name: '@react-navigation/drawer'
+          - dependency-name: '@react-navigation/*'
           - dependency-name: 'typescript'
+          - dependency-name: 'expo-*'
 
     - package-ecosystem: 'github-actions'
       directories:
