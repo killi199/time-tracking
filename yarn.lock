@@ -1772,16 +1772,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/ui@npm:~55.0.16":
-  version: 55.0.16
-  resolution: "@expo/ui@npm:55.0.16"
+"@expo/ui@npm:~56.0.5":
+  version: 56.0.8
+  resolution: "@expo/ui@npm:56.0.8"
   dependencies:
     sf-symbols-typescript: "npm:^2.1.0"
+    vaul: "npm:^1.1.2"
   peerDependencies:
+    "@babel/core": "*"
     expo: "*"
     react: "*"
+    react-dom: "*"
     react-native: "*"
-  checksum: 10c0/4be6742f157ea8163683fbd276a10f0b516b2dbbff420378fb3b03305e3d2e891af4de142e6d16d3bb04e13f8ff2203d9946956479c6e90acfce932eb7054a00
+    react-native-reanimated: "*"
+    react-native-worklets: "*"
+  peerDependenciesMeta:
+    "@babel/core":
+      optional: true
+    react-dom:
+      optional: true
+    react-native-reanimated:
+      optional: true
+    react-native-worklets:
+      optional: true
+  checksum: 10c0/3cbc111b81da169452a4383f458babf2dd8c73594ab6b07d89b5fe920ab18a882695e79fbb448251a84faca7fca16e62914cd446d224589b32465f7c6b91a096
   languageName: node
   linkType: hard
 
@@ -10400,7 +10414,7 @@ __metadata:
     "@babel/core": "npm:7.29.0"
     "@eslint/js": "npm:9.39.2"
     "@expo/log-box": "npm:55.0.12"
-    "@expo/ui": "npm:~55.0.16"
+    "@expo/ui": "npm:~56.0.5"
     "@maplibre/maplibre-react-native": "npm:11.2.1"
     "@react-native-community/slider": "npm:5.1.2"
     "@react-navigation/bottom-tabs": "npm:^7.15.5"
