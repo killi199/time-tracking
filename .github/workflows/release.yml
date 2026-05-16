@@ -23,22 +23,21 @@ jobs:
             - name: Bump package.json version and versionCode
               id: bump
               run: |
-                CURRENT_VERSION_CODE=$(jq -r .versionCode package.json)
-                NEW_VERSION_CODE=$((CURRENT_VERSION_CODE + 1))
-                NEW_VERSION=${GITHUB_REF_NAME#v}
-                
-                jq ".versionCode = $NEW_VERSION_CODE | .version = \"$NEW_VERSION\"" package.json > package.tmp.json
-                mv package.tmp.json package.json
-                
-                git config --local user.email "github-actions[bot]@users.noreply.github.com"
-                git config --local user.name "github-actions[bot]"
-                git add package.json
-                git commit -m "chore: bump version to $NEW_VERSION and versionCode to $NEW_VERSION_CODE [skip ci]" || true
-                git pull --rebase origin main
-                git push origin main
-                
-                echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
-                echo "new_version_code=$NEW_VERSION_CODE" >> $GITHUB_OUTPUT
+                  CURRENT_VERSION_CODE=$(jq -r .versionCode package.json)
+                  NEW_VERSION_CODE=$((CURRENT_VERSION_CODE + 1))
+                  NEW_VERSION=${GITHUB_REF_NAME#v}
+
+                  jq ".versionCode = $NEW_VERSION_CODE | .version = \"$NEW_VERSION\"" package.json > package.tmp.json
+                  mv package.tmp.json package.json
+
+                  echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+                  echo "new_version_code=$NEW_VERSION_CODE" >> $GITHUB_OUTPUT
+
+            - name: Commit and push changes
+              uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 # v7.1.0
+              with:
+                  commit_message: 'chore: bump version to ${{ steps.bump.outputs.new_version }} and versionCode to ${{ steps.bump.outputs.new_version_code }} [skip ci]'
+                  file_pattern: 'package.json'
 
     build:
         needs: prepare
@@ -59,8 +58,8 @@ jobs:
 
             - name: Apply bumped version
               run: |
-                jq ".versionCode = ${{ needs.prepare.outputs.new_version_code }} | .version = \"${{ needs.prepare.outputs.new_version }}\"" package.json > package.tmp.json
-                mv package.tmp.json package.json
+                  jq ".versionCode = ${{ needs.prepare.outputs.new_version_code }} | .version = \"${{ needs.prepare.outputs.new_version }}\"" package.json > package.tmp.json
+                  mv package.tmp.json package.json
 
             - name: Setup Environment and Install Dependencies
               uses: ./.github/actions/setup-environment
