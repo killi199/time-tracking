@@ -31,6 +31,7 @@ jobs:
 
                   jq ".versionCode = $NEW_VERSION_CODE | .version = \"$NEW_VERSION\"" package.json > package.tmp.json
                   mv package.tmp.json package.json
+                  npx prettier --write package.json
 
                   echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
                   echo "new_version_code=$NEW_VERSION_CODE" >> $GITHUB_OUTPUT
