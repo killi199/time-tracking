@@ -5,32 +5,40 @@ import { parseLocalTime } from '../utils/time'
 const db = SQLite.openDatabaseSync('time_tracking.db')
 
 export const initDatabase = (): void => {
-    // Events Table
-    db.execSync(`
-        CREATE TABLE IF NOT EXISTS events (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            date TEXT NOT NULL,
-            time TEXT NOT NULL,
-            note TEXT,
-            isManualEntry INTEGER DEFAULT 0,
-            timestamp TEXT
-        );
-    `)
+    // Get the current database version
+    const versionResult = db.getAllSync<{ user_version: number }>('PRAGMA user_version;')
+    const currentVersion = versionResult.length > 0 ? versionResult[0].user_version : 0
 
-    // Safely add timestamp column for existing tables
-    try {
-        db.execSync('ALTER TABLE events ADD COLUMN timestamp TEXT;')
-    } catch {
-        // Column already exists, safe to ignore
+    const targetVersion = 2
+
+    if (currentVersion === 0) {
+        // Fresh install: Create schema with final target structure
+        db.execSync(`
+            CREATE TABLE IF NOT EXISTS events (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                date TEXT NOT NULL,
+                time TEXT NOT NULL,
+                note TEXT,
+                isManualEntry INTEGER DEFAULT 0,
+                timestamp TEXT
+            );
+        `)
+
+        db.execSync(`
+            CREATE TABLE IF NOT EXISTS settings (
+              key TEXT PRIMARY KEY,
+              value TEXT
+            );
+        `)
+
+        db.execSync(`PRAGMA user_version = ${targetVersion};`)
+    } else {
+        // Existing install: Perform migration steps sequentially
+        if (currentVersion < 2) {
+            db.execSync('ALTER TABLE events ADD COLUMN timestamp TEXT;')
+            db.execSync('PRAGMA user_version = 2;')
+        }
     }
-
-    // Settings Table
-    db.execSync(`
-        CREATE TABLE IF NOT EXISTS settings (
-          key TEXT PRIMARY KEY,
-          value TEXT
-        );
-    `)
 }
 
 export const getSetting = (key: string): string | null => {
