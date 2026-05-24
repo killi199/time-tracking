@@ -80,6 +80,10 @@ This documentation provides guidelines for AI agents and developers working on t
     - **UI**: Check `react-native-paper` docs if unsure about a component.
     - **i18n**: Check `src/i18n/locales/en.ts` for existing keys before adding new ones.
 3. **Verify**: Ensure that no `react-native` primitive components are replacing `react-native-paper` components unnecessarily.
+4. **Pre-commit Verification**: Before staging, committing, or pushing any changes, you MUST execute the following checks locally and resolve all reported issues:
+    - `yarn typecheck` (TypeScript verification).
+    - `yarn lint` (ESLint and style guidelines).
+    - `yarn test` (Unit test execution).
 
 ---
 
@@ -89,3 +93,6 @@ This documentation provides guidelines for AI agents and developers working on t
 - [ ] Strings wrapped in `t()`?
 - [ ] New translation keys added to `src/i18n/locales/*.ts`?
 - [ ] Styles use `theme.colors`?
+- [ ] `yarn typecheck` passes with zero errors?
+- [ ] `yarn lint` passes with zero errors and warnings?
+- [ ] `yarn test` runs and passes all tests successfully?
