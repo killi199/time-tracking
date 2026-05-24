@@ -85,12 +85,8 @@ export default function WeekView({
                 let dayMinutes = 0
                 for (let i = 0; i < dayEvents.length; i += 2) {
                     if (i + 1 < dayEvents.length) {
-                        const start = dayEvents[i].timestamp
-                            ? new Date(dayEvents[i].timestamp!)
-                            : parseLocalTime(d, dayEvents[i].time)
-                        const end = dayEvents[i + 1].timestamp
-                            ? new Date(dayEvents[i + 1].timestamp!)
-                            : parseLocalTime(d, dayEvents[i + 1].time)
+                        const start = new Date(dayEvents[i].timestamp)
+                        const end = new Date(dayEvents[i + 1].timestamp)
                         const diff =
                             (end.getTime() - start.getTime()) / 1000 / 60
                         dayMinutes += diff
@@ -98,9 +94,7 @@ export default function WeekView({
                         // Active session handling for today
                         const today = getFormattedDate(new Date())
                         if (d === today) {
-                            const start = dayEvents[i].timestamp
-                                ? new Date(dayEvents[i].timestamp!)
-                                : parseLocalTime(d, dayEvents[i].time)
+                            const start = new Date(dayEvents[i].timestamp)
                             const now = new Date()
                             const diff =
                                 (now.getTime() - start.getTime()) / 1000 / 60
@@ -133,9 +127,7 @@ export default function WeekView({
             const todayEvents = eventsByDate[today] || []
             if (todayEvents.length % 2 !== 0) {
                 const lastEvent = todayEvents[todayEvents.length - 1]
-                const start = lastEvent.timestamp
-                    ? new Date(lastEvent.timestamp)
-                    : parseLocalTime(today, lastEvent.time)
+                const start = new Date(lastEvent.timestamp)
                 const now = new Date()
                 const diff = (now.getTime() - start.getTime()) / 1000 / 60
                 finalOverallBalance += diff
@@ -153,7 +145,7 @@ export default function WeekView({
 
             for (let i = 0; i < rawEvents.length; i++) {
                 const rawEvent = rawEvents[i]
-                const { date: displayDate, time: displayTime } = getEventTimeAndDate(rawEvent.timestamp, rawEvent.date, rawEvent.time)
+                const { date: displayDate, time: displayTime } = getEventTimeAndDate(rawEvent.timestamp)
                 const event = {
                     ...rawEvent,
                     date: displayDate,
@@ -179,7 +171,7 @@ export default function WeekView({
                 const nextRaw = i < rawEvents.length - 1 ? rawEvents[i + 1] : null
                 let next = null
                 if (nextRaw) {
-                    const { date: nextDisplayDate, time: nextDisplayTime } = getEventTimeAndDate(nextRaw.timestamp, nextRaw.date, nextRaw.time)
+                    const { date: nextDisplayDate, time: nextDisplayTime } = getEventTimeAndDate(nextRaw.timestamp)
                     next = {
                         ...nextRaw,
                         date: nextDisplayDate,
@@ -188,12 +180,8 @@ export default function WeekView({
                 }
 
                 if (next && next.date === event.date) {
-                    const start = rawEvent.timestamp
-                        ? new Date(rawEvent.timestamp)
-                        : parseLocalTime(rawEvent.date, rawEvent.time)
-                    const end = nextRaw!.timestamp
-                        ? new Date(nextRaw!.timestamp)
-                        : parseLocalTime(nextRaw!.date, nextRaw!.time)
+                    const start = new Date(rawEvent.timestamp)
+                    const end = new Date(nextRaw!.timestamp)
                     const diffMinutes =
                         (end.getTime() - start.getTime()) / 1000 / 60
                     const duration = formatTime(diffMinutes)

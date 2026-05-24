@@ -20,7 +20,7 @@ export const initDatabase = (): void => {
                 time TEXT NOT NULL,
                 note TEXT,
                 isManualEntry INTEGER DEFAULT 0,
-                timestamp TEXT
+                timestamp TEXT NOT NULL
             );
         `)
 
@@ -35,7 +35,36 @@ export const initDatabase = (): void => {
     } else {
         // Existing install: Perform migration steps sequentially
         if (currentVersion < 2) {
+            // 1. Add timestamp column
             db.execSync('ALTER TABLE events ADD COLUMN timestamp TEXT;')
+
+            // 2. Fetch all legacy events (where timestamp is NULL)
+            const legacyEvents = db.getAllSync<{ id: number; date: string; time: string }>(
+                'SELECT id, date, time FROM events WHERE timestamp IS NULL'
+            )
+
+            // 3. Convert and update each legacy event with its absolute timestamp
+            if (legacyEvents.length > 0) {
+                const updateStatement = db.prepareSync(
+                    'UPDATE events SET timestamp = $timestamp WHERE id = $id'
+                )
+                try {
+                    db.withTransactionSync(() => {
+                        legacyEvents.forEach((event) => {
+                            const [y, m, d] = event.date.split('-').map(Number)
+                            const [h, min] = event.time.split(':').map(Number)
+                            const localDate = new Date(y, m - 1, d, h, min)
+                            updateStatement.executeSync({
+                                $timestamp: localDate.toISOString(),
+                                $id: event.id,
+                            })
+                        })
+                    })
+                } finally {
+                    updateStatement.finalizeSync()
+                }
+            }
+
             db.execSync('PRAGMA user_version = 2;')
         }
     }
@@ -199,12 +228,8 @@ export const getOverallStats = (
         let dayMinutes = 0
         for (let i = 0; i < dayEvents.length; i += 2) {
             if (i + 1 < dayEvents.length) {
-                const start = dayEvents[i].timestamp
-                    ? new Date(dayEvents[i].timestamp!)
-                    : parseLocalTime(date, dayEvents[i].time)
-                const end = dayEvents[i + 1].timestamp
-                    ? new Date(dayEvents[i + 1].timestamp!)
-                    : parseLocalTime(date, dayEvents[i + 1].time)
+                const start = new Date(dayEvents[i].timestamp)
+                const end = new Date(dayEvents[i + 1].timestamp)
                 const diff = (end.getTime() - start.getTime()) / 1000 / 60
                 dayMinutes += diff
             }

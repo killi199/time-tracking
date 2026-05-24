@@ -43,19 +43,13 @@ export default function DayView({
             for (let i = 0; i < sortedEvents.length; i += 2) {
                 if (i + 1 < sortedEvents.length) {
                     // Pair: Start -> End
-                    const start = sortedEvents[i].timestamp
-                        ? new Date(sortedEvents[i].timestamp!)
-                        : parseLocalTime(date, sortedEvents[i].time)
-                    const end = sortedEvents[i + 1].timestamp
-                        ? new Date(sortedEvents[i + 1].timestamp!)
-                        : parseLocalTime(date, sortedEvents[i + 1].time)
+                    const start = new Date(sortedEvents[i].timestamp)
+                    const end = new Date(sortedEvents[i + 1].timestamp)
                     const diff = (end.getTime() - start.getTime()) / 1000 / 60
                     totalMinutesToday += diff
                 } else {
                     // Unpaired: Start -> Now (Active Session)
-                    const start = sortedEvents[i].timestamp
-                        ? new Date(sortedEvents[i].timestamp!)
-                        : parseLocalTime(date, sortedEvents[i].time)
+                    const start = new Date(sortedEvents[i].timestamp)
                     const now = new Date()
                     // Only count if today is actually today
                     const today = getFormattedDate(new Date())
@@ -85,9 +79,7 @@ export default function DayView({
                 sortedEvents.length % 2 !== 0
             ) {
                 const lastEvent = sortedEvents[sortedEvents.length - 1]
-                const start = lastEvent.timestamp
-                    ? new Date(lastEvent.timestamp)
-                    : parseLocalTime(date, lastEvent.time)
+                const start = new Date(lastEvent.timestamp)
                 const now = new Date()
                 const diff = (now.getTime() - start.getTime()) / 1000 / 60
                 finalOverallBalance += diff
@@ -109,7 +101,7 @@ export default function DayView({
 
             for (let i = 0; i < sorted.length; i++) {
                 const rawEvent = sorted[i]
-                const { date: displayDate, time: displayTime } = getEventTimeAndDate(rawEvent.timestamp, rawEvent.date, rawEvent.time)
+                const { date: displayDate, time: displayTime } = getEventTimeAndDate(rawEvent.timestamp)
                 const event = {
                     ...rawEvent,
                     date: displayDate,
@@ -126,12 +118,8 @@ export default function DayView({
                 const nextRaw = i < sorted.length - 1 ? sorted[i + 1] : null
                 if (nextRaw) {
                     // Same day is guaranteed in DayView
-                    const start = rawEvent.timestamp
-                        ? new Date(rawEvent.timestamp)
-                        : parseLocalTime(rawEvent.date, rawEvent.time)
-                    const end = nextRaw.timestamp
-                        ? new Date(nextRaw.timestamp)
-                        : parseLocalTime(nextRaw.date, nextRaw.time)
+                    const start = new Date(rawEvent.timestamp)
+                    const end = new Date(nextRaw.timestamp)
                     const diffMinutes =
                         (end.getTime() - start.getTime()) / 1000 / 60
                     const duration = formatTime(diffMinutes)

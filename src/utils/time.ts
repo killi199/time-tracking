@@ -99,22 +99,14 @@ export const parseLocalTime = (dateStr: string, timeStr: string): Date => {
 
 /**
  * Formats an event's timezone-aware timestamp into local date and time strings.
- * Falls back to legacy date and time strings if timestamp is not present.
  */
 export const getEventTimeAndDate = (
-    timestamp: string | undefined | null,
-    fallbackDate: string,
-    fallbackTime: string,
+    timestamp: string,
 ): { date: string; time: string } => {
-    if (timestamp) {
-        const dateObj = new Date(timestamp)
-        if (!isNaN(dateObj.getTime())) {
-            return {
-                date: getFormattedDate(dateObj),
-                time: getFormattedTime(dateObj),
-            }
-        }
+    const dateObj = new Date(timestamp)
+    return {
+        date: getFormattedDate(dateObj),
+        time: getFormattedTime(dateObj),
     }
-    return { date: fallbackDate, time: fallbackTime }
 }
 

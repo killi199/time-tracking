@@ -130,19 +130,13 @@ describe('parseLocalTime', () => {
 })
 
 describe('getEventTimeAndDate', () => {
-    it('returns formatted local date and time if timestamp is present', () => {
+    it('returns formatted local date and time from the timestamp', () => {
         // Create an absolute timestamp (UTC ISO string)
         const dateObj = new Date(2026, 4, 24, 14, 30) // local May 24, 2026 14:30
         const isoStr = dateObj.toISOString()
-        const result = getEventTimeAndDate(isoStr, '2026-05-24', '10:00')
+        const result = getEventTimeAndDate(isoStr)
         expect(result.date).toBe('2026-05-24')
         expect(result.time).toBe('14:30')
-    })
-
-    it('falls back to naive legacy date and time if timestamp is null/undefined', () => {
-        const result = getEventTimeAndDate(null, '2026-05-24', '10:00')
-        expect(result.date).toBe('2026-05-24')
-        expect(result.time).toBe('10:00')
     })
 })
 
