@@ -39,6 +39,7 @@ import {
     getFormattedDate,
     getFormattedMonth,
     getLocaleDateString,
+    parseLocalDate,
 } from '../utils/time'
 import DayView from './DayView'
 import MonthView from './MonthView'
@@ -46,7 +47,7 @@ import WeekView from './WeekView'
 
 // Helper to get week range text
 const getWeekRangeData = (dateStr: string) => {
-    const curr = new Date(dateStr)
+    const curr = parseLocalDate(dateStr)
     const day = curr.getDay() // 0-6
     const diffToMonday = day === 0 ? 6 : day - 1
     const first = new Date(curr)
@@ -171,11 +172,11 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
             const date = new Date(year, month - 1 + step, 1)
             setCurrentMonth(getFormattedMonth(date))
         } else if (viewMode === 'week') {
-            const date = new Date(currentDate)
+            const date = parseLocalDate(currentDate)
             date.setDate(date.getDate() + step * 7)
             setCurrentDate(getFormattedDate(date))
         } else {
-            const date = new Date(currentDate)
+            const date = parseLocalDate(currentDate)
             date.setDate(date.getDate() + step)
             setCurrentDate(getFormattedDate(date))
         }

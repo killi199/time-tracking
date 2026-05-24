@@ -1,5 +1,6 @@
 import * as SQLite from 'expo-sqlite'
 import { TimeEvent } from '../types'
+import { parseLocalTime } from '../utils/time'
 
 const db = SQLite.openDatabaseSync('time_tracking.db')
 
@@ -11,9 +12,17 @@ export const initDatabase = (): void => {
             date TEXT NOT NULL,
             time TEXT NOT NULL,
             note TEXT,
-            isManualEntry INTEGER DEFAULT 0
+            isManualEntry INTEGER DEFAULT 0,
+            timestamp TEXT
         );
     `)
+
+    // Safely add timestamp column for existing tables
+    try {
+        db.execSync('ALTER TABLE events ADD COLUMN timestamp TEXT;')
+    } catch {
+        // Column already exists, safe to ignore
+    }
 
     // Settings Table
     db.execSync(`
@@ -58,9 +67,11 @@ export const addEvent = (
     time: string,
     note: string | null,
     isManualEntry: boolean = false,
+    timestamp?: string,
 ): number => {
+    const finalTimestamp = timestamp ?? (isManualEntry ? parseLocalTime(date, time).toISOString() : new Date().toISOString())
     const statement = db.prepareSync(
-        'INSERT INTO events (date, time, note, isManualEntry) VALUES ($date, $time, $note, $isManualEntry)',
+        'INSERT INTO events (date, time, note, isManualEntry, timestamp) VALUES ($date, $time, $note, $isManualEntry, $timestamp)',
     )
     try {
         const result = statement.executeSync({
@@ -68,6 +79,7 @@ export const addEvent = (
             $time: time,
             $note: note,
             $isManualEntry: isManualEntry ? 1 : 0,
+            $timestamp: finalTimestamp,
         })
         return result.lastInsertRowId
     } finally {
@@ -81,9 +93,11 @@ export const updateEvent = (
     time: string,
     note: string | null,
     isManualEntry: boolean = false,
+    timestamp?: string,
 ): void => {
+    const finalTimestamp = timestamp ?? parseLocalTime(date, time).toISOString()
     const statement = db.prepareSync(
-        'UPDATE events SET date = $date, time = $time, note = $note, isManualEntry = $isManualEntry WHERE id = $id',
+        'UPDATE events SET date = $date, time = $time, note = $note, isManualEntry = $isManualEntry, timestamp = $timestamp WHERE id = $id',
     )
     try {
         statement.executeSync({
@@ -91,6 +105,7 @@ export const updateEvent = (
             $time: time,
             $note: note,
             $isManualEntry: isManualEntry ? 1 : 0,
+            $timestamp: finalTimestamp,
             $id: id,
         })
     } finally {
@@ -176,8 +191,12 @@ export const getOverallStats = (
         let dayMinutes = 0
         for (let i = 0; i < dayEvents.length; i += 2) {
             if (i + 1 < dayEvents.length) {
-                const start = new Date(`${date}T${dayEvents[i].time}`)
-                const end = new Date(`${date}T${dayEvents[i + 1].time}`)
+                const start = dayEvents[i].timestamp
+                    ? new Date(dayEvents[i].timestamp!)
+                    : parseLocalTime(date, dayEvents[i].time)
+                const end = dayEvents[i + 1].timestamp
+                    ? new Date(dayEvents[i + 1].timestamp!)
+                    : parseLocalTime(date, dayEvents[i + 1].time)
                 const diff = (end.getTime() - start.getTime()) / 1000 / 60
                 dayMinutes += diff
             }
@@ -201,7 +220,7 @@ export const getOverallStats = (
 
 export const importEvents = (events: Omit<TimeEvent, 'id'>[]): void => {
     const insertStatement = db.prepareSync(
-        'INSERT INTO events (date, time, note, isManualEntry) VALUES ($date, $time, $note, $isManualEntry)',
+        'INSERT INTO events (date, time, note, isManualEntry, timestamp) VALUES ($date, $time, $note, $isManualEntry, $timestamp)',
     )
 
     try {
@@ -212,11 +231,13 @@ export const importEvents = (events: Omit<TimeEvent, 'id'>[]): void => {
             // Let's just append for now as requested "import this file again".
 
             events.forEach((event) => {
+                const finalTimestamp = event.timestamp ?? parseLocalTime(event.date, event.time).toISOString()
                 insertStatement.executeSync({
                     $date: event.date,
                     $time: event.time,
                     $note: event.note || null,
                     $isManualEntry: event.isManualEntry ? 1 : 0,
+                    $timestamp: finalTimestamp,
                 })
             })
         })
@@ -224,3 +245,12 @@ export const importEvents = (events: Omit<TimeEvent, 'id'>[]): void => {
         insertStatement.finalizeSync()
     }
 }
+
+/**
+ * Checks if the user is currently checked in globally (i.e. total number of events is odd).
+ */
+export const isCurrentlyCheckedIn = (): boolean => {
+    const result = db.getAllSync<{ count: number }>('SELECT COUNT(*) as count FROM events')
+    return result.length > 0 && result[0].count % 2 !== 0
+}
+

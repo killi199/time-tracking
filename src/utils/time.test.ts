@@ -4,6 +4,9 @@ import {
     getFormattedTime,
     getFormattedDate,
     getLocaleDateString,
+    parseLocalDate,
+    parseLocalTime,
+    getEventTimeAndDate,
 } from './time'
 
 describe('formatTime', () => {
@@ -105,3 +108,41 @@ describe('getLocaleDateString', () => {
         expect(result).toBe('Fri, 5/5/2023')
     })
 })
+
+describe('parseLocalDate', () => {
+    it('correctly parses date string to local Date object without timezone shift', () => {
+        const dateObj = parseLocalDate('2026-05-24')
+        expect(dateObj.getFullYear()).toBe(2026)
+        expect(dateObj.getMonth()).toBe(4) // 0-indexed May
+        expect(dateObj.getDate()).toBe(24)
+    })
+})
+
+describe('parseLocalTime', () => {
+    it('correctly parses date and time string to local Date object without timezone shift', () => {
+        const dateObj = parseLocalTime('2026-05-24', '14:30')
+        expect(dateObj.getFullYear()).toBe(2026)
+        expect(dateObj.getMonth()).toBe(4)
+        expect(dateObj.getDate()).toBe(24)
+        expect(dateObj.getHours()).toBe(14)
+        expect(dateObj.getMinutes()).toBe(30)
+    })
+})
+
+describe('getEventTimeAndDate', () => {
+    it('returns formatted local date and time if timestamp is present', () => {
+        // Create an absolute timestamp (UTC ISO string)
+        const dateObj = new Date(2026, 4, 24, 14, 30) // local May 24, 2026 14:30
+        const isoStr = dateObj.toISOString()
+        const result = getEventTimeAndDate(isoStr, '2026-05-24', '10:00')
+        expect(result.date).toBe('2026-05-24')
+        expect(result.time).toBe('14:30')
+    })
+
+    it('falls back to naive legacy date and time if timestamp is null/undefined', () => {
+        const result = getEventTimeAndDate(null, '2026-05-24', '10:00')
+        expect(result.date).toBe('2026-05-24')
+        expect(result.time).toBe('10:00')
+    })
+})
+

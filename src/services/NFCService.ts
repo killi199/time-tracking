@@ -1,5 +1,5 @@
 import { Linking, Platform, ToastAndroid, BackHandler } from 'react-native'
-import { getTodayEvents, addEvent } from '../db/database'
+import { addEvent, isCurrentlyCheckedIn } from '../db/database'
 import { getFormattedTime, getFormattedDate } from '../utils/time'
 import i18next from 'i18next'
 
@@ -7,8 +7,7 @@ const handleUrl = (url: string | null) => {
     if (url && url.includes('timetracking')) {
         try {
             const today = getFormattedDate(new Date())
-            const events = getTodayEvents(today)
-            const isWorking = events.length % 2 !== 0
+            const isWorking = isCurrentlyCheckedIn()
 
             const now = new Date()
             const timeString = getFormattedTime(now)

@@ -78,3 +78,43 @@ export const getLocaleDateString = (
         day: 'numeric',
     })
 }
+
+/**
+ * Parses a date string (YYYY-MM-DD) into a Date object in the device's local timezone.
+ * Avoids any UTC/local timezone shifts that happen with default string parsing.
+ */
+export const parseLocalDate = (dateStr: string): Date => {
+    const [year, month, day] = dateStr.split('-').map(Number)
+    return new Date(year, month - 1, day)
+}
+
+/**
+ * Parses date (YYYY-MM-DD) and time (HH:MM) strings into a single Date object in local time.
+ */
+export const parseLocalTime = (dateStr: string, timeStr: string): Date => {
+    const [year, month, day] = dateStr.split('-').map(Number)
+    const [hours, minutes] = timeStr.split(':').map(Number)
+    return new Date(year, month - 1, day, hours, minutes)
+}
+
+/**
+ * Formats an event's timezone-aware timestamp into local date and time strings.
+ * Falls back to legacy date and time strings if timestamp is not present.
+ */
+export const getEventTimeAndDate = (
+    timestamp: string | undefined | null,
+    fallbackDate: string,
+    fallbackTime: string,
+): { date: string; time: string } => {
+    if (timestamp) {
+        const dateObj = new Date(timestamp)
+        if (!isNaN(dateObj.getTime())) {
+            return {
+                date: getFormattedDate(dateObj),
+                time: getFormattedTime(dateObj),
+            }
+        }
+    }
+    return { date: fallbackDate, time: fallbackTime }
+}
+

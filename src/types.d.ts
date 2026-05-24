@@ -12,6 +12,7 @@ export interface TimeEvent {
     time: string
     note: string | null
     isManualEntry?: boolean
+    timestamp?: string
 }
 
 export interface SeparatorData {

@@ -6,7 +6,7 @@ import { TimeSeparator } from '../components/TimeSeparator'
 import { getMonthEvents, getOverallStats } from '../db/database'
 import { TimeEvent } from '../types'
 import { useTranslation } from 'react-i18next'
-import { formatTime, getFormattedDate } from '../utils/time'
+import { formatTime, getFormattedDate, parseLocalTime, getEventTimeAndDate } from '../utils/time'
 
 interface ProcessedEvent extends TimeEvent {
     type: 'start' | 'end'
@@ -63,8 +63,12 @@ export default function MonthView({
                 let dayMinutes = 0
                 for (let i = 0; i < dayEvents.length; i += 2) {
                     if (i + 1 < dayEvents.length) {
-                        const start = new Date(`${date}T${dayEvents[i].time}`)
-                        const end = new Date(`${date}T${dayEvents[i + 1].time}`)
+                        const start = dayEvents[i].timestamp
+                            ? new Date(dayEvents[i].timestamp!)
+                            : parseLocalTime(date, dayEvents[i].time)
+                        const end = dayEvents[i + 1].timestamp
+                            ? new Date(dayEvents[i + 1].timestamp!)
+                            : parseLocalTime(date, dayEvents[i + 1].time)
                         const diff =
                             (end.getTime() - start.getTime()) / 1000 / 60
                         dayMinutes += diff
@@ -72,9 +76,9 @@ export default function MonthView({
                         // Active session handling for today
                         const today = getFormattedDate(new Date())
                         if (date === today) {
-                            const start = new Date(
-                                `${date}T${dayEvents[i].time}`,
-                            )
+                            const start = dayEvents[i].timestamp
+                                ? new Date(dayEvents[i].timestamp!)
+                                : parseLocalTime(date, dayEvents[i].time)
                             const now = new Date()
                             const diff =
                                 (now.getTime() - start.getTime()) / 1000 / 60
@@ -111,7 +115,9 @@ export default function MonthView({
             const todayEvents = eventsByDate[today] || []
             if (todayEvents.length % 2 !== 0) {
                 const lastEvent = todayEvents[todayEvents.length - 1]
-                const start = new Date(`${today}T${lastEvent.time}`)
+                const start = lastEvent.timestamp
+                    ? new Date(lastEvent.timestamp)
+                    : parseLocalTime(today, lastEvent.time)
                 const now = new Date()
                 const diff = (now.getTime() - start.getTime()) / 1000 / 60
                 finalOverallBalance += diff
@@ -128,7 +134,13 @@ export default function MonthView({
             let indexInDay = 0
 
             for (let i = 0; i < rawEvents.length; i++) {
-                const event = rawEvents[i]
+                const rawEvent = rawEvents[i]
+                const { date: displayDate, time: displayTime } = getEventTimeAndDate(rawEvent.timestamp, rawEvent.date, rawEvent.time)
+                const event = {
+                    ...rawEvent,
+                    date: displayDate,
+                    time: displayTime,
+                }
 
                 if (event.date !== currentDay) {
                     currentDay = event.date
@@ -146,10 +158,24 @@ export default function MonthView({
                     isWork: false,
                 }
 
-                const next = i < rawEvents.length - 1 ? rawEvents[i + 1] : null
+                const nextRaw = i < rawEvents.length - 1 ? rawEvents[i + 1] : null
+                let next = null
+                if (nextRaw) {
+                    const { date: nextDisplayDate, time: nextDisplayTime } = getEventTimeAndDate(nextRaw.timestamp, nextRaw.date, nextRaw.time)
+                    next = {
+                        ...nextRaw,
+                        date: nextDisplayDate,
+                        time: nextDisplayTime,
+                    }
+                }
+
                 if (next && next.date === event.date) {
-                    const start = new Date(`${event.date}T${event.time}`)
-                    const end = new Date(`${next.date}T${next.time}`)
+                    const start = rawEvent.timestamp
+                        ? new Date(rawEvent.timestamp)
+                        : parseLocalTime(rawEvent.date, rawEvent.time)
+                    const end = nextRaw!.timestamp
+                        ? new Date(nextRaw!.timestamp)
+                        : parseLocalTime(nextRaw!.date, nextRaw!.time)
                     const diffMinutes =
                         (end.getTime() - start.getTime()) / 1000 / 60
                     const duration = formatTime(diffMinutes)

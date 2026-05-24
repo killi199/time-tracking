@@ -6,7 +6,7 @@ import { TimeSeparator } from '../components/TimeSeparator'
 import { getTodayEvents, getOverallStats } from '../db/database'
 import { TimeEvent, ProcessedTimeEvent } from '../types'
 import { useTranslation } from 'react-i18next'
-import { formatTime, getFormattedDate } from '../utils/time'
+import { formatTime, getFormattedDate, parseLocalTime, getEventTimeAndDate } from '../utils/time'
 
 interface DayViewProps {
     date: string
@@ -43,13 +43,19 @@ export default function DayView({
             for (let i = 0; i < sortedEvents.length; i += 2) {
                 if (i + 1 < sortedEvents.length) {
                     // Pair: Start -> End
-                    const start = new Date(`${date}T${sortedEvents[i].time}`)
-                    const end = new Date(`${date}T${sortedEvents[i + 1].time}`)
+                    const start = sortedEvents[i].timestamp
+                        ? new Date(sortedEvents[i].timestamp!)
+                        : parseLocalTime(date, sortedEvents[i].time)
+                    const end = sortedEvents[i + 1].timestamp
+                        ? new Date(sortedEvents[i + 1].timestamp!)
+                        : parseLocalTime(date, sortedEvents[i + 1].time)
                     const diff = (end.getTime() - start.getTime()) / 1000 / 60
                     totalMinutesToday += diff
                 } else {
                     // Unpaired: Start -> Now (Active Session)
-                    const start = new Date(`${date}T${sortedEvents[i].time}`)
+                    const start = sortedEvents[i].timestamp
+                        ? new Date(sortedEvents[i].timestamp!)
+                        : parseLocalTime(date, sortedEvents[i].time)
                     const now = new Date()
                     // Only count if today is actually today
                     const today = getFormattedDate(new Date())
@@ -79,7 +85,9 @@ export default function DayView({
                 sortedEvents.length % 2 !== 0
             ) {
                 const lastEvent = sortedEvents[sortedEvents.length - 1]
-                const start = new Date(`${date}T${lastEvent.time}`)
+                const start = lastEvent.timestamp
+                    ? new Date(lastEvent.timestamp)
+                    : parseLocalTime(date, lastEvent.time)
                 const now = new Date()
                 const diff = (now.getTime() - start.getTime()) / 1000 / 60
                 finalOverallBalance += diff
@@ -100,7 +108,13 @@ export default function DayView({
             )
 
             for (let i = 0; i < sorted.length; i++) {
-                const event = sorted[i]
+                const rawEvent = sorted[i]
+                const { date: displayDate, time: displayTime } = getEventTimeAndDate(rawEvent.timestamp, rawEvent.date, rawEvent.time)
+                const event = {
+                    ...rawEvent,
+                    date: displayDate,
+                    time: displayTime,
+                }
                 const type = i % 2 === 0 ? 'start' : 'end' // Even=Start, Odd=End in DayView
 
                 let separatorData = {
@@ -109,11 +123,15 @@ export default function DayView({
                     isWork: false,
                 }
 
-                const next = i < sorted.length - 1 ? sorted[i + 1] : null
-                if (next) {
+                const nextRaw = i < sorted.length - 1 ? sorted[i + 1] : null
+                if (nextRaw) {
                     // Same day is guaranteed in DayView
-                    const start = new Date(`${event.date}T${event.time}`)
-                    const end = new Date(`${next.date}T${next.time}`)
+                    const start = rawEvent.timestamp
+                        ? new Date(rawEvent.timestamp)
+                        : parseLocalTime(rawEvent.date, rawEvent.time)
+                    const end = nextRaw.timestamp
+                        ? new Date(nextRaw.timestamp)
+                        : parseLocalTime(nextRaw.date, nextRaw.time)
                     const diffMinutes =
                         (end.getTime() - start.getTime()) / 1000 / 60
                     const duration = formatTime(diffMinutes)

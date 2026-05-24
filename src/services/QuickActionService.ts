@@ -1,6 +1,6 @@
 import * as QuickActions from 'expo-quick-actions'
 import { Platform, ToastAndroid } from 'react-native'
-import { getTodayEvents, addEvent } from '../db/database'
+import { addEvent, isCurrentlyCheckedIn } from '../db/database'
 import { getFormattedTime, getFormattedDate } from '../utils/time'
 
 import i18next from 'i18next'
@@ -22,8 +22,7 @@ export const initQuickActions = () => {
         if (action.id === 'toggle_status') {
             try {
                 const today = getFormattedDate(new Date())
-                const events = getTodayEvents(today)
-                const isWorking = events.length % 2 !== 0
+                const isWorking = isCurrentlyCheckedIn()
 
                 const now = new Date()
                 const timeString = getFormattedTime(now)

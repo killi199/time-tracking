@@ -1,7 +1,7 @@
 import * as TaskManager from 'expo-task-manager'
 import * as Location from 'expo-location'
 import * as Notifications from 'expo-notifications'
-import { addEvent, getTodayEvents } from '../db/database'
+import { addEvent, isCurrentlyCheckedIn } from '../db/database'
 import { getFormattedTime, getFormattedDate } from '../utils/time'
 
 export const LOCATION_TASK_NAME = 'background-geofence-task'
@@ -82,8 +82,7 @@ const handleGeofenceEvent = async (data: unknown) => {
     const dateStr = getFormattedDate(now)
     const timeStr = getFormattedTime(now)
 
-    const todayEvents = getTodayEvents(dateStr)
-    const isCheckedIn = todayEvents.length % 2 !== 0
+    const isCheckedIn = isCurrentlyCheckedIn()
 
     if (eventType === Location.GeofencingEventType.Enter) {
         await processGeofenceEntry(dateStr, timeStr, isCheckedIn)
