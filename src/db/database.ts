@@ -6,8 +6,11 @@ const db = SQLite.openDatabaseSync('time_tracking.db')
 
 export const initDatabase = (): void => {
     // Get the current database version
-    const versionResult = db.getAllSync<{ user_version: number }>('PRAGMA user_version;')
-    const currentVersion = versionResult.length > 0 ? versionResult[0].user_version : 0
+    const versionResult = db.getAllSync<{ user_version: number }>(
+        'PRAGMA user_version;',
+    )
+    const currentVersion =
+        versionResult.length > 0 ? versionResult[0].user_version : 0
 
     const targetVersion = 2
 
@@ -39,14 +42,16 @@ export const initDatabase = (): void => {
             db.execSync('ALTER TABLE events ADD COLUMN timestamp TEXT;')
 
             // 2. Fetch all legacy events (where timestamp is NULL)
-            const legacyEvents = db.getAllSync<{ id: number; date: string; time: string }>(
-                'SELECT id, date, time FROM events WHERE timestamp IS NULL'
-            )
+            const legacyEvents = db.getAllSync<{
+                id: number
+                date: string
+                time: string
+            }>('SELECT id, date, time FROM events WHERE timestamp IS NULL')
 
             // 3. Convert and update each legacy event with its absolute timestamp
             if (legacyEvents.length > 0) {
                 const updateStatement = db.prepareSync(
-                    'UPDATE events SET timestamp = $timestamp WHERE id = $id'
+                    'UPDATE events SET timestamp = $timestamp WHERE id = $id',
                 )
                 try {
                     db.withTransactionSync(() => {
@@ -106,7 +111,11 @@ export const addEvent = (
     isManualEntry: boolean = false,
     timestamp?: string,
 ): number => {
-    const finalTimestamp = timestamp ?? (isManualEntry ? parseLocalTime(date, time).toISOString() : new Date().toISOString())
+    const finalTimestamp =
+        timestamp ??
+        (isManualEntry
+            ? parseLocalTime(date, time).toISOString()
+            : new Date().toISOString())
     const statement = db.prepareSync(
         'INSERT INTO events (date, time, note, isManualEntry, timestamp) VALUES ($date, $time, $note, $isManualEntry, $timestamp)',
     )
@@ -266,7 +275,9 @@ export const importEvents = (
             // Let's just append for now as requested "import this file again".
 
             events.forEach((event) => {
-                const finalTimestamp = event.timestamp ?? parseLocalTime(event.date, event.time).toISOString()
+                const finalTimestamp =
+                    event.timestamp ??
+                    parseLocalTime(event.date, event.time).toISOString()
                 insertStatement.executeSync({
                     $date: event.date,
                     $time: event.time,
@@ -285,7 +296,8 @@ export const importEvents = (
  * Checks if the user is currently checked in globally (i.e. total number of events is odd).
  */
 export const isCurrentlyCheckedIn = (): boolean => {
-    const result = db.getAllSync<{ count: number }>('SELECT COUNT(*) as count FROM events')
+    const result = db.getAllSync<{ count: number }>(
+        'SELECT COUNT(*) as count FROM events',
+    )
     return result.length > 0 && result[0].count % 2 !== 0
 }
-

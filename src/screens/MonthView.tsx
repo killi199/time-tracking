@@ -6,7 +6,11 @@ import { TimeSeparator } from '../components/TimeSeparator'
 import { getMonthEvents, getOverallStats } from '../db/database'
 import { TimeEvent } from '../types'
 import { useTranslation } from 'react-i18next'
-import { formatTime, getFormattedDate, getEventTimeAndDate } from '../utils/time'
+import {
+    formatTime,
+    getFormattedDate,
+    getEventTimeAndDate,
+} from '../utils/time'
 
 interface ProcessedEvent extends TimeEvent {
     type: 'start' | 'end'
@@ -127,7 +131,8 @@ export default function MonthView({
 
             for (let i = 0; i < rawEvents.length; i++) {
                 const rawEvent = rawEvents[i]
-                const { date: displayDate, time: displayTime } = getEventTimeAndDate(rawEvent.timestamp)
+                const { date: displayDate, time: displayTime } =
+                    getEventTimeAndDate(rawEvent.timestamp)
                 const event = {
                     ...rawEvent,
                     date: displayDate,
@@ -150,10 +155,12 @@ export default function MonthView({
                     isWork: false,
                 }
 
-                const nextRaw = i < rawEvents.length - 1 ? rawEvents[i + 1] : null
+                const nextRaw =
+                    i < rawEvents.length - 1 ? rawEvents[i + 1] : null
                 let next = null
                 if (nextRaw) {
-                    const { date: nextDisplayDate, time: nextDisplayTime } = getEventTimeAndDate(nextRaw.timestamp)
+                    const { date: nextDisplayDate, time: nextDisplayTime } =
+                        getEventTimeAndDate(nextRaw.timestamp)
                     next = {
                         ...nextRaw,
                         date: nextDisplayDate,

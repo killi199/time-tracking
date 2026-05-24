@@ -82,6 +82,7 @@ This documentation provides guidelines for AI agents and developers working on t
 3. **Verify**: Ensure that no `react-native` primitive components are replacing `react-native-paper` components unnecessarily.
 4. **Pre-commit Verification**: Before staging, committing, or pushing any changes, you MUST execute the following checks locally and resolve all reported issues:
     - `yarn typecheck` (TypeScript verification).
+    - `yarn format` (Prettier code formatting).
     - `yarn lint` (ESLint and style guidelines).
     - `yarn test` (Unit test execution).
 
@@ -96,3 +97,4 @@ This documentation provides guidelines for AI agents and developers working on t
 - [ ] `yarn typecheck` passes with zero errors?
 - [ ] `yarn lint` passes with zero errors and warnings?
 - [ ] `yarn test` runs and passes all tests successfully?
+- [ ] `yarn format` runs to auto-format all modified files?

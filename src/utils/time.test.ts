@@ -139,4 +139,3 @@ describe('getEventTimeAndDate', () => {
         expect(result.time).toBe('14:30')
     })
 })
-

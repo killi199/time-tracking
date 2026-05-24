@@ -14,6 +14,7 @@
         "typecheck": "tsc --noEmit",
         "lint": "eslint src",
         "test": "vitest",
+        "format": "prettier --write \"src/**/*.{ts,tsx}\"",
         "generate-licenses": "yarn dlx license-checker-rseidelsohn --production --json --out src/licenses.json"
     },
     "expo": {

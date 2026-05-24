@@ -109,4 +109,3 @@ export const getEventTimeAndDate = (
         time: getFormattedTime(dateObj),
     }
 }
-
