@@ -84,7 +84,9 @@ export const importFromCSV = async (): Promise<CSVResult> => {
             skipEmptyLines: true,
         })
 
-        const eventsToImport: Omit<TimeEvent, 'id'>[] = []
+        const eventsToImport: (Omit<TimeEvent, 'id' | 'timestamp'> & {
+            timestamp?: string
+        })[] = []
 
         parsed.data.forEach((row) => {
             if (row.Date && row.Time) {

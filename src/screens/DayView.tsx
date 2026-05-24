@@ -6,7 +6,7 @@ import { TimeSeparator } from '../components/TimeSeparator'
 import { getTodayEvents, getOverallStats } from '../db/database'
 import { TimeEvent, ProcessedTimeEvent } from '../types'
 import { useTranslation } from 'react-i18next'
-import { formatTime, getFormattedDate, parseLocalTime, getEventTimeAndDate } from '../utils/time'
+import { formatTime, getFormattedDate, getEventTimeAndDate } from '../utils/time'
 
 interface DayViewProps {
     date: string

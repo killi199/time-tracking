@@ -31,7 +31,7 @@ export const initDatabase = (): void => {
             );
         `)
 
-        db.execSync(`PRAGMA user_version = ${targetVersion};`)
+        db.execSync(`PRAGMA user_version = ${String(targetVersion)};`)
     } else {
         // Existing install: Perform migration steps sequentially
         if (currentVersion < 2) {
@@ -251,7 +251,9 @@ export const getOverallStats = (
     }
 }
 
-export const importEvents = (events: Omit<TimeEvent, 'id'>[]): void => {
+export const importEvents = (
+    events: (Omit<TimeEvent, 'id' | 'timestamp'> & { timestamp?: string })[],
+): void => {
     const insertStatement = db.prepareSync(
         'INSERT INTO events (date, time, note, isManualEntry, timestamp) VALUES ($date, $time, $note, $isManualEntry, $timestamp)',
     )

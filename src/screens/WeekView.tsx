@@ -6,7 +6,7 @@ import { TimeSeparator } from '../components/TimeSeparator'
 import { getEventsRange, getOverallStats } from '../db/database'
 import { TimeEvent } from '../types'
 import { useTranslation } from 'react-i18next'
-import { formatTime, getFormattedDate, parseLocalTime, getEventTimeAndDate } from '../utils/time'
+import { formatTime, getFormattedDate, getEventTimeAndDate } from '../utils/time'
 
 interface ProcessedEvent extends TimeEvent {
     type: 'start' | 'end'
@@ -179,9 +179,9 @@ export default function WeekView({
                     }
                 }
 
-                if (next && next.date === event.date) {
+                if (next && nextRaw && next.date === event.date) {
                     const start = new Date(rawEvent.timestamp)
-                    const end = new Date(nextRaw!.timestamp)
+                    const end = new Date(nextRaw.timestamp)
                     const diffMinutes =
                         (end.getTime() - start.getTime()) / 1000 / 60
                     const duration = formatTime(diffMinutes)
