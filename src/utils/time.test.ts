@@ -139,3 +139,73 @@ describe('getEventTimeAndDate', () => {
         expect(result.time).toBe('14:30')
     })
 })
+
+describe('parseLocalDate - Edge Cases & Timezone Resilience', () => {
+    it('handles leap years correctly', () => {
+        const leapDate = parseLocalDate('2024-02-29')
+        expect(leapDate.getFullYear()).toBe(2024)
+        expect(leapDate.getMonth()).toBe(1) // 0-indexed February
+        expect(leapDate.getDate()).toBe(29)
+
+        const normalFebDate = parseLocalDate('2026-02-28')
+        expect(normalFebDate.getFullYear()).toBe(2026)
+        expect(normalFebDate.getMonth()).toBe(1)
+        expect(normalFebDate.getDate()).toBe(28)
+    })
+
+    it('handles month boundaries correctly', () => {
+        const endOfMonth = parseLocalDate('2026-04-30')
+        expect(endOfMonth.getFullYear()).toBe(2026)
+        expect(endOfMonth.getMonth()).toBe(3) // April
+        expect(endOfMonth.getDate()).toBe(30)
+
+        const startOfNextMonth = parseLocalDate('2026-05-01')
+        expect(startOfNextMonth.getFullYear()).toBe(2026)
+        expect(startOfNextMonth.getMonth()).toBe(4) // May
+        expect(startOfNextMonth.getDate()).toBe(1)
+    })
+
+    it('handles extreme dates correctly', () => {
+        const distantFuture = parseLocalDate('2099-12-31')
+        expect(distantFuture.getFullYear()).toBe(2099)
+        expect(distantFuture.getMonth()).toBe(11) // December
+        expect(distantFuture.getDate()).toBe(31)
+
+        const pastDate = parseLocalDate('2000-01-01')
+        expect(pastDate.getFullYear()).toBe(2000)
+        expect(pastDate.getMonth()).toBe(0) // January
+        expect(pastDate.getDate()).toBe(1)
+    })
+})
+
+describe('parseLocalTime - Edge Cases & Timezone Resilience', () => {
+    it('handles day boundaries correctly', () => {
+        const midnight = parseLocalTime('2026-05-24', '00:00')
+        expect(midnight.getFullYear()).toBe(2026)
+        expect(midnight.getMonth()).toBe(4)
+        expect(midnight.getDate()).toBe(24)
+        expect(midnight.getHours()).toBe(0)
+        expect(midnight.getMinutes()).toBe(0)
+
+        const endOfDay = parseLocalTime('2026-05-24', '23:59')
+        expect(endOfDay.getFullYear()).toBe(2026)
+        expect(endOfDay.getMonth()).toBe(4)
+        expect(endOfDay.getDate()).toBe(24)
+        expect(endOfDay.getHours()).toBe(23)
+        expect(endOfDay.getMinutes()).toBe(59)
+    })
+
+    it('handles simulated daylight savings transitions correctly', () => {
+        // European Summer Time start 2026: March 29th (DST spring forward)
+        const dstStart = parseLocalTime('2026-03-29', '02:30')
+        expect(dstStart.getFullYear()).toBe(2026)
+        expect(dstStart.getMonth()).toBe(2) // March
+        expect(dstStart.getDate()).toBe(29)
+
+        // European Summer Time end 2026: October 25th (DST fall back)
+        const dstEnd = parseLocalTime('2026-10-25', '02:30')
+        expect(dstEnd.getFullYear()).toBe(2026)
+        expect(dstEnd.getMonth()).toBe(9) // October
+        expect(dstEnd.getDate()).toBe(25)
+    })
+})
