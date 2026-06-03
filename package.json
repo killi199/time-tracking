@@ -35,7 +35,7 @@
     "dependencies": {
         "@expo/log-box": "55.0.12",
         "@expo/ui": "~55.0.17",
-        "@maplibre/maplibre-react-native": "11.2.1",
+        "@maplibre/maplibre-react-native": "11.3.0",
         "@react-native-community/slider": "5.1.2",
         "@react-navigation/bottom-tabs": "^7.15.5",
         "@react-navigation/drawer": "^7.9.4",
