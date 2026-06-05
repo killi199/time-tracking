@@ -11,6 +11,7 @@ Vergiss manuelles Stempeln. Lass dein Smartphone das für dich erledigen.
 
 Datenfreiheit:
 Deine Daten gehören dir.
+- Lokale Speicherung: Die App läuft vollständig offline. Deine Daten werden lokal auf deinem Gerät in einer privaten SQLite-Datenbank gespeichert und niemals auf einen Server oder ein gehostetes Backend hochgeladen.
 - CSV-Export: Generiere umfassende Berichte deiner Arbeitshistorie im Standard-CSV-Format, bereit für Excel oder Google Sheets.
 - Einfacher Import: Migriere deine Daten oder stelle Backups nahtlos via CSV wieder her.
 
