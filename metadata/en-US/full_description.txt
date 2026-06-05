@@ -11,6 +11,7 @@ Forget about manual clocking. Let your phone do it for you.
 
 Data Freedom:
 Your data belongs to you.
+- Local-Only Storage: The app operates entirely offline. Your data is stored locally on your device in a private SQLite database and is never uploaded to any server or hosted backend.
 - CSV Export: Generate comprehensive reports of your work history in standard CSV format, ready for Excel or Google Sheets.
 - Easy Import: Migrate your data or restore backups seamlessly via CSV.
 
