@@ -4,7 +4,7 @@ import { version, versionCode } from './package.json'
 const plugins = [
     './plugins/withNfcIntent',
     './plugins/withDisableDependencyMetadata',
-    './plugins/withRemoveSystemAlertWindow',
+    './plugins/withRemovePermissions',
     'expo-sqlite',
     'expo-sharing',
     'expo-localization',
