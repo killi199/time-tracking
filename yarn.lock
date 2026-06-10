@@ -2050,9 +2050,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@maplibre/maplibre-react-native@npm:11.3.2":
-  version: 11.3.2
-  resolution: "@maplibre/maplibre-react-native@npm:11.3.2"
+"@maplibre/maplibre-react-native@npm:11.3.3":
+  version: 11.3.3
+  resolution: "@maplibre/maplibre-react-native@npm:11.3.3"
   dependencies:
     "@maplibre/maplibre-gl-style-spec": "npm:24.8.5"
     "@turf/distance": "npm:^7.3.5"
@@ -2060,19 +2060,19 @@ __metadata:
     "@turf/length": "npm:^7.3.5"
     "@turf/nearest-point-on-line": "npm:^7.3.5"
   peerDependencies:
-    "@expo/config-plugins": ">=54.0.0"
     "@types/geojson": ^7946.0.0
     "@types/react": ">=19.1.0"
+    expo: ">=54.0.0"
     react: ">=19.1.0"
     react-native: ">=0.80.0"
   peerDependenciesMeta:
-    "@expo/config-plugins":
-      optional: true
     "@types/geojson":
       optional: true
     "@types/react":
       optional: true
-  checksum: 10c0/3128f709d84698c7c22191f25c23c91cfbdedd6426fddcf2ecdf56cd3573afa7313846a4cf74752747411b7ae425ff10b5dabac0dea16bf328486fb62892063b
+    expo:
+      optional: true
+  checksum: 10c0/68a09b9f4c2a8e683f2df824b07fd2fc3bc96692acbcfe3d64099b53725b8609be30f3e18d1925d30a2727b887061a2352dd87243f6bd6a78608f85551711043
   languageName: node
   linkType: hard
 
@@ -10390,7 +10390,7 @@ __metadata:
     "@eslint/js": "npm:9.39.2"
     "@expo/log-box": "npm:55.0.12"
     "@expo/ui": "npm:~55.0.17"
-    "@maplibre/maplibre-react-native": "npm:11.3.2"
+    "@maplibre/maplibre-react-native": "npm:11.3.3"
     "@react-native-community/slider": "npm:5.1.2"
     "@react-navigation/bottom-tabs": "npm:^7.15.5"
     "@react-navigation/drawer": "npm:^7.9.4"
