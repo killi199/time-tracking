@@ -1,5 +1,14 @@
 # Time Tracking App
 
+<p align="center">
+  <a href="https://github.com/killi199/time-tracking/releases">
+    <img src="https://raw.githubusercontent.com/Kunzisoft/Github-badge/master/get-it-on-github.svg" alt="Get it on GitHub" height="80">
+  </a>
+  <a href="https://f-droid.org/en/packages/de.killi199.timetracking">
+    <img src="https://f-droid.org/badge/get-it-on.svg" alt="Get it on F-Droid" height="80">
+  </a>
+</p>
+
 ## Features 🚀
 
 ### ⏱️ Effortless Time Tracking
