@@ -24,7 +24,7 @@ export default function TabsLayout() {
             color: string
         }) => {
             let iconName = 'help'
-            if (route.name === 'day') {
+            if (route.name === 'index') {
                 iconName = 'calendar-today'
             } else if (route.name === 'week') {
                 iconName = 'calendar-week'
@@ -70,7 +70,7 @@ export default function TabsLayout() {
                 headerTintColor: theme.colors.onBackground,
             }}
         >
-            <Tabs.Screen name="day" options={{ title: t('home.day') }} />
+            <Tabs.Screen name="index" options={{ title: t('home.day') }} />
             <Tabs.Screen name="week" options={{ title: t('home.week') }} />
             <Tabs.Screen name="month" options={{ title: t('home.month') }} />
         </Tabs>

@@ -37,6 +37,7 @@ module.exports = {
     expo: {
         name: 'time-tracking',
         slug: 'time-tracking',
+        scheme: 'de.killi199.timetracking',
         version,
         orientation: 'portrait',
         icon: './assets/icon.png',
