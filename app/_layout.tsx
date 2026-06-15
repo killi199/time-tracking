@@ -24,16 +24,17 @@ function ThemedStack() {
     const navTheme = useMemo(() => {
         const colors = paperTheme.colors
         // Build a NavigationTheme from the current paper theme colors
-        // so expo-router's NavigationContainer uses the correct background
+        // so expo-router's NavigationContainer uses the correct background.
+        // Colors are plain #RRGGBBAA hex strings via getMaterialColors — no casts needed.
         return {
             dark: paperTheme.dark,
             colors: {
-                primary: String(colors.primary),
-                background: String(colors.background),
-                card: String(colors.surface),
-                text: String(colors.onSurface),
-                border: String(colors.outline),
-                notification: String(colors.error),
+                primary: colors.primary,
+                background: colors.background,
+                card: colors.surface,
+                text: colors.onSurface,
+                border: colors.outline,
+                notification: colors.error,
             },
             fonts: {
                 regular: { fontFamily: 'System', fontWeight: '400' as const },
