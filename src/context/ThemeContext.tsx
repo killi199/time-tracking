@@ -95,10 +95,6 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
                 onSurfaceVariant: m3.onSurfaceVariant,
                 inverseSurface: m3.inverseSurface,
                 inverseOnSurface: m3.inverseOnSurface,
-                // RNP-specific: no direct M3 equivalent, use nearest tonal surface
-                surfaceDisabled: m3.surfaceVariant,
-                onSurfaceDisabled: m3.onSurfaceVariant,
-                backdrop: m3.scrim,
                 elevation: {
                     level0: 'transparent',
                     level1: m3.surfaceContainerLow,
