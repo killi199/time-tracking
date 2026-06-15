@@ -1,4 +1,5 @@
-import { createContext, useState, useContext, ReactNode } from 'react'
+import { createContext, useState, useContext, ReactNode, useEffect } from 'react'
+import * as SystemUI from 'expo-system-ui'
 import { useColorScheme, Platform } from 'react-native'
 import {
     MD3LightTheme,
@@ -106,6 +107,12 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
             },
         }
     })()
+
+    useEffect(() => {
+        SystemUI.setBackgroundColorAsync(paperTheme.colors.background).catch((err) => {
+            console.error('Failed to set SystemUI background color:', err)
+        })
+    }, [paperTheme.colors.background])
 
     return (
         <ThemeContext value={{ themeMode, setThemeMode: handleSetTheme }}>

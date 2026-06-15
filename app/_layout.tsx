@@ -47,7 +47,13 @@ function ThemedStack() {
 
     return (
         <NavThemeProvider value={navTheme}>
-            <Stack>
+            <Stack
+                screenOptions={{
+                    contentStyle: {
+                        backgroundColor: paperTheme.colors.background,
+                    },
+                }}
+            >
                 <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
                 <Stack.Screen
                     name="settings"
