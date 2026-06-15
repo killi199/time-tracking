@@ -70,6 +70,10 @@ function ThemedStack() {
                     options={{ title: t('nfc.title') }}
                 />
                 <Stack.Screen
+                    name="nfc"
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
                     name="licenses"
                     options={{ title: t('menu.licenses') }}
                 />
