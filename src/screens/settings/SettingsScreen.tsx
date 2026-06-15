@@ -17,6 +17,7 @@ export default function SettingsScreen() {
                     onPress={() => {
                         router.push('/theme-settings')
                     }}
+                    style={styles.listItem}
                 />
                 <List.Item
                     title={t('settings.language')}
@@ -25,6 +26,7 @@ export default function SettingsScreen() {
                     onPress={() => {
                         router.push('/language-settings')
                     }}
+                    style={styles.listItem}
                 />
             </List.Section>
         </View>
@@ -34,6 +36,8 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingLeft: 16,
+    },
+    listItem: {
+        paddingHorizontal: 16,
     },
 })
