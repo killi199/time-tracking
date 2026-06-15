@@ -58,15 +58,15 @@ export default function LicensesScreen() {
                 >
                     {item.licenses}
                 </Text>
-                {item.publisher && (
+                {item.publisher ? (
                     <Text
                         variant="bodySmall"
                         style={{ color: theme.colors.outline, marginTop: 4 }}
                     >
                         {item.publisher}
                     </Text>
-                )}
-                {item.repository && (
+                ) : null}
+                {item.repository ? (
                     <TouchableOpacity
                         onPress={() => {
                             if (item.repository) {
@@ -84,7 +84,7 @@ export default function LicensesScreen() {
                             {item.repository}
                         </Text>
                     </TouchableOpacity>
-                )}
+                ) : null}
             </Card.Content>
         </Card>
     )

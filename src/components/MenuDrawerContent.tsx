@@ -11,9 +11,10 @@ import {
 import {
     DrawerContentScrollView,
     DrawerContentComponentProps,
-} from '@react-navigation/drawer'
+} from 'expo-router/drawer'
+import { useRouter } from 'expo-router'
 import { useTranslation } from 'react-i18next'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+import MaterialCommunityIcons from "@react-native-vector-icons/material-design-icons/static";
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export default function MenuDrawerContent(
@@ -22,6 +23,7 @@ export default function MenuDrawerContent(
     const theme = useTheme()
     const { t } = useTranslation()
     const insets = useSafeAreaInsets()
+    const router = useRouter()
 
     const [visible, setVisible] = useState(false)
     const [dialogTitle, setDialogTitle] = useState('')
@@ -54,7 +56,7 @@ export default function MenuDrawerContent(
                 </Drawer.Section>
 
                 <Drawer.Section>
-                    {!isFOSS && (
+                    {!isFOSS ? (
                         <Drawer.Item
                             label={t('menu.workingLocations')}
                             icon={({ color, size }) => (
@@ -66,7 +68,7 @@ export default function MenuDrawerContent(
                             )}
                             onPress={() => {
                                 props.navigation.closeDrawer()
-                                props.navigation.navigate('GeofenceSetup')
+                                router.push('/geofence-setup')
                             }}
                             style={{ backgroundColor: theme.colors.surface }}
                             theme={{
@@ -75,7 +77,7 @@ export default function MenuDrawerContent(
                                 },
                             }}
                         />
-                    )}
+                    ) : null}
 
                     <Drawer.Item
                         label={t('nfc.title')}
@@ -88,7 +90,7 @@ export default function MenuDrawerContent(
                         )}
                         onPress={() => {
                             props.navigation.closeDrawer()
-                            props.navigation.navigate('NFCSetup')
+                            router.push('/nfc-setup')
                         }}
                         style={{ backgroundColor: theme.colors.surface }}
                         theme={{
@@ -109,7 +111,7 @@ export default function MenuDrawerContent(
                         )}
                         onPress={() => {
                             props.navigation.closeDrawer()
-                            props.navigation.navigate('Settings')
+                            router.push('/settings')
                         }}
                         style={{ backgroundColor: theme.colors.surface }}
                         theme={{
@@ -212,7 +214,7 @@ export default function MenuDrawerContent(
                     labelStyle={{ fontSize: 12, marginHorizontal: 0 }}
                     onPress={() => {
                         props.navigation.closeDrawer()
-                        props.navigation.navigate('Licenses')
+                        router.push('/licenses')
                     }}
                 >
                     {t('menu.licenses')}
@@ -232,7 +234,7 @@ export default function MenuDrawerContent(
                     labelStyle={{ fontSize: 12, marginHorizontal: 0 }}
                     onPress={() => {
                         props.navigation.closeDrawer()
-                        props.navigation.navigate('PrivacyPolicy')
+                        router.push('/privacy-policy')
                     }}
                 >
                     {t('menu.privacyPolicy')}

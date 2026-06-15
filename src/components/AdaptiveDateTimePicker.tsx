@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Platform, View } from 'react-native'
 import { Portal, Dialog, Button } from 'react-native-paper'
-import DateTimePicker from '@expo/ui/datetimepicker'
+import DateTimePicker from '@expo/ui/community/datetime-picker'
 
 export interface AdaptiveDateTimePickerProps {
     visible: boolean

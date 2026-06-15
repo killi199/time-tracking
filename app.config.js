@@ -9,6 +9,7 @@ const plugins = [
     'expo-sharing',
     'expo-localization',
     'expo-router',
+    '@react-native-vector-icons/material-design-icons',
     [
         'expo-quick-actions',
         {

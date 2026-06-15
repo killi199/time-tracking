@@ -223,7 +223,7 @@ export default function DayView({
                         </View>
                     </View>
 
-                    {isToday && (
+                    {isToday ? (
                         <View style={styles.statusContainer}>
                             <Text
                                 variant="titleMedium"
@@ -238,7 +238,7 @@ export default function DayView({
                                     : t('home.notWorking')}
                             </Text>
                         </View>
-                    )}
+                    ) : null}
                 </Card.Content>
             </Card>
 
@@ -253,7 +253,7 @@ export default function DayView({
                 />
             </View>
 
-            {isToday && (
+            {isToday ? (
                 <FAB
                     icon={isCheckedIn ? 'stop' : 'play'}
                     label={isCheckedIn ? t('home.checkOut') : t('home.checkIn')}
@@ -267,7 +267,7 @@ export default function DayView({
                     ]}
                     onPress={onAddEvent}
                 />
-            )}
+            ) : null}
         </View>
     )
 }

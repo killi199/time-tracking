@@ -26,11 +26,7 @@ import {
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { scheduleOnRN } from 'react-native-worklets'
 import AdaptiveDateTimePicker from '../components/AdaptiveDateTimePicker'
-import {
-    useFocusEffect,
-    NavigationProp,
-    RouteProp,
-} from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from 'expo-router'
 import { addEvent, updateEvent, deleteEvent } from '../db/database'
 import { TimeEvent } from '../types'
 import { useTranslation } from 'react-i18next'
@@ -56,21 +52,16 @@ const getWeekRangeData = (dateStr: string) => {
     return { start: first, end: last }
 }
 
-type HomeRouteParams = {
-    viewMode?: 'day' | 'week' | 'month'
-}
-
-type LocalParamList = {
-    [key: string]: HomeRouteParams | undefined
-}
+type ViewMode = 'day' | 'week' | 'month'
 
 interface HomeScreenProps {
-    readonly navigation: NavigationProp<LocalParamList>
-    readonly route: RouteProp<LocalParamList, string>
+    readonly viewMode: ViewMode
 }
 
-export default function HomeScreen({ navigation, route }: HomeScreenProps) {
-    const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day')
+export default function HomeScreen({
+    viewMode: initialViewMode,
+}: HomeScreenProps) {
+    const viewMode = initialViewMode
     const [currentDate, setCurrentDate] = useState<string>(
         getFormattedDate(new Date()),
     )
@@ -107,7 +98,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
             'change',
             (nextAppState) => {
                 if (
-                    appState.current.match(/inactive|background/) &&
+                    /inactive|background/.exec(appState.current) &&
                     nextAppState === 'active'
                 ) {
                     const now = new Date()
@@ -143,27 +134,14 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
         }
     }, [currentDate, currentMonth])
 
+    const navigation = useNavigation()
+
     useFocusEffect(
         useCallback(() => {
-            if (route.params?.viewMode) {
-                setViewMode(route.params.viewMode)
-                // Reset params to avoid stuck state
-                navigation.setParams({ viewMode: undefined })
-            }
             // Trigger a refresh when screen comes into focus
             setRefreshTrigger((prev) => prev + 1)
-        }, [route.params, navigation]),
+        }, []),
     )
-
-    useEffect(() => {
-        let title = t('home.day')
-        if (viewMode === 'month') title = t('home.month')
-        if (viewMode === 'week') title = t('home.week')
-
-        navigation.setOptions({
-            title,
-        })
-    }, [navigation, viewMode, t])
 
     const changeDate = (step: number) => {
         if (viewMode === 'month') {
@@ -581,7 +559,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
                             : t('addEntry.addTitle')}
                     </Dialog.Title>
                     <Dialog.Content>
-                        {!editingEvent && (
+                        {!editingEvent ? (
                             <TouchableOpacity
                                 onPress={() => {
                                     Keyboard.dismiss()
@@ -604,7 +582,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
                                     />
                                 </View>
                             </TouchableOpacity>
-                        )}
+                        ) : null}
                         <TouchableOpacity
                             onPress={() => {
                                 Keyboard.dismiss()

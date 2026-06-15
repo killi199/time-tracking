@@ -206,7 +206,7 @@ export default function MonthView({
         ({ item }: { item: ProcessedEvent; index: number }) => {
             return (
                 <View>
-                    {item.showDateHeader && (
+                    {item.showDateHeader ? (
                         <List.Subheader>
                             {(() => {
                                 const [y, m, d] = item.date
@@ -222,7 +222,7 @@ export default function MonthView({
                                 )
                             })()}
                         </List.Subheader>
-                    )}
+                    ) : null}
                     <EventListItem
                         item={item}
                         type={item.type}
