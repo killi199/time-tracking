@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import {
     View,
     StyleSheet,
@@ -321,9 +321,7 @@ export default function GeofenceSetupScreen() {
         }
     }
 
-    const circleGeoJSON = useMemo(() => {
-        return marker ? createGeoJSONCircle([marker.longitude, marker.latitude], radius) : null
-    }, [marker, radius])
+    const circleGeoJSON = marker ? createGeoJSONCircle([marker.longitude, marker.latitude], radius) : null
 
     if (loading) {
         return (

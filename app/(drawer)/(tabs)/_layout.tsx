@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import { Tabs, useNavigation } from 'expo-router'
 import { DrawerActions } from 'expo-router/react-navigation'
 import {
@@ -15,26 +14,23 @@ export default function TabsLayout() {
     const { t } = useTranslation()
     const navigation = useNavigation()
 
-    const renderIcon = useCallback(
-        ({
-            route,
-            color,
-        }: {
-            route: RouteProp<ParamListBase>
-            color: string
-        }) => {
-            let iconName = 'help'
-            if (route.name === 'index') {
-                iconName = 'calendar-today'
-            } else if (route.name === 'week') {
-                iconName = 'calendar-week'
-            } else if (route.name === 'month') {
-                iconName = 'calendar-month'
-            }
-            return <Icon source={iconName} size={24} color={color} />
-        },
-        [],
-    )
+    const renderIcon = ({
+        route,
+        color,
+    }: {
+        route: RouteProp<ParamListBase>
+        color: string
+    }) => {
+        let iconName = 'help'
+        if (route.name === 'index') {
+            iconName = 'calendar-today'
+        } else if (route.name === 'week') {
+            iconName = 'calendar-week'
+        } else if (route.name === 'month') {
+            iconName = 'calendar-month'
+        }
+        return <Icon source={iconName} size={24} color={color} />
+    }
 
     return (
         <Tabs

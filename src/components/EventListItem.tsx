@@ -1,4 +1,4 @@
-import { memo, useRef } from 'react'
+import { useRef } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { List, useTheme } from 'react-native-paper'
 import ReanimatedSwipeable, {
@@ -16,7 +16,7 @@ interface EventListItemProps {
     onDelete: (event: TimeEvent, close?: () => void) => void
 }
 
-export const EventListItem = memo(function EventListItem({
+export function EventListItem({
     item,
     type,
     onEdit,
@@ -72,7 +72,7 @@ export const EventListItem = memo(function EventListItem({
             />
         </ReanimatedSwipeable>
     )
-})
+}
 
 const styles = StyleSheet.create({
     deleteAction: {

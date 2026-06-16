@@ -202,38 +202,35 @@ export default function MonthView({
         }
     }, [events, calculateMetrics])
 
-    const renderItem = useCallback(
-        ({ item }: { item: ProcessedEvent; index: number }) => {
-            return (
-                <View>
-                    {item.showDateHeader ? (
-                        <List.Subheader>
-                            {(() => {
-                                const [y, m, d] = item.date
-                                    .split('-')
-                                    .map(Number)
-                                return new Date(y, m - 1, d).toLocaleDateString(
-                                    i18n.language,
-                                    {
-                                        weekday: 'short',
-                                        day: 'numeric',
-                                        month: 'numeric',
-                                    },
-                                )
-                            })()}
-                        </List.Subheader>
-                    ) : null}
-                    <EventListItem
-                        item={item}
-                        type={item.type}
-                        onEdit={onEditEvent}
-                        onDelete={onDeleteEvent}
-                    />
-                </View>
-            )
-        },
-        [i18n.language, onEditEvent, onDeleteEvent],
-    )
+    const renderItem = ({ item }: { item: ProcessedEvent; index: number }) => {
+        return (
+            <View>
+                {item.showDateHeader ? (
+                    <List.Subheader>
+                        {(() => {
+                            const [y, m, d] = item.date
+                                .split('-')
+                                .map(Number)
+                            return new Date(y, m - 1, d).toLocaleDateString(
+                                i18n.language,
+                                {
+                                    weekday: 'short',
+                                    day: 'numeric',
+                                    month: 'numeric',
+                                },
+                            )
+                        })()}
+                    </List.Subheader>
+                ) : null}
+                <EventListItem
+                    item={item}
+                    type={item.type}
+                    onEdit={onEditEvent}
+                    onDelete={onDeleteEvent}
+                />
+            </View>
+        )
+    }
 
     return (
         <View style={styles.container}>

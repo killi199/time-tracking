@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { Stack, ThemeProvider as NavThemeProvider } from 'expo-router'
@@ -21,29 +21,27 @@ function ThemedStack() {
     const paperTheme = useTheme()
     const { t } = useTranslation()
 
-    const navTheme = useMemo(() => {
-        const colors = paperTheme.colors
-        // Build a NavigationTheme from the current paper theme colors
-        // so expo-router's NavigationContainer uses the correct background.
-        // Colors are plain #RRGGBBAA hex strings via getMaterialColors — no casts needed.
-        return {
-            dark: paperTheme.dark,
-            colors: {
-                primary: colors.primary,
-                background: colors.background,
-                card: colors.surface,
-                text: colors.onSurface,
-                border: colors.outline,
-                notification: colors.error,
-            },
-            fonts: {
-                regular: { fontFamily: 'System', fontWeight: '400' as const },
-                medium: { fontFamily: 'System', fontWeight: '500' as const },
-                bold: { fontFamily: 'System', fontWeight: '700' as const },
-                heavy: { fontFamily: 'System', fontWeight: '900' as const },
-            },
-        }
-    }, [paperTheme])
+    const colors = paperTheme.colors
+    // Build a NavigationTheme from the current paper theme colors
+    // so expo-router's NavigationContainer uses the correct background.
+    // Colors are plain #RRGGBBAA hex strings via getMaterialColors — no casts needed.
+    const navTheme = {
+        dark: paperTheme.dark,
+        colors: {
+            primary: colors.primary,
+            background: colors.background,
+            card: colors.surface,
+            text: colors.onSurface,
+            border: colors.outline,
+            notification: colors.error,
+        },
+        fonts: {
+            regular: { fontFamily: 'System', fontWeight: '400' as const },
+            medium: { fontFamily: 'System', fontWeight: '500' as const },
+            bold: { fontFamily: 'System', fontWeight: '700' as const },
+            heavy: { fontFamily: 'System', fontWeight: '900' as const },
+        },
+    }
 
     return (
         <NavThemeProvider value={navTheme}>

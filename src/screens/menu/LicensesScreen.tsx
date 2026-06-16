@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+
 import {
     View,
     FlatList,
@@ -20,33 +20,31 @@ interface License {
 export default function LicensesScreen() {
     const theme = useTheme()
 
-    const licensesList: License[] = useMemo(() => {
-        return Object.keys(licensesData).map((key) => {
-            const data = (
-                licensesData as Record<string, Record<string, unknown>>
-            )[key]
+    const licensesList: License[] = Object.keys(licensesData).map((key) => {
+        const data = (
+            licensesData as Record<string, Record<string, unknown>>
+        )[key]
 
-            let licensesStr = ''
-            if (typeof data.licenses === 'string') {
-                licensesStr = data.licenses
-            } else if (typeof data.licenses === 'object') {
-                licensesStr = JSON.stringify(data.licenses)
-            }
+        let licensesStr = ''
+        if (typeof data.licenses === 'string') {
+            licensesStr = data.licenses
+        } else if (typeof data.licenses === 'object') {
+            licensesStr = JSON.stringify(data.licenses)
+        }
 
-            return {
-                name: key,
-                licenses: licensesStr,
-                repository:
-                    typeof data.repository === 'string'
-                        ? data.repository
-                        : undefined,
-                publisher:
-                    typeof data.publisher === 'string'
-                        ? data.publisher
-                        : undefined,
-            }
-        })
-    }, [])
+        return {
+            name: key,
+            licenses: licensesStr,
+            repository:
+                typeof data.repository === 'string'
+                    ? data.repository
+                    : undefined,
+            publisher:
+                typeof data.publisher === 'string'
+                    ? data.publisher
+                    : undefined,
+        }
+    })
 
     const renderItem = ({ item }: { item: License }) => (
         <Card style={styles.card}>

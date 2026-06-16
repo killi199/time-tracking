@@ -94,7 +94,9 @@ export default function WeekView({
                         // Active session handling for today
                         const today = getFormattedDate(new Date())
                         if (d === today) {
-                            const start = new Date(`${d}T${dayEvents[i].time}`)
+                            const start = new Date(
+                                `${d}T${dayEvents[i].time}`,
+                            )
                             const now = new Date()
                             const diff =
                                 (now.getTime() - start.getTime()) / 1000 / 60
@@ -116,13 +118,11 @@ export default function WeekView({
             const weekBalanceMinutes = totalMinutesWeek - expectedMinutes
             setWeekBalance(formatTime(weekBalanceMinutes, true))
 
-            // Overall Balance
-            // Usually calculated until "now" or end of the viewing period.
-            // Let's match MonthView: getOverallStats until the end of this period.
+            // Overall Balance (Target: total accumulated until end of this week)
             const { overallBalanceMinutes } = getOverallStats(endDate)
             let finalOverallBalance = overallBalanceMinutes
 
-            // Add active session if exists
+            // Add active session if exists (getOverallStats doesn't include active)
             const today = getFormattedDate(new Date())
             const todayEvents = eventsByDate[today] || []
             if (todayEvents.length % 2 !== 0) {
@@ -223,38 +223,35 @@ export default function WeekView({
         }
     }, [events, calculateMetrics, date, getWeekRange])
 
-    const renderItem = useCallback(
-        ({ item }: { item: ProcessedEvent; index: number }) => {
-            return (
-                <View>
-                    {item.showDateHeader ? (
-                        <List.Subheader>
-                            {(() => {
-                                const [y, m, d] = item.date
-                                    .split('-')
-                                    .map(Number)
-                                return new Date(y, m - 1, d).toLocaleDateString(
-                                    i18n.language,
-                                    {
-                                        weekday: 'short',
-                                        day: 'numeric',
-                                        month: 'numeric',
-                                    },
-                                )
-                            })()}
-                        </List.Subheader>
-                    ) : null}
-                    <EventListItem
-                        item={item}
-                        type={item.type}
-                        onEdit={onEditEvent}
-                        onDelete={onDeleteEvent}
-                    />
-                </View>
-            )
-        },
-        [i18n.language, onEditEvent, onDeleteEvent],
-    )
+    const renderItem = ({ item }: { item: ProcessedEvent; index: number }) => {
+        return (
+            <View>
+                {item.showDateHeader ? (
+                    <List.Subheader>
+                        {(() => {
+                            const [y, m, d] = item.date
+                                .split('-')
+                                .map(Number)
+                            return new Date(y, m - 1, d).toLocaleDateString(
+                                i18n.language,
+                                {
+                                    weekday: 'short',
+                                    day: 'numeric',
+                                    month: 'numeric',
+                                },
+                            )
+                        })()}
+                    </List.Subheader>
+                ) : null}
+                <EventListItem
+                    item={item}
+                    type={item.type}
+                    onEdit={onEditEvent}
+                    onDelete={onDeleteEvent}
+                />
+            </View>
+        )
+    }
 
     return (
         <View style={styles.container}>

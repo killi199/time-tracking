@@ -128,7 +128,7 @@ export default function DayView({
                 processed.push({
                     ...event,
                     type,
-                    showDateHeader: false, // DayView handles its own context, no date headers inside list usually
+                    showDateHeader: false, // DayView handles its context, no date headers inside list usually
                     separatorData,
                 })
             }
@@ -165,19 +165,16 @@ export default function DayView({
         }
     }, [events, date, calculateMetrics])
 
-    const renderItem = useCallback(
-        ({ item }: { item: ProcessedTimeEvent; index: number }) => {
-            return (
-                <EventListItem
-                    item={item}
-                    type={item.type}
-                    onEdit={onEditEvent}
-                    onDelete={onDeleteEvent}
-                />
-            )
-        },
-        [onEditEvent, onDeleteEvent],
-    )
+    const renderItem = ({ item }: { item: ProcessedTimeEvent; index: number }) => {
+        return (
+            <EventListItem
+                item={item}
+                type={item.type}
+                onEdit={onEditEvent}
+                onDelete={onDeleteEvent}
+            />
+        )
+    }
 
     const isToday = date === getFormattedDate(new Date())
     const isCheckedIn = events.length % 2 !== 0
