@@ -182,10 +182,19 @@ export default function WeekView({
     onDeleteEvent,
     refreshTrigger,
 }: Readonly<WeekViewProps>) {
+    const [prevDate, setPrevDate] = useState(date)
     const [events, setEvents] = useState<ProcessedEvent[]>([])
     const [weekWorked, setWeekWorked] = useState('00:00')
     const [weekBalance, setWeekBalance] = useState('+00:00')
     const [overallBalance, setOverallBalance] = useState('+00:00')
+
+    if (date !== prevDate) {
+        setPrevDate(date)
+        setEvents([])
+        setWeekWorked('00:00')
+        setWeekBalance('+00:00')
+        setOverallBalance('+00:00')
+    }
 
     const theme = useTheme()
     const { t, i18n } = useTranslation()

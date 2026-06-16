@@ -129,10 +129,19 @@ export default function DayView({
     onAddEvent,
     refreshTrigger,
 }: Readonly<DayViewProps>) {
+    const [prevDate, setPrevDate] = useState(date)
     const [events, setEvents] = useState<ProcessedTimeEvent[]>([])
     const [todayWorked, setTodayWorked] = useState('00:00')
     const [dayBalance, setDayBalance] = useState('+00:00')
     const [overallBalance, setOverallBalance] = useState('+00:00')
+
+    if (date !== prevDate) {
+        setPrevDate(date)
+        setEvents([])
+        setTodayWorked('00:00')
+        setDayBalance('+00:00')
+        setOverallBalance('+00:00')
+    }
 
     const theme = useTheme()
     const { t } = useTranslation()

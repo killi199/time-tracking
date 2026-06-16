@@ -165,10 +165,19 @@ export default function MonthView({
     onDeleteEvent,
     refreshTrigger,
 }: Readonly<MonthViewProps>) {
+    const [prevMonth, setPrevMonth] = useState(month)
     const [events, setEvents] = useState<ProcessedEvent[]>([])
     const [todayWorked, setTodayWorked] = useState('00:00')
     const [dayBalance, setDayBalance] = useState('+00:00')
     const [overallBalance, setOverallBalance] = useState('+00:00')
+
+    if (month !== prevMonth) {
+        setPrevMonth(month)
+        setEvents([])
+        setTodayWorked('00:00')
+        setDayBalance('+00:00')
+        setOverallBalance('+00:00')
+    }
 
     const theme = useTheme()
     const { t, i18n } = useTranslation()
