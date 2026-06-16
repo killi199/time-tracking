@@ -322,8 +322,7 @@ export default function GeofenceSetupScreen() {
     }
 
     const circleGeoJSON = useMemo(() => {
-        if (!marker) return null
-        return createGeoJSONCircle([marker.longitude, marker.latitude], radius)
+        return marker ? createGeoJSONCircle([marker.longitude, marker.latitude], radius) : null
     }, [marker, radius])
 
     if (loading) {

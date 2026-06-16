@@ -60,7 +60,7 @@ const AdaptiveDateTimePicker = ({
         }
     }
 
-    if (!visible) return null
+    if (!visible) return <></>
 
     if (Platform.OS === 'ios') {
         return (

@@ -109,7 +109,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     })()
 
     useEffect(() => {
-        SystemUI.setBackgroundColorAsync(paperTheme.colors.background).catch((err) => {
+        SystemUI.setBackgroundColorAsync(paperTheme.colors.background).catch((err: unknown) => {
             console.error('Failed to set SystemUI background color:', err)
         })
     }, [paperTheme.colors.background])
