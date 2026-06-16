@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { View, FlatList, StyleSheet } from 'react-native'
 import { Text, Card, List, useTheme } from 'react-native-paper'
 import { EventListItem } from '../components/EventListItem'
@@ -25,6 +25,140 @@ interface MonthViewProps {
     refreshTrigger: number
 }
 
+function calculateMetrics(
+    currentEvents: TimeEvent[],
+    month: string,
+    setTodayWorked: (val: string) => void,
+    setDayBalance: (val: string) => void,
+    setOverallBalance: (val: string) => void,
+) {
+    // Monthly Statistics
+    let totalMinutesMonth = 0
+    const workedDays = new Set<string>()
+
+    // Group events by date
+    const eventsByDate: { [key: string]: TimeEvent[] | undefined } = {}
+    currentEvents.forEach((event) => {
+        if (!eventsByDate[event.date]) {
+            eventsByDate[event.date] = []
+        }
+        eventsByDate[event.date]?.push(event)
+    })
+
+    Object.keys(eventsByDate).forEach((date) => {
+        const dayEvents = eventsByDate[date]
+        if (!dayEvents) return
+
+        dayEvents.sort((a, b) => a.time.localeCompare(b.time))
+
+        let dayMinutes = 0
+        for (let i = 0; i < dayEvents.length; i += 2) {
+            if (i + 1 < dayEvents.length) {
+                const start = new Date(`${date}T${dayEvents[i].time}`)
+                const end = new Date(`${date}T${dayEvents[i + 1].time}`)
+                const diff =
+                    (end.getTime() - start.getTime()) / 1000 / 60
+                dayMinutes += diff
+            } else {
+                // Active session handling for today
+                const today = getFormattedDate(new Date())
+                if (date === today) {
+                    const start = new Date(
+                        `${date}T${dayEvents[i].time}`,
+                    )
+                    const now = new Date()
+                    const diff =
+                        (now.getTime() - start.getTime()) / 1000 / 60
+                    dayMinutes += diff
+                }
+            }
+        }
+
+        if (dayEvents.length > 0) {
+            totalMinutesMonth += dayMinutes
+            workedDays.add(date)
+        }
+    })
+
+    setTodayWorked(formatTime(totalMinutesMonth))
+
+    // Month Balance (Target: 8 hours per worked day)
+    const expectedMinutes = workedDays.size * 8 * 60
+    const monthBalanceMinutes = totalMinutesMonth - expectedMinutes
+    setDayBalance(formatTime(monthBalanceMinutes, true))
+
+    // Overall Balance (Target: total accumulated until end of this month)
+    const [yearStr, monthStr] = month.split('-')
+    const year = parseInt(yearStr, 10)
+    const monthNum = parseInt(monthStr, 10)
+    const lastDay = new Date(year, monthNum, 0).getDate()
+    const cutoffDate = `${month}-${String(lastDay).padStart(2, '0')}`
+
+    const { overallBalanceMinutes } = getOverallStats(cutoffDate)
+    let finalOverallBalance = overallBalanceMinutes
+
+    // Add active session if exists (getOverallStats doesn't include active)
+    const today = getFormattedDate(new Date())
+    const todayEvents = eventsByDate[today] || []
+    if (todayEvents.length % 2 !== 0) {
+        const lastEvent = todayEvents[todayEvents.length - 1]
+        const start = new Date(`${today}T${lastEvent.time}`)
+        const now = new Date()
+        const diff = (now.getTime() - start.getTime()) / 1000 / 60
+        finalOverallBalance += diff
+    }
+    setOverallBalance(formatTime(finalOverallBalance, true))
+}
+
+function processEvents(rawEvents: TimeEvent[]): ProcessedEvent[] {
+    const processed: ProcessedEvent[] = []
+    let currentDay = ''
+    let indexInDay = 0
+
+    for (let i = 0; i < rawEvents.length; i++) {
+        const event = rawEvents[i]
+
+        if (event.date !== currentDay) {
+            currentDay = event.date
+            indexInDay = 0
+        } else {
+            indexInDay++
+        }
+
+        const type = indexInDay % 2 === 0 ? 'start' : 'end'
+        const showDateHeader = indexInDay === 0
+
+        let separatorData = {
+            isSimpleDivider: true,
+            label: '',
+            isWork: false,
+        }
+
+        const next = i < rawEvents.length - 1 ? rawEvents[i + 1] : null
+        if (next && next.date === event.date) {
+            const start = new Date(`${event.date}T${event.time}`)
+            const end = new Date(`${next.date}T${next.time}`)
+            const diffMinutes =
+                (end.getTime() - start.getTime()) / 1000 / 60
+            const duration = formatTime(diffMinutes)
+
+            separatorData = {
+                isSimpleDivider: false,
+                label: duration,
+                isWork: indexInDay % 2 === 0,
+            }
+        }
+
+        processed.push({
+            ...event,
+            type,
+            showDateHeader,
+            separatorData,
+        })
+    }
+    return processed
+}
+
 export default function MonthView({
     month,
     onEditEvent,
@@ -39,151 +173,13 @@ export default function MonthView({
     const theme = useTheme()
     const { t, i18n } = useTranslation()
 
-    const calculateMetrics = useCallback(
-        (currentEvents: TimeEvent[]) => {
-            // Monthly Statistics
-            let totalMinutesMonth = 0
-            const workedDays = new Set<string>()
-
-            // Group events by date
-            const eventsByDate: { [key: string]: TimeEvent[] | undefined } = {}
-            currentEvents.forEach((event) => {
-                if (!eventsByDate[event.date]) {
-                    eventsByDate[event.date] = []
-                }
-                eventsByDate[event.date]?.push(event)
-            })
-
-            Object.keys(eventsByDate).forEach((date) => {
-                const dayEvents = eventsByDate[date]
-                if (!dayEvents) return
-
-                dayEvents.sort((a, b) => a.time.localeCompare(b.time))
-
-                let dayMinutes = 0
-                for (let i = 0; i < dayEvents.length; i += 2) {
-                    if (i + 1 < dayEvents.length) {
-                        const start = new Date(`${date}T${dayEvents[i].time}`)
-                        const end = new Date(`${date}T${dayEvents[i + 1].time}`)
-                        const diff =
-                            (end.getTime() - start.getTime()) / 1000 / 60
-                        dayMinutes += diff
-                    } else {
-                        // Active session handling for today
-                        const today = getFormattedDate(new Date())
-                        if (date === today) {
-                            const start = new Date(
-                                `${date}T${dayEvents[i].time}`,
-                            )
-                            const now = new Date()
-                            const diff =
-                                (now.getTime() - start.getTime()) / 1000 / 60
-                            dayMinutes += diff
-                        }
-                    }
-                }
-
-                if (dayEvents.length > 0) {
-                    totalMinutesMonth += dayMinutes
-                    workedDays.add(date)
-                }
-            })
-
-            setTodayWorked(formatTime(totalMinutesMonth))
-
-            // Month Balance (Target: 8 hours per worked day)
-            const expectedMinutes = workedDays.size * 8 * 60
-            const monthBalanceMinutes = totalMinutesMonth - expectedMinutes
-            setDayBalance(formatTime(monthBalanceMinutes, true))
-
-            // Overall Balance (Target: total accumulated until end of this month)
-            const [yearStr, monthStr] = month.split('-')
-            const year = parseInt(yearStr, 10)
-            const monthNum = parseInt(monthStr, 10)
-            const lastDay = new Date(year, monthNum, 0).getDate()
-            const cutoffDate = `${month}-${String(lastDay).padStart(2, '0')}`
-
-            const { overallBalanceMinutes } = getOverallStats(cutoffDate)
-            let finalOverallBalance = overallBalanceMinutes
-
-            // Add active session if exists (getOverallStats doesn't include active)
-            const today = getFormattedDate(new Date())
-            const todayEvents = eventsByDate[today] || []
-            if (todayEvents.length % 2 !== 0) {
-                const lastEvent = todayEvents[todayEvents.length - 1]
-                const start = new Date(`${today}T${lastEvent.time}`)
-                const now = new Date()
-                const diff = (now.getTime() - start.getTime()) / 1000 / 60
-                finalOverallBalance += diff
-            }
-            setOverallBalance(formatTime(finalOverallBalance, true))
-        },
-        [month],
-    )
-
-    const processEvents = useCallback(
-        (rawEvents: TimeEvent[]): ProcessedEvent[] => {
-            const processed: ProcessedEvent[] = []
-            let currentDay = ''
-            let indexInDay = 0
-
-            for (let i = 0; i < rawEvents.length; i++) {
-                const event = rawEvents[i]
-
-                if (event.date !== currentDay) {
-                    currentDay = event.date
-                    indexInDay = 0
-                } else {
-                    indexInDay++
-                }
-
-                const type = indexInDay % 2 === 0 ? 'start' : 'end'
-                const showDateHeader = indexInDay === 0
-
-                let separatorData = {
-                    isSimpleDivider: true,
-                    label: '',
-                    isWork: false,
-                }
-
-                const next = i < rawEvents.length - 1 ? rawEvents[i + 1] : null
-                if (next && next.date === event.date) {
-                    const start = new Date(`${event.date}T${event.time}`)
-                    const end = new Date(`${next.date}T${next.time}`)
-                    const diffMinutes =
-                        (end.getTime() - start.getTime()) / 1000 / 60
-                    const duration = formatTime(diffMinutes)
-
-                    separatorData = {
-                        isSimpleDivider: false,
-                        label: duration,
-                        isWork: indexInDay % 2 === 0,
-                    }
-                }
-
-                processed.push({
-                    ...event,
-                    type,
-                    showDateHeader,
-                    separatorData,
-                })
-            }
-            return processed
-        },
-        [],
-    )
-
-    const loadData = useCallback(() => {
+    useEffect(() => {
         const loadedEvents = getMonthEvents(month)
         const processed = processEvents(loadedEvents)
-        setEvents(processed)
-        calculateMetrics(loadedEvents)
-    }, [month, calculateMetrics, processEvents])
-
-    useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
-        loadData()
-    }, [loadData, refreshTrigger])
+        setEvents(processed)
+        calculateMetrics(loadedEvents, month, setTodayWorked, setDayBalance, setOverallBalance)
+    }, [month, refreshTrigger])
 
     useEffect(() => {
         // Update metrics every minute if there is an active session
@@ -194,13 +190,13 @@ export default function MonthView({
         if (todayEvents.length % 2 === 0) return
 
         const interval = setInterval(() => {
-            calculateMetrics(events)
+            calculateMetrics(events, month, setTodayWorked, setDayBalance, setOverallBalance)
         }, 60000)
 
         return () => {
             clearInterval(interval)
         }
-    }, [events, calculateMetrics])
+    }, [events, month])
 
     const renderItem = ({ item }: { item: ProcessedEvent; index: number }) => {
         return (

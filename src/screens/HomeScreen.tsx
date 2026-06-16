@@ -1,6 +1,5 @@
 import {
     useState,
-    useCallback,
     useEffect,
     useRef,
     useLayoutEffect,
@@ -196,22 +195,25 @@ export default function HomeScreen({
 
     const activeItemCloseCallback = useRef<(() => void) | undefined>(undefined)
 
-    const showAddDialog = useCallback(() => {
-        setEditingEvent(null)
-        setDialogDate(currentDate)
-        setDialogTime(getFormattedTime(new Date()))
-        setDialogNote('')
-        setDialogIsLateEntry(true)
-        setVisible(true)
-    }, [currentDate])
+    const showAddDialogRef = useRef<() => void>(() => {})
+    useLayoutEffect(() => {
+        showAddDialogRef.current = () => {
+            setEditingEvent(null)
+            setDialogDate(currentDate)
+            setDialogTime(getFormattedTime(new Date()))
+            setDialogNote('')
+            setDialogIsLateEntry(true)
+            setVisible(true)
+        }
+    })
 
     useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (
-                <IconButton icon="plus" onPress={showAddDialog} />
+                <IconButton icon="plus" onPress={() => { showAddDialogRef.current() }} />
             ),
         })
-    }, [navigation, showAddDialog])
+    }, [navigation])
 
     const showEditDialog = (
         item: TimeEvent,

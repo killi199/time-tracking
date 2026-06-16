@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { View, FlatList, StyleSheet } from 'react-native'
 import { Text, Card, useTheme, FAB } from 'react-native-paper'
 import { EventListItem } from '../components/EventListItem'
@@ -16,6 +16,112 @@ interface DayViewProps {
     refreshTrigger: number
 }
 
+function calculateMetrics(
+    currentEvents: TimeEvent[],
+    date: string,
+    setTodayWorked: (val: string) => void,
+    setDayBalance: (val: string) => void,
+    setOverallBalance: (val: string) => void,
+) {
+    let totalMinutesToday = 0
+
+    // Sort events by time just in case
+    const sortedEvents = [...currentEvents].sort((a, b) =>
+        a.time.localeCompare(b.time),
+    )
+
+    for (let i = 0; i < sortedEvents.length; i += 2) {
+        if (i + 1 < sortedEvents.length) {
+            // Pair: Start -> End
+            const start = new Date(`${date}T${sortedEvents[i].time}`)
+            const end = new Date(`${date}T${sortedEvents[i + 1].time}`)
+            const diff = (end.getTime() - start.getTime()) / 1000 / 60
+            totalMinutesToday += diff
+        } else {
+            // Unpaired: Start -> Now (Active Session)
+            const start = new Date(`${date}T${sortedEvents[i].time}`)
+            const now = new Date()
+            // Only count if today is actually today
+            const today = getFormattedDate(new Date())
+            if (date === today) {
+                const diff =
+                    (now.getTime() - start.getTime()) / 1000 / 60
+                totalMinutesToday += diff
+            }
+        }
+    }
+
+    setTodayWorked(formatTime(totalMinutesToday))
+
+    // 2. Day Balance (Target: 8 hours = 480 minutes)
+    const dayBalanceMinutes =
+        sortedEvents.length > 0 ? totalMinutesToday - 480 : 0
+    setDayBalance(formatTime(dayBalanceMinutes, true))
+
+    // 3. Overall Balance
+    const { overallBalanceMinutes } = getOverallStats(date)
+
+    // Add today's active session to overall balance if any
+    let finalOverallBalance = overallBalanceMinutes
+
+    if (
+        date === getFormattedDate(new Date()) &&
+        sortedEvents.length % 2 !== 0
+    ) {
+        const lastEvent = sortedEvents[sortedEvents.length - 1]
+        const start = new Date(`${date}T${lastEvent.time}`)
+        const now = new Date()
+        const diff = (now.getTime() - start.getTime()) / 1000 / 60
+        finalOverallBalance += diff
+    }
+
+    setOverallBalance(formatTime(finalOverallBalance, true))
+}
+
+function processEvents(rawEvents: TimeEvent[]): ProcessedTimeEvent[] {
+    const processed: ProcessedTimeEvent[] = []
+
+    // Sort just in case, though getTodayEvents should already sort
+    const sorted = [...rawEvents].sort((a, b) =>
+        a.time.localeCompare(b.time),
+    )
+
+    for (let i = 0; i < sorted.length; i++) {
+        const event = sorted[i]
+        const type = i % 2 === 0 ? 'start' : 'end' // Even=Start, Odd=End in DayView
+
+        let separatorData = {
+            isSimpleDivider: true,
+            label: '',
+            isWork: false,
+        }
+
+        const next = i < sorted.length - 1 ? sorted[i + 1] : null
+        if (next) {
+            // Same day is guaranteed in DayView
+            const start = new Date(`${event.date}T${event.time}`)
+            const end = new Date(`${next.date}T${next.time}`)
+            const diffMinutes =
+                (end.getTime() - start.getTime()) / 1000 / 60
+            const duration = formatTime(diffMinutes)
+
+            separatorData = {
+                isSimpleDivider: false,
+                label: duration,
+                isWork: i % 2 === 0, // Even index (Check-in) -> Next is Check-out -> Duration is Work
+            }
+        }
+
+        processed.push({
+            ...event,
+            type,
+            showDateHeader: false, // DayView handles its context, no date headers inside list usually
+            separatorData,
+        })
+    }
+    return processed
+}
+
 export default function DayView({
     date,
     onEditEvent,
@@ -31,123 +137,13 @@ export default function DayView({
     const theme = useTheme()
     const { t } = useTranslation()
 
-    const calculateMetrics = useCallback(
-        (currentEvents: TimeEvent[]) => {
-            let totalMinutesToday = 0
-
-            // Sort events by time just in case
-            const sortedEvents = [...currentEvents].sort((a, b) =>
-                a.time.localeCompare(b.time),
-            )
-
-            for (let i = 0; i < sortedEvents.length; i += 2) {
-                if (i + 1 < sortedEvents.length) {
-                    // Pair: Start -> End
-                    const start = new Date(`${date}T${sortedEvents[i].time}`)
-                    const end = new Date(`${date}T${sortedEvents[i + 1].time}`)
-                    const diff = (end.getTime() - start.getTime()) / 1000 / 60
-                    totalMinutesToday += diff
-                } else {
-                    // Unpaired: Start -> Now (Active Session)
-                    const start = new Date(`${date}T${sortedEvents[i].time}`)
-                    const now = new Date()
-                    // Only count if today is actually today
-                    const today = getFormattedDate(new Date())
-                    if (date === today) {
-                        const diff =
-                            (now.getTime() - start.getTime()) / 1000 / 60
-                        totalMinutesToday += diff
-                    }
-                }
-            }
-
-            setTodayWorked(formatTime(totalMinutesToday))
-
-            // 2. Day Balance (Target: 8 hours = 480 minutes)
-            const dayBalanceMinutes =
-                sortedEvents.length > 0 ? totalMinutesToday - 480 : 0
-            setDayBalance(formatTime(dayBalanceMinutes, true))
-
-            // 3. Overall Balance
-            const { overallBalanceMinutes } = getOverallStats(date)
-
-            // Add today's active session to overall balance if any
-            let finalOverallBalance = overallBalanceMinutes
-
-            if (
-                date === getFormattedDate(new Date()) &&
-                sortedEvents.length % 2 !== 0
-            ) {
-                const lastEvent = sortedEvents[sortedEvents.length - 1]
-                const start = new Date(`${date}T${lastEvent.time}`)
-                const now = new Date()
-                const diff = (now.getTime() - start.getTime()) / 1000 / 60
-                finalOverallBalance += diff
-            }
-
-            setOverallBalance(formatTime(finalOverallBalance, true))
-        },
-        [date],
-    )
-
-    const processEvents = useCallback(
-        (rawEvents: TimeEvent[]): ProcessedTimeEvent[] => {
-            const processed: ProcessedTimeEvent[] = []
-
-            // Sort just in case, though getTodayEvents should already sort
-            const sorted = [...rawEvents].sort((a, b) =>
-                a.time.localeCompare(b.time),
-            )
-
-            for (let i = 0; i < sorted.length; i++) {
-                const event = sorted[i]
-                const type = i % 2 === 0 ? 'start' : 'end' // Even=Start, Odd=End in DayView
-
-                let separatorData = {
-                    isSimpleDivider: true,
-                    label: '',
-                    isWork: false,
-                }
-
-                const next = i < sorted.length - 1 ? sorted[i + 1] : null
-                if (next) {
-                    // Same day is guaranteed in DayView
-                    const start = new Date(`${event.date}T${event.time}`)
-                    const end = new Date(`${next.date}T${next.time}`)
-                    const diffMinutes =
-                        (end.getTime() - start.getTime()) / 1000 / 60
-                    const duration = formatTime(diffMinutes)
-
-                    separatorData = {
-                        isSimpleDivider: false,
-                        label: duration,
-                        isWork: i % 2 === 0, // Even index (Check-in) -> Next is Check-out -> Duration is Work
-                    }
-                }
-
-                processed.push({
-                    ...event,
-                    type,
-                    showDateHeader: false, // DayView handles its context, no date headers inside list usually
-                    separatorData,
-                })
-            }
-            return processed
-        },
-        [],
-    )
-
-    const loadData = useCallback(() => {
+    useEffect(() => {
         const loadedEvents = getTodayEvents(date)
         const processed = processEvents(loadedEvents)
-        setEvents(processed)
-        calculateMetrics(loadedEvents)
-    }, [date, calculateMetrics, processEvents])
-
-    useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
-        loadData()
-    }, [loadData, refreshTrigger])
+        setEvents(processed)
+        calculateMetrics(loadedEvents, date, setTodayWorked, setDayBalance, setOverallBalance)
+    }, [date, refreshTrigger])
 
     useEffect(() => {
         // Update metrics every minute if there is an active session
@@ -156,14 +152,14 @@ export default function DayView({
         const interval = setInterval(() => {
             const today = getFormattedDate(new Date())
             if (date === today) {
-                calculateMetrics(events)
+                calculateMetrics(events, date, setTodayWorked, setDayBalance, setOverallBalance)
             }
         }, 60000)
 
         return () => {
             clearInterval(interval)
         }
-    }, [events, date, calculateMetrics])
+    }, [events, date])
 
     const renderItem = ({ item }: { item: ProcessedTimeEvent; index: number }) => {
         return (
