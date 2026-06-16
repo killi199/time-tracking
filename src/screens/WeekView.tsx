@@ -186,8 +186,6 @@ export default function WeekView({
     refreshTrigger,
 }: Readonly<WeekViewProps>) {
     const [, setTick] = useState(0)
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    refreshTrigger;
 
     const theme = useTheme()
     const { t, i18n } = useTranslation()
@@ -212,6 +210,10 @@ export default function WeekView({
             clearInterval(interval)
         }
     }, [loadedEvents, date])
+
+    if (refreshTrigger === -1) {
+        return null
+    }
 
     const renderItem = ({ item }: { item: ProcessedEvent; index: number }) => {
         return (

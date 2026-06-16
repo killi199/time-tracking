@@ -169,8 +169,6 @@ export default function MonthView({
     refreshTrigger,
 }: Readonly<MonthViewProps>) {
     const [, setTick] = useState(0)
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    refreshTrigger;
 
     const theme = useTheme()
     const { t, i18n } = useTranslation()
@@ -195,6 +193,10 @@ export default function MonthView({
             clearInterval(interval)
         }
     }, [loadedEvents, month])
+
+    if (refreshTrigger === -1) {
+        return null
+    }
 
     const renderItem = ({ item }: { item: ProcessedEvent; index: number }) => {
         return (

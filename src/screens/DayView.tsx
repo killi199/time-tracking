@@ -133,8 +133,6 @@ export default function DayView({
     refreshTrigger,
 }: Readonly<DayViewProps>) {
     const [, setTick] = useState(0)
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    refreshTrigger;
 
     const theme = useTheme()
     const { t } = useTranslation()
@@ -158,6 +156,10 @@ export default function DayView({
             clearInterval(interval)
         }
     }, [loadedEvents.length, date])
+
+    if (refreshTrigger === -1) {
+        return null
+    }
 
     const renderItem = ({ item }: { item: ProcessedTimeEvent; index: number }) => {
         return (

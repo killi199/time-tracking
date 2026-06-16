@@ -67,6 +67,8 @@ This documentation provides guidelines for AI agents and developers working on t
 - **Why**: React Compiler automatically handles memoization of components and hooks under the hood.
 - **Rules & Guidelines**:
     - **Never** add manual memoization hooks in standard React Native components/screens.
+    - **Do NOT use `eslint-disable`**: Bypassing React hook or other linting rules with comments like `eslint-disable-next-line` is strictly forbidden. Always solve the underlying dependency, type, or styling issue cleanly instead.
+    - **Synchronous Rendering (No Flash)**: When dealing with synchronous local data (e.g., SQLite database reads), perform data queries and metrics calculations directly in the render phase rather than using asynchronous `useEffect` updates. This prevents stale state flashes and intermediate blank screen rendering.
 
 ## 3. coding Standards
 
