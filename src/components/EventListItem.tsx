@@ -21,7 +21,7 @@ export function EventListItem({
     type,
     onEdit,
     onDelete,
-}: EventListItemProps) {
+}: Readonly<EventListItemProps>) {
     const theme = useTheme()
     const { t } = useTranslation()
     const swipeableRef = useRef<SwipeableMethods>(null)
