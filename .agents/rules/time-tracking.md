@@ -60,6 +60,14 @@ This documentation provides guidelines for AI agents and developers working on t
 - **Path**: Database logic is central in `src/db/database.ts`.
 - **Rule**: Use the existing helper functions in `database.ts` or extend it with new queries. Do not create ad-hoc database connections in components.
 
+### React Compiler & Memoization
+
+**Rule**: React Compiler is enabled for this project. Do NOT introduce manual memoization hooks (`useMemo`, `useCallback`, or `React.memo`) in standard React components.
+
+- **Why**: React Compiler automatically handles memoization of components and hooks under the hood.
+- **Rules & Guidelines**:
+    - **Never** add manual memoization hooks in standard React Native components/screens.
+
 ## 3. coding Standards
 
 - **TypeScript**: Strictly type all props, state, and function return values. Avoid `any`.
@@ -89,3 +97,4 @@ This documentation provides guidelines for AI agents and developers working on t
 - [ ] Strings wrapped in `t()`?
 - [ ] New translation keys added to `src/i18n/locales/*.ts`?
 - [ ] Styles use `theme.colors`?
+- [ ] No manual memoization (`useMemo`/`useCallback`/`React.memo`) introduced?
