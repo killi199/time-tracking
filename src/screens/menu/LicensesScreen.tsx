@@ -1,4 +1,3 @@
-
 import {
     View,
     FlatList,
@@ -21,9 +20,9 @@ export default function LicensesScreen() {
     const theme = useTheme()
 
     const licensesList: License[] = Object.keys(licensesData).map((key) => {
-        const data = (
-            licensesData as Record<string, Record<string, unknown>>
-        )[key]
+        const data = (licensesData as Record<string, Record<string, unknown>>)[
+            key
+        ]
 
         let licensesStr = ''
         if (typeof data.licenses === 'string') {
@@ -40,9 +39,7 @@ export default function LicensesScreen() {
                     ? data.repository
                     : undefined,
             publisher:
-                typeof data.publisher === 'string'
-                    ? data.publisher
-                    : undefined,
+                typeof data.publisher === 'string' ? data.publisher : undefined,
         }
     })
 

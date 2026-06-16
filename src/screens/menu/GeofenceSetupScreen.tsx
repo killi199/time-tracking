@@ -321,7 +321,9 @@ export default function GeofenceSetupScreen() {
         }
     }
 
-    const circleGeoJSON = marker ? createGeoJSONCircle([marker.longitude, marker.latitude], radius) : null
+    const circleGeoJSON = marker
+        ? createGeoJSONCircle([marker.longitude, marker.latitude], radius)
+        : null
 
     if (loading) {
         return (

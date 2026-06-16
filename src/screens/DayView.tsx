@@ -16,10 +16,7 @@ interface DayViewProps {
     refreshTrigger: number
 }
 
-function calculateMetrics(
-    currentEvents: TimeEvent[],
-    date: string,
-) {
+function calculateMetrics(currentEvents: TimeEvent[], date: string) {
     let totalMinutesToday = 0
 
     // Sort events by time just in case
@@ -41,8 +38,7 @@ function calculateMetrics(
             // Only count if today is actually today
             const today = getFormattedDate(new Date())
             if (date === today) {
-                const diff =
-                    (now.getTime() - start.getTime()) / 1000 / 60
+                const diff = (now.getTime() - start.getTime()) / 1000 / 60
                 totalMinutesToday += diff
             }
         }
@@ -85,9 +81,7 @@ function processEvents(rawEvents: TimeEvent[]): ProcessedTimeEvent[] {
     const processed: ProcessedTimeEvent[] = []
 
     // Sort just in case, though getTodayEvents should already sort
-    const sorted = [...rawEvents].sort((a, b) =>
-        a.time.localeCompare(b.time),
-    )
+    const sorted = [...rawEvents].sort((a, b) => a.time.localeCompare(b.time))
 
     for (let i = 0; i < sorted.length; i++) {
         const event = sorted[i]
@@ -104,8 +98,7 @@ function processEvents(rawEvents: TimeEvent[]): ProcessedTimeEvent[] {
             // Same day is guaranteed in DayView
             const start = new Date(`${event.date}T${event.time}`)
             const end = new Date(`${next.date}T${next.time}`)
-            const diffMinutes =
-                (end.getTime() - start.getTime()) / 1000 / 60
+            const diffMinutes = (end.getTime() - start.getTime()) / 1000 / 60
             const duration = formatTime(diffMinutes)
 
             separatorData = {
@@ -139,7 +132,10 @@ export default function DayView({
 
     const loadedEvents = getTodayEvents(date)
     const events = processEvents(loadedEvents)
-    const { todayWorked, dayBalance, overallBalance } = calculateMetrics(loadedEvents, date)
+    const { todayWorked, dayBalance, overallBalance } = calculateMetrics(
+        loadedEvents,
+        date,
+    )
 
     useEffect(() => {
         // Update metrics every minute if there is an active session
@@ -161,7 +157,12 @@ export default function DayView({
         return null
     }
 
-    const renderItem = ({ item }: { item: ProcessedTimeEvent; index: number }) => {
+    const renderItem = ({
+        item,
+    }: {
+        item: ProcessedTimeEvent
+        index: number
+    }) => {
         return (
             <EventListItem
                 item={item}

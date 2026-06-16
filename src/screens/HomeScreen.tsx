@@ -1,9 +1,4 @@
-import {
-    useState,
-    useEffect,
-    useRef,
-    useLayoutEffect,
-} from 'react'
+import { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import {
     View,
     StyleSheet,
@@ -210,15 +205,17 @@ export default function HomeScreen({
     useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (
-                <IconButton icon="plus" onPress={() => { showAddDialogRef.current() }} />
+                <IconButton
+                    icon="plus"
+                    onPress={() => {
+                        showAddDialogRef.current()
+                    }}
+                />
             ),
         })
     }, [navigation])
 
-    const showEditDialog = (
-        item: TimeEvent,
-        close?: () => void,
-    ) => {
+    const showEditDialog = (item: TimeEvent, close?: () => void) => {
         setDialogTime(item.time)
         setDialogNote(item.note || '')
         setDialogIsLateEntry(item.isManualEntry ?? false)
@@ -272,9 +269,13 @@ export default function HomeScreen({
         setTimePickerVisible(false)
     }
 
-    const onConfirmTimePicker = (
-        { hours, minutes }: { hours: number; minutes: number },
-    ) => {
+    const onConfirmTimePicker = ({
+        hours,
+        minutes,
+    }: {
+        hours: number
+        minutes: number
+    }) => {
         setTimePickerVisible(false)
         const h = hours.toString().padStart(2, '0')
         const m = minutes.toString().padStart(2, '0')
@@ -285,19 +286,14 @@ export default function HomeScreen({
         setCreateDatePickerVisible(false)
     }
 
-    const onConfirmCreateDatePicker = (
-        params: { date: Date | undefined },
-    ) => {
+    const onConfirmCreateDatePicker = (params: { date: Date | undefined }) => {
         setCreateDatePickerVisible(false)
         if (params.date) {
             setDialogDate(getFormattedDate(params.date))
         }
     }
 
-    const showDeleteDialog = (
-        item: TimeEvent,
-        close?: () => void,
-    ) => {
+    const showDeleteDialog = (item: TimeEvent, close?: () => void) => {
         setItemToDelete(item)
         activeItemCloseCallback.current = close
         setDeleteDialogVisible(true)
@@ -360,9 +356,7 @@ export default function HomeScreen({
         setDatePickerVisible(false)
     }
 
-    const onConfirmDatePicker = (
-        params: { date: Date | undefined },
-    ) => {
+    const onConfirmDatePicker = (params: { date: Date | undefined }) => {
         setDatePickerVisible(false)
         if (params.date) {
             if (viewMode === 'month') {

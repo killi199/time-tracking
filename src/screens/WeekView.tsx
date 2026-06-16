@@ -76,19 +76,15 @@ function calculateMetrics(
             if (i + 1 < dayEvents.length) {
                 const start = new Date(`${d}T${dayEvents[i].time}`)
                 const end = new Date(`${d}T${dayEvents[i + 1].time}`)
-                const diff =
-                    (end.getTime() - start.getTime()) / 1000 / 60
+                const diff = (end.getTime() - start.getTime()) / 1000 / 60
                 dayMinutes += diff
             } else {
                 // Active session handling for today
                 const today = getFormattedDate(new Date())
                 if (d === today) {
-                    const start = new Date(
-                        `${d}T${dayEvents[i].time}`,
-                    )
+                    const start = new Date(`${d}T${dayEvents[i].time}`)
                     const now = new Date()
-                    const diff =
-                        (now.getTime() - start.getTime()) / 1000 / 60
+                    const diff = (now.getTime() - start.getTime()) / 1000 / 60
                     dayMinutes += diff
                 }
             }
@@ -158,8 +154,7 @@ function processEvents(rawEvents: TimeEvent[]): ProcessedEvent[] {
         if (next && next.date === event.date) {
             const start = new Date(`${event.date}T${event.time}`)
             const end = new Date(`${next.date}T${next.time}`)
-            const diffMinutes =
-                (end.getTime() - start.getTime()) / 1000 / 60
+            const diffMinutes = (end.getTime() - start.getTime()) / 1000 / 60
             const duration = formatTime(diffMinutes)
 
             separatorData = {
@@ -193,7 +188,11 @@ export default function WeekView({
     const { start, end } = getWeekRange(date)
     const loadedEvents = getEventsRange(start, end)
     const events = processEvents(loadedEvents)
-    const { weekWorked, weekBalance, overallBalance } = calculateMetrics(loadedEvents, start, end)
+    const { weekWorked, weekBalance, overallBalance } = calculateMetrics(
+        loadedEvents,
+        start,
+        end,
+    )
 
     useEffect(() => {
         // Update metrics every minute if there is an active session
@@ -221,9 +220,7 @@ export default function WeekView({
                 {item.showDateHeader ? (
                     <List.Subheader>
                         {(() => {
-                            const [y, m, d] = item.date
-                                .split('-')
-                                .map(Number)
+                            const [y, m, d] = item.date.split('-').map(Number)
                             return new Date(y, m - 1, d).toLocaleDateString(
                                 i18n.language,
                                 {

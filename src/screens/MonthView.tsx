@@ -25,10 +25,7 @@ interface MonthViewProps {
     refreshTrigger: number
 }
 
-function calculateMetrics(
-    currentEvents: TimeEvent[],
-    month: string,
-) {
+function calculateMetrics(currentEvents: TimeEvent[], month: string) {
     // Monthly Statistics
     let totalMinutesMonth = 0
     const workedDays = new Set<string>()
@@ -53,19 +50,15 @@ function calculateMetrics(
             if (i + 1 < dayEvents.length) {
                 const start = new Date(`${date}T${dayEvents[i].time}`)
                 const end = new Date(`${date}T${dayEvents[i + 1].time}`)
-                const diff =
-                    (end.getTime() - start.getTime()) / 1000 / 60
+                const diff = (end.getTime() - start.getTime()) / 1000 / 60
                 dayMinutes += diff
             } else {
                 // Active session handling for today
                 const today = getFormattedDate(new Date())
                 if (date === today) {
-                    const start = new Date(
-                        `${date}T${dayEvents[i].time}`,
-                    )
+                    const start = new Date(`${date}T${dayEvents[i].time}`)
                     const now = new Date()
-                    const diff =
-                        (now.getTime() - start.getTime()) / 1000 / 60
+                    const diff = (now.getTime() - start.getTime()) / 1000 / 60
                     dayMinutes += diff
                 }
             }
@@ -141,8 +134,7 @@ function processEvents(rawEvents: TimeEvent[]): ProcessedEvent[] {
         if (next && next.date === event.date) {
             const start = new Date(`${event.date}T${event.time}`)
             const end = new Date(`${next.date}T${next.time}`)
-            const diffMinutes =
-                (end.getTime() - start.getTime()) / 1000 / 60
+            const diffMinutes = (end.getTime() - start.getTime()) / 1000 / 60
             const duration = formatTime(diffMinutes)
 
             separatorData = {
@@ -175,7 +167,10 @@ export default function MonthView({
 
     const loadedEvents = getMonthEvents(month)
     const events = processEvents(loadedEvents)
-    const { todayWorked, dayBalance, overallBalance } = calculateMetrics(loadedEvents, month)
+    const { todayWorked, dayBalance, overallBalance } = calculateMetrics(
+        loadedEvents,
+        month,
+    )
 
     useEffect(() => {
         // Update metrics every minute if there is an active session
@@ -204,9 +199,7 @@ export default function MonthView({
                 {item.showDateHeader ? (
                     <List.Subheader>
                         {(() => {
-                            const [y, m, d] = item.date
-                                .split('-')
-                                .map(Number)
+                            const [y, m, d] = item.date.split('-').map(Number)
                             return new Date(y, m - 1, d).toLocaleDateString(
                                 i18n.language,
                                 {

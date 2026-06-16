@@ -14,7 +14,7 @@ import {
 } from 'expo-router/drawer'
 import { useRouter } from 'expo-router'
 import { useTranslation } from 'react-i18next'
-import MaterialCommunityIcons from "@react-native-vector-icons/material-design-icons/static";
+import MaterialCommunityIcons from '@react-native-vector-icons/material-design-icons/static'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export default function MenuDrawerContent(

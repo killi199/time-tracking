@@ -52,7 +52,10 @@ function ThemedStack() {
                     },
                 }}
             >
-                <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+                <Stack.Screen
+                    name="(drawer)"
+                    options={{ headerShown: false }}
+                />
                 <Stack.Screen
                     name="settings"
                     options={{ title: t('settings.title') }}
@@ -73,10 +76,7 @@ function ThemedStack() {
                     name="nfc-setup"
                     options={{ title: t('nfc.title') }}
                 />
-                <Stack.Screen
-                    name="nfc"
-                    options={{ headerShown: false }}
-                />
+                <Stack.Screen name="nfc" options={{ headerShown: false }} />
                 <Stack.Screen
                     name="licenses"
                     options={{ title: t('menu.licenses') }}

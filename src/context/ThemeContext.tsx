@@ -1,4 +1,10 @@
-import { createContext, useState, useContext, ReactNode, useEffect } from 'react'
+import {
+    createContext,
+    useState,
+    useContext,
+    ReactNode,
+    useEffect,
+} from 'react'
 import * as SystemUI from 'expo-system-ui'
 import { useColorScheme, Platform } from 'react-native'
 import {
@@ -109,9 +115,11 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     })()
 
     useEffect(() => {
-        SystemUI.setBackgroundColorAsync(paperTheme.colors.background).catch((err: unknown) => {
-            console.error('Failed to set SystemUI background color:', err)
-        })
+        SystemUI.setBackgroundColorAsync(paperTheme.colors.background).catch(
+            (err: unknown) => {
+                console.error('Failed to set SystemUI background color:', err)
+            },
+        )
     }, [paperTheme.colors.background])
 
     return (
