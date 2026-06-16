@@ -88,7 +88,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-create-class-features-plugin@npm:^7.18.6, @babel/helper-create-class-features-plugin@npm:^7.27.1, @babel/helper-create-class-features-plugin@npm:^7.28.3, @babel/helper-create-class-features-plugin@npm:^7.29.7":
+"@babel/helper-create-class-features-plugin@npm:^7.27.1, @babel/helper-create-class-features-plugin@npm:^7.28.3, @babel/helper-create-class-features-plugin@npm:^7.29.7":
   version: 7.29.7
   resolution: "@babel/helper-create-class-features-plugin@npm:7.29.7"
   dependencies:
@@ -182,7 +182,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-plugin-utils@npm:^7.18.6, @babel/helper-plugin-utils@npm:^7.27.1, @babel/helper-plugin-utils@npm:^7.29.7, @babel/helper-plugin-utils@npm:^7.8.0":
+"@babel/helper-plugin-utils@npm:^7.27.1, @babel/helper-plugin-utils@npm:^7.29.7, @babel/helper-plugin-utils@npm:^7.8.0":
   version: 7.29.7
   resolution: "@babel/helper-plugin-utils@npm:7.29.7"
   checksum: 10c0/380477a06133274a2759f9355929cb60a95e8b8fee624a1ae1fa349e1d1645b89daca456f72833f6d1062bffa12ee4271c5bf0cc5a61c0166cdc24c7591e2408
@@ -299,18 +299,6 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0-0
   checksum: 10c0/6e0756e0692245854028caea113dad2dc11fcdd479891a59d9a614a099e7e321f2bd25a1e3dd6f3b36ba9506a76f072f63adbf676e5ed51e7eeac277612e3db2
-  languageName: node
-  linkType: hard
-
-"@babel/plugin-proposal-private-methods@npm:^7.18.6":
-  version: 7.18.6
-  resolution: "@babel/plugin-proposal-private-methods@npm:7.18.6"
-  dependencies:
-    "@babel/helper-create-class-features-plugin": "npm:^7.18.6"
-    "@babel/helper-plugin-utils": "npm:^7.18.6"
-  peerDependencies:
-    "@babel/core": ^7.0.0-0
-  checksum: 10c0/1c273d0ec3d49d0fe80bd754ec0191016e5b3ab4fb1e162ac0c014e9d3c1517a5d973afbf8b6dc9f9c98a8605c79e5f9e8b5ee158a4313fa68d1ff7b02084b6a
   languageName: node
   linkType: hard
 
@@ -4692,22 +4680,6 @@ __metadata:
   bin:
     eslint-config-prettier: bin/cli.js
   checksum: 10c0/e1bcfadc9eccd526c240056b1e59c5cd26544fe59feb85f38f4f1f116caed96aea0b3b87868e68b3099e55caaac3f2e5b9f58110f85db893e83a332751192682
-  languageName: node
-  linkType: hard
-
-"eslint-plugin-react-compiler@npm:19.1.0-rc.2":
-  version: 19.1.0-rc.2
-  resolution: "eslint-plugin-react-compiler@npm:19.1.0-rc.2"
-  dependencies:
-    "@babel/core": "npm:^7.24.4"
-    "@babel/parser": "npm:^7.24.4"
-    "@babel/plugin-proposal-private-methods": "npm:^7.18.6"
-    hermes-parser: "npm:^0.25.1"
-    zod: "npm:^3.22.4"
-    zod-validation-error: "npm:^3.0.3"
-  peerDependencies:
-    eslint: ">=7"
-  checksum: 10c0/7bf9a6efc6126b19005bf318dd4b0c4d1cf469f00033202a42a2ade46aba774c992b06e337eb1e8ac3b8f6972537061eed55a2dccf2092781cfb1d511c07335e
   languageName: node
   linkType: hard
 
@@ -9390,7 +9362,6 @@ __metadata:
     eslint: "npm:9.39.2"
     eslint-config-prettier: "npm:10.1.8"
     eslint-plugin-react: "npm:7.37.5"
-    eslint-plugin-react-compiler: "npm:19.1.0-rc.2"
     eslint-plugin-react-hooks: "npm:7.1.1"
     eslint-plugin-sonarjs: "npm:4.0.3"
     expo: "npm:56.0.11"
@@ -10287,15 +10258,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod-validation-error@npm:^3.0.3":
-  version: 3.5.4
-  resolution: "zod-validation-error@npm:3.5.4"
-  peerDependencies:
-    zod: ^3.24.4
-  checksum: 10c0/fccfe09fc27d4d6ba59beab8eeee06a27befc0f491ec81a2951d7b82e7a08eca07bc74ef4fff82586fc7710a3ef777ec607c685defa06c70cd11849af0b9882c
-  languageName: node
-  linkType: hard
-
 "zod-validation-error@npm:^3.5.0 || ^4.0.0":
   version: 4.0.2
   resolution: "zod-validation-error@npm:4.0.2"
@@ -10305,16 +10267,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:^3.22.4, zod@npm:^3.25.76":
-  version: 3.25.76
-  resolution: "zod@npm:3.25.76"
-  checksum: 10c0/5718ec35e3c40b600316c5b4c5e4976f7fee68151bc8f8d90ec18a469be9571f072e1bbaace10f1e85cf8892ea12d90821b200e980ab46916a6166a4260a983c
-  languageName: node
-  linkType: hard
-
 "zod@npm:^3.25.0 || ^4.0.0":
   version: 4.3.5
   resolution: "zod@npm:4.3.5"
   checksum: 10c0/5a2db7e59177a3d7e202543f5136cb87b97b047b77c8a3d824098d3fa8b80d3aa40a0a5f296965c3b82dfdccdd05dbbfacce91347f16a39c675680fd7b1ab109
+  languageName: node
+  linkType: hard
+
+"zod@npm:^3.25.76":
+  version: 3.25.76
+  resolution: "zod@npm:3.25.76"
+  checksum: 10c0/5718ec35e3c40b600316c5b4c5e4976f7fee68151bc8f8d90ec18a469be9571f072e1bbaace10f1e85cf8892ea12d90821b200e980ab46916a6166a4260a983c
   languageName: node
   linkType: hard

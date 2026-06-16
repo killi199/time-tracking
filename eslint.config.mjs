@@ -6,7 +6,6 @@ import tseslint from 'typescript-eslint'
 import eslintConfigPrettier from 'eslint-config-prettier/flat'
 import sonarjs from 'eslint-plugin-sonarjs'
 import vitest from '@vitest/eslint-plugin'
-import reactCompiler from 'eslint-plugin-react-compiler'
 
 export default defineConfig(
     eslint.configs.recommended,
@@ -23,7 +22,6 @@ export default defineConfig(
     reactHooks.configs.flat.recommended,
     eslintConfigPrettier,
     sonarjs.configs.recommended,
-    reactCompiler.configs.recommended,
     {
         files: ['**/*.test.ts', '**/*.test.tsx'],
         plugins: {
