@@ -51,9 +51,6 @@ function calculateMetrics(
     currentEvents: TimeEvent[],
     startDate: string,
     endDate: string,
-    setWeekWorked: (val: string) => void,
-    setWeekBalance: (val: string) => void,
-    setOverallBalance: (val: string) => void,
 ) {
     // Weekly Statistics
     let totalMinutesWeek = 0
@@ -103,12 +100,12 @@ function calculateMetrics(
         }
     })
 
-    setWeekWorked(formatTime(totalMinutesWeek))
+    const weekWorked = formatTime(totalMinutesWeek)
 
     // Week Balance (Target: 8 hours per worked day)
     const expectedMinutes = workedDays.size * 8 * 60
     const weekBalanceMinutes = totalMinutesWeek - expectedMinutes
-    setWeekBalance(formatTime(weekBalanceMinutes, true))
+    const weekBalance = formatTime(weekBalanceMinutes, true)
 
     // Overall Balance (Target: total accumulated until end of this week)
     const { overallBalanceMinutes } = getOverallStats(endDate)
@@ -124,7 +121,13 @@ function calculateMetrics(
         const diff = (now.getTime() - start.getTime()) / 1000 / 60
         finalOverallBalance += diff
     }
-    setOverallBalance(formatTime(finalOverallBalance, true))
+    const overallBalance = formatTime(finalOverallBalance, true)
+
+    return {
+        weekWorked,
+        weekBalance,
+        overallBalance,
+    }
 }
 
 function processEvents(rawEvents: TimeEvent[]): ProcessedEvent[] {
@@ -182,52 +185,33 @@ export default function WeekView({
     onDeleteEvent,
     refreshTrigger,
 }: Readonly<WeekViewProps>) {
-    const [prevDate, setPrevDate] = useState(date)
-    const [events, setEvents] = useState<ProcessedEvent[]>([])
-    const [weekWorked, setWeekWorked] = useState('00:00')
-    const [weekBalance, setWeekBalance] = useState('+00:00')
-    const [overallBalance, setOverallBalance] = useState('+00:00')
-
-    if (date !== prevDate) {
-        setPrevDate(date)
-        setEvents([])
-        setWeekWorked('00:00')
-        setWeekBalance('+00:00')
-        setOverallBalance('+00:00')
-    }
+    const [, setTick] = useState(0)
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    refreshTrigger;
 
     const theme = useTheme()
     const { t, i18n } = useTranslation()
 
-    useEffect(() => {
-        const { start, end } = getWeekRange(date)
-        const loadedEvents = getEventsRange(start, end)
-        const processed = processEvents(loadedEvents)
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setEvents(processed)
-        calculateMetrics(loadedEvents, start, end, setWeekWorked, setWeekBalance, setOverallBalance)
-    }, [date, refreshTrigger])
+    const { start, end } = getWeekRange(date)
+    const loadedEvents = getEventsRange(start, end)
+    const events = processEvents(loadedEvents)
+    const { weekWorked, weekBalance, overallBalance } = calculateMetrics(loadedEvents, start, end)
 
     useEffect(() => {
         // Update metrics every minute if there is an active session
         const today = getFormattedDate(new Date())
-        const todayEvents = events.filter((e) => e.date === today)
+        const todayEvents = loadedEvents.filter((e) => e.date === today)
 
         if (todayEvents.length % 2 === 0) return
 
         const interval = setInterval(() => {
-            // Re-calc metrics reuse the loaded events but we need the raw ones?
-            // processEvents returns ProcessedEvent which extends TimeEvent, so it's fine.
-            // But calculateMetrics expects TimeEvent[], which ProcessedEvent[] satisfies.
-            // However, we need the original range.
-            const { start, end } = getWeekRange(date)
-            calculateMetrics(events, start, end, setWeekWorked, setWeekBalance, setOverallBalance)
+            setTick((t) => t + 1)
         }, 60000)
 
         return () => {
             clearInterval(interval)
         }
-    }, [events, date])
+    }, [loadedEvents, date])
 
     const renderItem = ({ item }: { item: ProcessedEvent; index: number }) => {
         return (

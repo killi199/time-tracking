@@ -19,9 +19,6 @@ interface DayViewProps {
 function calculateMetrics(
     currentEvents: TimeEvent[],
     date: string,
-    setTodayWorked: (val: string) => void,
-    setDayBalance: (val: string) => void,
-    setOverallBalance: (val: string) => void,
 ) {
     let totalMinutesToday = 0
 
@@ -51,12 +48,12 @@ function calculateMetrics(
         }
     }
 
-    setTodayWorked(formatTime(totalMinutesToday))
+    const todayWorked = formatTime(totalMinutesToday)
 
     // 2. Day Balance (Target: 8 hours = 480 minutes)
     const dayBalanceMinutes =
         sortedEvents.length > 0 ? totalMinutesToday - 480 : 0
-    setDayBalance(formatTime(dayBalanceMinutes, true))
+    const dayBalance = formatTime(dayBalanceMinutes, true)
 
     // 3. Overall Balance
     const { overallBalanceMinutes } = getOverallStats(date)
@@ -75,7 +72,13 @@ function calculateMetrics(
         finalOverallBalance += diff
     }
 
-    setOverallBalance(formatTime(finalOverallBalance, true))
+    const overallBalance = formatTime(finalOverallBalance, true)
+
+    return {
+        todayWorked,
+        dayBalance,
+        overallBalance,
+    }
 }
 
 function processEvents(rawEvents: TimeEvent[]): ProcessedTimeEvent[] {
@@ -129,46 +132,32 @@ export default function DayView({
     onAddEvent,
     refreshTrigger,
 }: Readonly<DayViewProps>) {
-    const [prevDate, setPrevDate] = useState(date)
-    const [events, setEvents] = useState<ProcessedTimeEvent[]>([])
-    const [todayWorked, setTodayWorked] = useState('00:00')
-    const [dayBalance, setDayBalance] = useState('+00:00')
-    const [overallBalance, setOverallBalance] = useState('+00:00')
-
-    if (date !== prevDate) {
-        setPrevDate(date)
-        setEvents([])
-        setTodayWorked('00:00')
-        setDayBalance('+00:00')
-        setOverallBalance('+00:00')
-    }
+    const [, setTick] = useState(0)
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    refreshTrigger;
 
     const theme = useTheme()
     const { t } = useTranslation()
 
-    useEffect(() => {
-        const loadedEvents = getTodayEvents(date)
-        const processed = processEvents(loadedEvents)
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setEvents(processed)
-        calculateMetrics(loadedEvents, date, setTodayWorked, setDayBalance, setOverallBalance)
-    }, [date, refreshTrigger])
+    const loadedEvents = getTodayEvents(date)
+    const events = processEvents(loadedEvents)
+    const { todayWorked, dayBalance, overallBalance } = calculateMetrics(loadedEvents, date)
 
     useEffect(() => {
         // Update metrics every minute if there is an active session
-        if (events.length % 2 === 0) return
+        if (loadedEvents.length % 2 === 0) return
 
         const interval = setInterval(() => {
             const today = getFormattedDate(new Date())
             if (date === today) {
-                calculateMetrics(events, date, setTodayWorked, setDayBalance, setOverallBalance)
+                setTick((t) => t + 1)
             }
         }, 60000)
 
         return () => {
             clearInterval(interval)
         }
-    }, [events, date])
+    }, [loadedEvents.length, date])
 
     const renderItem = ({ item }: { item: ProcessedTimeEvent; index: number }) => {
         return (

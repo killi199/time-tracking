@@ -28,9 +28,6 @@ interface MonthViewProps {
 function calculateMetrics(
     currentEvents: TimeEvent[],
     month: string,
-    setTodayWorked: (val: string) => void,
-    setDayBalance: (val: string) => void,
-    setOverallBalance: (val: string) => void,
 ) {
     // Monthly Statistics
     let totalMinutesMonth = 0
@@ -80,12 +77,12 @@ function calculateMetrics(
         }
     })
 
-    setTodayWorked(formatTime(totalMinutesMonth))
+    const todayWorked = formatTime(totalMinutesMonth)
 
     // Month Balance (Target: 8 hours per worked day)
     const expectedMinutes = workedDays.size * 8 * 60
     const monthBalanceMinutes = totalMinutesMonth - expectedMinutes
-    setDayBalance(formatTime(monthBalanceMinutes, true))
+    const dayBalance = formatTime(monthBalanceMinutes, true)
 
     // Overall Balance (Target: total accumulated until end of this month)
     const [yearStr, monthStr] = month.split('-')
@@ -107,7 +104,13 @@ function calculateMetrics(
         const diff = (now.getTime() - start.getTime()) / 1000 / 60
         finalOverallBalance += diff
     }
-    setOverallBalance(formatTime(finalOverallBalance, true))
+    const overallBalance = formatTime(finalOverallBalance, true)
+
+    return {
+        todayWorked,
+        dayBalance,
+        overallBalance,
+    }
 }
 
 function processEvents(rawEvents: TimeEvent[]): ProcessedEvent[] {
@@ -165,47 +168,33 @@ export default function MonthView({
     onDeleteEvent,
     refreshTrigger,
 }: Readonly<MonthViewProps>) {
-    const [prevMonth, setPrevMonth] = useState(month)
-    const [events, setEvents] = useState<ProcessedEvent[]>([])
-    const [todayWorked, setTodayWorked] = useState('00:00')
-    const [dayBalance, setDayBalance] = useState('+00:00')
-    const [overallBalance, setOverallBalance] = useState('+00:00')
-
-    if (month !== prevMonth) {
-        setPrevMonth(month)
-        setEvents([])
-        setTodayWorked('00:00')
-        setDayBalance('+00:00')
-        setOverallBalance('+00:00')
-    }
+    const [, setTick] = useState(0)
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    refreshTrigger;
 
     const theme = useTheme()
     const { t, i18n } = useTranslation()
 
-    useEffect(() => {
-        const loadedEvents = getMonthEvents(month)
-        const processed = processEvents(loadedEvents)
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setEvents(processed)
-        calculateMetrics(loadedEvents, month, setTodayWorked, setDayBalance, setOverallBalance)
-    }, [month, refreshTrigger])
+    const loadedEvents = getMonthEvents(month)
+    const events = processEvents(loadedEvents)
+    const { todayWorked, dayBalance, overallBalance } = calculateMetrics(loadedEvents, month)
 
     useEffect(() => {
         // Update metrics every minute if there is an active session
         // Check if there's any active session in the loaded events (only for today)
         const today = getFormattedDate(new Date())
-        const todayEvents = events.filter((e) => e.date === today)
+        const todayEvents = loadedEvents.filter((e) => e.date === today)
 
         if (todayEvents.length % 2 === 0) return
 
         const interval = setInterval(() => {
-            calculateMetrics(events, month, setTodayWorked, setDayBalance, setOverallBalance)
+            setTick((t) => t + 1)
         }, 60000)
 
         return () => {
             clearInterval(interval)
         }
-    }, [events, month])
+    }, [loadedEvents, month])
 
     const renderItem = ({ item }: { item: ProcessedEvent; index: number }) => {
         return (
