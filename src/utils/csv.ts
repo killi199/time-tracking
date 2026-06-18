@@ -1,4 +1,4 @@
-import * as FileSystem from 'expo-file-system/legacy'
+import { File, Paths } from 'expo-file-system'
 import * as Sharing from 'expo-sharing'
 import * as DocumentPicker from 'expo-document-picker'
 import Papa from 'papaparse'
@@ -27,20 +27,13 @@ export const exportToCSV = async (): Promise<CSVResult> => {
 
         const fileName = `time_tracking_export_${getFormattedDate(new Date())}.csv`
 
-        const documentDirectory = FileSystem.documentDirectory
+        const file = new File(Paths.document, fileName)
 
-        if (!documentDirectory) {
-            throw new Error('FileSystem.documentDirectory is null')
-        }
-
-        const fileUri = documentDirectory + fileName
-
-        await FileSystem.writeAsStringAsync(fileUri, csvContent, {
-            encoding: 'utf8',
-        })
+        file.create({ overwrite: true })
+        file.write(csvContent)
 
         if (await Sharing.isAvailableAsync()) {
-            await Sharing.shareAsync(fileUri)
+            await Sharing.shareAsync(file.uri)
             return { success: true }
         } else {
             return {
@@ -70,7 +63,8 @@ export const importFromCSV = async (): Promise<CSVResult> => {
         }
 
         const fileUri = result.assets[0].uri
-        const content = await FileSystem.readAsStringAsync(fileUri)
+        const file = new File(fileUri)
+        const content = await file.text()
 
         type CSVRow = {
             Date?: string
