@@ -5197,6 +5197,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-status-bar@npm:~56.0.4":
+  version: 56.0.4
+  resolution: "expo-status-bar@npm:56.0.4"
+  peerDependencies:
+    expo: "*"
+    react: "*"
+    react-native: "*"
+  checksum: 10c0/74790ea40ebfd0f7928864b2f5bb8e7893030df46828f954ffedde931702192ab4b9ca41aa972e37457c1e6658b19e0a4266ebbecc243ccd3e9b78abccebe6c6
+  languageName: node
+  linkType: hard
+
 "expo-symbols@npm:^56.0.6":
   version: 56.0.6
   resolution: "expo-symbols@npm:56.0.6"
@@ -9376,6 +9387,7 @@ __metadata:
     expo-router: "npm:~56.2.11"
     expo-sharing: "npm:~56.0.18"
     expo-sqlite: "npm:~56.0.5"
+    expo-status-bar: "npm:~56.0.4"
     expo-system-ui: "npm:~56.0.5"
     expo-task-manager: "npm:~56.0.19"
     i18next: "npm:26.3.1"

@@ -21,6 +21,12 @@ const plugins = [
             },
         },
     ],
+    [
+        'expo-status-bar',
+        {
+            style: 'auto',
+        },
+    ],
 ]
 
 if (!isFOSS) {
