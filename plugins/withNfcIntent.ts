@@ -1,9 +1,11 @@
-const { withAndroidManifest } = require('@expo/config-plugins')
+import { ConfigPlugin, withAndroidManifest } from '@expo/config-plugins'
 
-const withNfcIntent = (config) => {
+const withNfcIntent: ConfigPlugin = (config) => {
     return withAndroidManifest(config, (config) => {
-        const mainApplication = config.modResults.manifest.application[0]
-        const mainActivity = mainApplication.activity.find(
+        const mainApplication = config.modResults.manifest.application?.[0]
+        if (!mainApplication) return config
+
+        const mainActivity = mainApplication.activity?.find(
             (a) => a.$['android:name'] === '.MainActivity',
         )
 
@@ -44,4 +46,4 @@ const withNfcIntent = (config) => {
     })
 }
 
-module.exports = withNfcIntent
+export default withNfcIntent

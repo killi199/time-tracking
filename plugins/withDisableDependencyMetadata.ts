@@ -1,6 +1,6 @@
-const { withAppBuildGradle } = require('@expo/config-plugins')
+import { ConfigPlugin, withAppBuildGradle } from '@expo/config-plugins'
 
-const withDisableDependencyMetadata = (config) => {
+const withDisableDependencyMetadata: ConfigPlugin = (config) => {
     return withAppBuildGradle(config, (config) => {
         if (!config.modResults.contents.includes('dependenciesInfo {')) {
             config.modResults.contents = config.modResults.contents.replace(
@@ -16,4 +16,4 @@ const withDisableDependencyMetadata = (config) => {
     })
 }
 
-module.exports = withDisableDependencyMetadata
+export default withDisableDependencyMetadata

@@ -1,6 +1,6 @@
-const { withAndroidManifest } = require('@expo/config-plugins')
+import { ConfigPlugin, withAndroidManifest } from '@expo/config-plugins'
 
-const withRemovePermissions = (config) => {
+const withRemovePermissions: ConfigPlugin = (config) => {
     return withAndroidManifest(config, (config) => {
         const manifest = config.modResults.manifest
         const permissions = manifest['uses-permission'] ?? []
@@ -21,9 +21,6 @@ const withRemovePermissions = (config) => {
             )
 
             // Add tools namespace to manifest element to allow tools:node="remove"
-            if (!manifest.$) {
-                manifest.$ = {}
-            }
             manifest.$['xmlns:tools'] = 'http://schemas.android.com/tools'
         }
 
@@ -55,4 +52,4 @@ const withRemovePermissions = (config) => {
     })
 }
 
-module.exports = withRemovePermissions
+export default withRemovePermissions
