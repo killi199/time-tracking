@@ -51,6 +51,7 @@
         "expo-router": "~56.2.11",
         "expo-sharing": "~56.0.18",
         "expo-sqlite": "~56.0.5",
+        "expo-status-bar": "~56.0.4",
         "expo-system-ui": "~56.0.5",
         "expo-task-manager": "~56.0.19",
         "i18next": "26.3.1",

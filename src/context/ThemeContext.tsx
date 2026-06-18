@@ -13,6 +13,7 @@ import {
     Provider as PaperProvider,
 } from 'react-native-paper'
 import { getMaterialColors } from '@expo/ui/jetpack-compose'
+import { StatusBar } from 'expo-status-bar'
 import { getSetting, setSetting } from '../db/database'
 
 export type ThemeMode = 'auto' | 'light' | 'dark'
@@ -53,11 +54,11 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         setSetting('themeMode', mode)
     }
 
-    const paperTheme = (() => {
-        const isDark =
-            themeMode === 'dark' ||
-            (themeMode === 'auto' && systemColorScheme === 'dark')
+    const isDark =
+        themeMode === 'dark' ||
+        (themeMode === 'auto' && systemColorScheme === 'dark')
 
+    const paperTheme = (() => {
         const baseTheme = isDark ? MD3DarkTheme : MD3LightTheme
 
         if (Platform.OS !== 'android') {
@@ -124,7 +125,10 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 
     return (
         <ThemeContext value={{ themeMode, setThemeMode: handleSetTheme }}>
-            <PaperProvider theme={paperTheme}>{children}</PaperProvider>
+            <PaperProvider theme={paperTheme}>
+                <StatusBar style={isDark ? 'light' : 'dark'} />
+                {children}
+            </PaperProvider>
         </ThemeContext>
     )
 }
