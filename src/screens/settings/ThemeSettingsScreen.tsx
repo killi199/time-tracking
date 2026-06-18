@@ -9,7 +9,7 @@ export default function ThemeSettingsScreen() {
 
     return (
         <View style={styles.container}>
-            <List.Section title={t('settings.theme')}>
+            <List.Section>
                 <RadioButton.Group
                     onValueChange={(value) => {
                         setThemeMode(value as ThemeMode)
@@ -23,6 +23,7 @@ export default function ThemeSettingsScreen() {
                         onPress={() => {
                             setThemeMode('auto')
                         }}
+                        style={styles.listItem}
                     />
                     <List.Item
                         title={t('settings.light')}
@@ -31,6 +32,7 @@ export default function ThemeSettingsScreen() {
                         onPress={() => {
                             setThemeMode('light')
                         }}
+                        style={styles.listItem}
                     />
                     <List.Item
                         title={t('settings.dark')}
@@ -39,6 +41,7 @@ export default function ThemeSettingsScreen() {
                         onPress={() => {
                             setThemeMode('dark')
                         }}
+                        style={styles.listItem}
                     />
                 </RadioButton.Group>
             </List.Section>
@@ -49,6 +52,8 @@ export default function ThemeSettingsScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingLeft: 16,
+    },
+    listItem: {
+        paddingHorizontal: 16,
     },
 })

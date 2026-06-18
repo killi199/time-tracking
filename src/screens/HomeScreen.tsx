@@ -1,11 +1,4 @@
-import {
-    useState,
-    useCallback,
-    useEffect,
-    useRef,
-    useLayoutEffect,
-    useMemo,
-} from 'react'
+import { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import {
     View,
     StyleSheet,
@@ -26,11 +19,7 @@ import {
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { scheduleOnRN } from 'react-native-worklets'
 import AdaptiveDateTimePicker from '../components/AdaptiveDateTimePicker'
-import {
-    useFocusEffect,
-    NavigationProp,
-    RouteProp,
-} from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from 'expo-router'
 import { addEvent, updateEvent, deleteEvent } from '../db/database'
 import { TimeEvent } from '../types'
 import { useTranslation } from 'react-i18next'
@@ -53,24 +42,22 @@ const getWeekRangeData = (dateStr: string) => {
     first.setDate(curr.getDate() - diffToMonday)
     const last = new Date(first)
     last.setDate(first.getDate() + 6)
-    return { start: first, end: last }
+    return {
+        start: first,
+        end: last,
+    }
 }
 
-type HomeRouteParams = {
-    viewMode?: 'day' | 'week' | 'month'
-}
-
-type LocalParamList = {
-    [key: string]: HomeRouteParams | undefined
-}
+type ViewMode = 'day' | 'week' | 'month'
 
 interface HomeScreenProps {
-    readonly navigation: NavigationProp<LocalParamList>
-    readonly route: RouteProp<LocalParamList, string>
+    readonly viewMode: ViewMode
 }
 
-export default function HomeScreen({ navigation, route }: HomeScreenProps) {
-    const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day')
+export default function HomeScreen({
+    viewMode: initialViewMode,
+}: HomeScreenProps) {
+    const viewMode = initialViewMode
     const [currentDate, setCurrentDate] = useState<string>(
         getFormattedDate(new Date()),
     )
@@ -107,7 +94,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
             'change',
             (nextAppState) => {
                 if (
-                    appState.current.match(/inactive|background/) &&
+                    /inactive|background/.exec(appState.current) &&
                     nextAppState === 'active'
                 ) {
                     const now = new Date()
@@ -143,27 +130,12 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
         }
     }, [currentDate, currentMonth])
 
-    useFocusEffect(
-        useCallback(() => {
-            if (route.params?.viewMode) {
-                setViewMode(route.params.viewMode)
-                // Reset params to avoid stuck state
-                navigation.setParams({ viewMode: undefined })
-            }
-            // Trigger a refresh when screen comes into focus
-            setRefreshTrigger((prev) => prev + 1)
-        }, [route.params, navigation]),
-    )
+    const navigation = useNavigation()
 
-    useEffect(() => {
-        let title = t('home.day')
-        if (viewMode === 'month') title = t('home.month')
-        if (viewMode === 'week') title = t('home.week')
-
-        navigation.setOptions({
-            title,
-        })
-    }, [navigation, viewMode, t])
+    useFocusEffect(() => {
+        // Trigger a refresh when screen comes into focus
+        setRefreshTrigger((prev) => prev + 1)
+    })
 
     const changeDate = (step: number) => {
         if (viewMode === 'month') {
@@ -187,7 +159,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
         setCurrentMonth(getFormattedMonth(now))
     }
 
-    const formattedDate = useMemo(() => {
+    const formattedDate = (() => {
         if (viewMode === 'month') {
             const [y, m] = currentMonth.split('-').map(Number)
             return new Date(y, m - 1, 1).toLocaleDateString(i18n.language, {
@@ -214,38 +186,43 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
                 day: 'numeric',
             })
         }
-    }, [viewMode, currentDate, currentMonth, i18n.language])
+    })()
 
     const activeItemCloseCallback = useRef<(() => void) | undefined>(undefined)
 
-    const showAddDialog = useCallback(() => {
-        setEditingEvent(null)
-        setDialogDate(currentDate)
-        setDialogTime(getFormattedTime(new Date()))
-        setDialogNote('')
-        setDialogIsLateEntry(true)
-        setVisible(true)
-    }, [currentDate])
+    const showAddDialogRef = useRef<() => void>(() => {})
+    useLayoutEffect(() => {
+        showAddDialogRef.current = () => {
+            setEditingEvent(null)
+            setDialogDate(currentDate)
+            setDialogTime(getFormattedTime(new Date()))
+            setDialogNote('')
+            setDialogIsLateEntry(true)
+            setVisible(true)
+        }
+    })
 
     useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (
-                <IconButton icon="plus" onPress={showAddDialog} />
+                <IconButton
+                    icon="plus"
+                    onPress={() => {
+                        showAddDialogRef.current()
+                    }}
+                />
             ),
         })
-    }, [navigation, showAddDialog])
+    }, [navigation])
 
-    const showEditDialog = useCallback(
-        (item: TimeEvent, close?: () => void) => {
-            setDialogTime(item.time)
-            setDialogNote(item.note || '')
-            setDialogIsLateEntry(item.isManualEntry ?? false)
-            setEditingEvent(item)
-            activeItemCloseCallback.current = close
-            setVisible(true)
-        },
-        [],
-    )
+    const showEditDialog = (item: TimeEvent, close?: () => void) => {
+        setDialogTime(item.time)
+        setDialogNote(item.note || '')
+        setDialogIsLateEntry(item.isManualEntry ?? false)
+        setEditingEvent(item)
+        activeItemCloseCallback.current = close
+        setVisible(true)
+    }
 
     const hideDialog = () => {
         setVisible(false)
@@ -288,42 +265,39 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
         }
     }
 
-    const onDismissTimePicker = useCallback(() => {
+    const onDismissTimePicker = () => {
         setTimePickerVisible(false)
-    }, [setTimePickerVisible])
+    }
 
-    const onConfirmTimePicker = useCallback(
-        ({ hours, minutes }: { hours: number; minutes: number }) => {
-            setTimePickerVisible(false)
-            const h = hours.toString().padStart(2, '0')
-            const m = minutes.toString().padStart(2, '0')
-            setDialogTime(`${h}:${m}`)
-        },
-        [setTimePickerVisible, setDialogTime],
-    )
+    const onConfirmTimePicker = ({
+        hours,
+        minutes,
+    }: {
+        hours: number
+        minutes: number
+    }) => {
+        setTimePickerVisible(false)
+        const h = hours.toString().padStart(2, '0')
+        const m = minutes.toString().padStart(2, '0')
+        setDialogTime(`${h}:${m}`)
+    }
 
-    const onDismissCreateDatePicker = useCallback(() => {
+    const onDismissCreateDatePicker = () => {
         setCreateDatePickerVisible(false)
-    }, [setCreateDatePickerVisible])
+    }
 
-    const onConfirmCreateDatePicker = useCallback(
-        (params: { date: Date | undefined }) => {
-            setCreateDatePickerVisible(false)
-            if (params.date) {
-                setDialogDate(getFormattedDate(params.date))
-            }
-        },
-        [setCreateDatePickerVisible, setDialogDate],
-    )
+    const onConfirmCreateDatePicker = (params: { date: Date | undefined }) => {
+        setCreateDatePickerVisible(false)
+        if (params.date) {
+            setDialogDate(getFormattedDate(params.date))
+        }
+    }
 
-    const showDeleteDialog = useCallback(
-        (item: TimeEvent, close?: () => void) => {
-            setItemToDelete(item)
-            activeItemCloseCallback.current = close
-            setDeleteDialogVisible(true)
-        },
-        [],
-    )
+    const showDeleteDialog = (item: TimeEvent, close?: () => void) => {
+        setItemToDelete(item)
+        activeItemCloseCallback.current = close
+        setDeleteDialogVisible(true)
+    }
 
     const confirmDelete = () => {
         if (!itemToDelete) return
@@ -346,7 +320,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
         }
     }
 
-    const showBackToNowCalculated = useMemo(() => {
+    const showBackToNowCalculated = (() => {
         const today = new Date()
         const todayStr = getFormattedDate(today)
         const currentMonthStr = getFormattedMonth(today)
@@ -366,7 +340,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
         } else {
             return currentDate !== todayStr
         }
-    }, [viewMode, currentDate, currentMonth])
+    })()
 
     const handleAddEvent = () => {
         const now = new Date()
@@ -378,29 +352,26 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
     // Date Picker State
     const [datePickerVisible, setDatePickerVisible] = useState(false)
 
-    const onDismissDatePicker = useCallback(() => {
+    const onDismissDatePicker = () => {
         setDatePickerVisible(false)
-    }, [setDatePickerVisible])
+    }
 
-    const onConfirmDatePicker = useCallback(
-        (params: { date: Date | undefined }) => {
-            setDatePickerVisible(false)
-            if (params.date) {
-                if (viewMode === 'month') {
-                    // Update month
-                    const newMonth = getFormattedMonth(params.date)
-                    setCurrentMonth(newMonth)
-                } else {
-                    // Update date
-                    const newDate = getFormattedDate(params.date)
-                    setCurrentDate(newDate)
-                }
+    const onConfirmDatePicker = (params: { date: Date | undefined }) => {
+        setDatePickerVisible(false)
+        if (params.date) {
+            if (viewMode === 'month') {
+                // Update month
+                const newMonth = getFormattedMonth(params.date)
+                setCurrentMonth(newMonth)
+            } else {
+                // Update date
+                const newDate = getFormattedDate(params.date)
+                setCurrentDate(newDate)
             }
-        },
-        [setDatePickerVisible, viewMode, setCurrentMonth, setCurrentDate],
-    )
+        }
+    }
 
-    const dateForPicker = useMemo(() => {
+    const dateForPicker = (() => {
         if (viewMode === 'month') {
             const [y, m] = currentMonth.split('-').map(Number)
             return new Date(y, m - 1, 1)
@@ -408,7 +379,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
             const [y, m, d] = currentDate.split('-').map(Number)
             return new Date(y, m - 1, d)
         }
-    }, [viewMode, currentMonth, currentDate])
+    })()
 
     // Ensure the date is valid (fallback to now if invalid)
     const validDateForPicker = isNaN(dateForPicker.getTime())
@@ -581,7 +552,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
                             : t('addEntry.addTitle')}
                     </Dialog.Title>
                     <Dialog.Content>
-                        {!editingEvent && (
+                        {!editingEvent ? (
                             <TouchableOpacity
                                 onPress={() => {
                                     Keyboard.dismiss()
@@ -604,7 +575,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
                                     />
                                 </View>
                             </TouchableOpacity>
-                        )}
+                        ) : null}
                         <TouchableOpacity
                             onPress={() => {
                                 Keyboard.dismiss()

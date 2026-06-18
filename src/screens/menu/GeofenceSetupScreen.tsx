@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import {
     View,
     StyleSheet,
@@ -321,10 +321,9 @@ export default function GeofenceSetupScreen() {
         }
     }
 
-    const circleGeoJSON = useMemo(() => {
-        if (!marker) return null
-        return createGeoJSONCircle([marker.longitude, marker.latitude], radius)
-    }, [marker, radius])
+    const circleGeoJSON = marker
+        ? createGeoJSONCircle([marker.longitude, marker.latitude], radius)
+        : null
 
     if (loading) {
         return (
@@ -362,7 +361,7 @@ export default function GeofenceSetupScreen() {
 
                 <UserLocation />
 
-                {marker && (
+                {marker ? (
                     <Marker
                         id="selected-location"
                         lngLat={[marker.longitude, marker.latitude]}
@@ -383,9 +382,9 @@ export default function GeofenceSetupScreen() {
                             />
                         </View>
                     </Marker>
-                )}
+                ) : null}
 
-                {marker && circleGeoJSON && (
+                {marker && circleGeoJSON ? (
                     <GeoJSONSource
                         id="geofence-circle-source"
                         data={circleGeoJSON}
@@ -406,7 +405,7 @@ export default function GeofenceSetupScreen() {
                             }}
                         />
                     </GeoJSONSource>
-                )}
+                ) : null}
             </Map>
 
             <View style={styles.attributionContainer}>
@@ -450,7 +449,7 @@ export default function GeofenceSetupScreen() {
                 loading={isLocating || !currentPosition}
             />
 
-            {marker && (
+            {marker ? (
                 <FAB
                     icon="map-marker"
                     style={[
@@ -462,7 +461,7 @@ export default function GeofenceSetupScreen() {
                     ]}
                     onPress={centerMapOnMarker}
                 />
-            )}
+            ) : null}
 
             <View
                 style={[
@@ -496,11 +495,11 @@ export default function GeofenceSetupScreen() {
                     maximumTrackTintColor={theme.colors.onSurfaceDisabled}
                 />
 
-                {!marker && (
+                {!marker ? (
                     <HelperText type="info" visible={true}>
                         {t('geofence.instruction')}
                     </HelperText>
-                )}
+                ) : null}
             </View>
             <Portal>
                 <Dialog visible={dialogVisible} onDismiss={hideDialog}>

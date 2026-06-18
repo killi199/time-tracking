@@ -1,0 +1,11 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "moduleSuffixes": [".foss", ""]
+    },
+    "exclude": [
+        "node_modules",
+        "src/screens/menu/GeofenceSetupScreen.tsx",
+        "src/services/LocationTask.ts"
+    ]
+}

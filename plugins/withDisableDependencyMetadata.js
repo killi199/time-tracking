@@ -1,6 +1,3 @@
-/* eslint-disable no-undef */
-/* eslint-disable @typescript-eslint/no-require-imports */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 const { withAppBuildGradle } = require('@expo/config-plugins')
 
 const withDisableDependencyMetadata = (config) => {

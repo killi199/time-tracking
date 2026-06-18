@@ -1,11 +1,18 @@
-import { createContext, useState, useContext, ReactNode } from 'react'
+import {
+    createContext,
+    useState,
+    useContext,
+    ReactNode,
+    useEffect,
+} from 'react'
+import * as SystemUI from 'expo-system-ui'
 import { useColorScheme, Platform } from 'react-native'
 import {
     MD3LightTheme,
     MD3DarkTheme,
     Provider as PaperProvider,
 } from 'react-native-paper'
-import { Color } from 'expo-router'
+import { getMaterialColors } from '@expo/ui/jetpack-compose'
 import { getSetting, setSetting } from '../db/database'
 
 export type ThemeMode = 'auto' | 'light' | 'dark'
@@ -53,66 +60,67 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 
         const baseTheme = isDark ? MD3DarkTheme : MD3LightTheme
 
-        let customColors = {}
-        const isAppThemeMatchingSystem =
-            themeMode === 'auto' ||
-            (themeMode === 'dark' && systemColorScheme === 'dark') ||
-            (themeMode === 'light' && systemColorScheme !== 'dark')
-
-        if (Platform.OS === 'android' && isAppThemeMatchingSystem) {
-            customColors = {
-                primary: Color.android.dynamic.primary,
-                onPrimary: Color.android.dynamic.onPrimary,
-                primaryContainer: Color.android.dynamic.primaryContainer,
-                onPrimaryContainer: Color.android.dynamic.onPrimaryContainer,
-                secondary: Color.android.dynamic.secondary,
-                onSecondary: Color.android.dynamic.onSecondary,
-                secondaryContainer: Color.android.dynamic.secondaryContainer,
-                onSecondaryContainer:
-                    Color.android.dynamic.onSecondaryContainer,
-                tertiary: Color.android.dynamic.tertiary,
-                onTertiary: Color.android.dynamic.onTertiary,
-                tertiaryContainer: Color.android.dynamic.tertiaryContainer,
-                onTertiaryContainer: Color.android.dynamic.onTertiaryContainer,
-                error: Color.android.dynamic.error,
-                onError: Color.android.dynamic.onError,
-                errorContainer: Color.android.dynamic.errorContainer,
-                onErrorContainer: Color.android.dynamic.onErrorContainer,
-                outline: Color.android.dynamic.outline,
-                outlineVariant: Color.android.dynamic.outlineVariant,
-                shadow: Color.android.dynamic.shadow,
-                scrim: Color.android.dynamic.scrim,
-                inversePrimary: Color.android.dynamic.inversePrimary,
-                background: Color.android.dynamic.background,
-                onBackground: Color.android.dynamic.onBackground,
-                surface: Color.android.dynamic.surface,
-                onSurface: Color.android.dynamic.onSurface,
-                surfaceVariant: Color.android.dynamic.surfaceVariant,
-                onSurfaceVariant: Color.android.dynamic.onSurfaceVariant,
-                inverseSurface: Color.android.dynamic.surfaceInverse,
-                inverseOnSurface: Color.android.dynamic.onSurfaceInverse,
-                surfaceDisabled: Color.android.dynamic.surfaceVariant, // Fallback
-                onSurfaceDisabled: Color.android.dynamic.onSurfaceVariant, // Fallback
-                backdrop: Color.android.dynamic.scrim,
-                elevation: {
-                    level0: 'transparent',
-                    level1: Color.android.dynamic.surfaceContainerLow,
-                    level2: Color.android.dynamic.surfaceContainer,
-                    level3: Color.android.dynamic.surfaceContainerHigh,
-                    level4: Color.android.dynamic.surfaceContainerHighest,
-                    level5: Color.android.dynamic.surfaceContainerHighest,
-                },
-            }
+        if (Platform.OS !== 'android') {
+            return baseTheme
         }
+
+        // On Android, always apply Material You / M3 dynamic colors, passing
+        // the resolved scheme so the correct tonal palette is returned even
+        // when the user has overridden the system appearance in-app.
+        const m3 = getMaterialColors({ scheme: isDark ? 'dark' : 'light' })
 
         return {
             ...baseTheme,
             colors: {
                 ...baseTheme.colors,
-                ...customColors,
+                primary: m3.primary,
+                onPrimary: m3.onPrimary,
+                primaryContainer: m3.primaryContainer,
+                onPrimaryContainer: m3.onPrimaryContainer,
+                secondary: m3.secondary,
+                onSecondary: m3.onSecondary,
+                secondaryContainer: m3.secondaryContainer,
+                onSecondaryContainer: m3.onSecondaryContainer,
+                tertiary: m3.tertiary,
+                onTertiary: m3.onTertiary,
+                tertiaryContainer: m3.tertiaryContainer,
+                onTertiaryContainer: m3.onTertiaryContainer,
+                error: m3.error,
+                onError: m3.onError,
+                errorContainer: m3.errorContainer,
+                onErrorContainer: m3.onErrorContainer,
+                outline: m3.outline,
+                outlineVariant: m3.outlineVariant,
+                shadow: m3.scrim,
+                scrim: m3.scrim,
+                inversePrimary: m3.inversePrimary,
+                background: m3.background,
+                onBackground: m3.onBackground,
+                surface: m3.surface,
+                onSurface: m3.onSurface,
+                surfaceVariant: m3.surfaceVariant,
+                onSurfaceVariant: m3.onSurfaceVariant,
+                inverseSurface: m3.inverseSurface,
+                inverseOnSurface: m3.inverseOnSurface,
+                elevation: {
+                    level0: 'transparent',
+                    level1: m3.surfaceContainerLow,
+                    level2: m3.surfaceContainer,
+                    level3: m3.surfaceContainerHigh,
+                    level4: m3.surfaceContainerHighest,
+                    level5: m3.surfaceContainerHighest,
+                },
             },
         }
     })()
+
+    useEffect(() => {
+        SystemUI.setBackgroundColorAsync(paperTheme.colors.background).catch(
+            (err: unknown) => {
+                console.error('Failed to set SystemUI background color:', err)
+            },
+        )
+    }, [paperTheme.colors.background])
 
     return (
         <ThemeContext value={{ themeMode, setThemeMode: handleSetTheme }}>

@@ -25,22 +25,26 @@ jobs:
               with:
                   variant: ${{ matrix.variant }}
 
-            - name: Typecheck
+            - name: Prettier
               if: matrix.variant == 'default'
-              run: yarn typecheck
+              run: npx prettier . --check
+
+            - name: Yarn Dedupe Check
+              if: matrix.variant == 'default'
+              run: yarn dedupe --check
 
             - name: Lint
               if: matrix.variant == 'default'
               run: yarn lint
 
-            - name: Prettier
-              if: matrix.variant == 'default'
-              run: npx prettier . --check
-
-            - name: Build
-              run: yarn expo export
+            - name: Typecheck
+              run: yarn typecheck
               env:
                   EXPO_PUBLIC_FOSS_BUILD: ${{ matrix.variant == 'default' && 'false' || 'true' }}
+
+            - name: Expo Doctor
+              if: matrix.variant == 'default'
+              run: npx expo-doctor
 
             - name: Test
               if: matrix.variant == 'default'
@@ -59,10 +63,7 @@ jobs:
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
 
-            - name: Expo Doctor
-              if: matrix.variant == 'default'
-              run: npx expo-doctor
-
-            - name: Yarn Dedupe Check
-              if: matrix.variant == 'default'
-              run: yarn dedupe --check
+            - name: Build
+              run: yarn expo export
+              env:
+                  EXPO_PUBLIC_FOSS_BUILD: ${{ matrix.variant == 'default' && 'false' || 'true' }}

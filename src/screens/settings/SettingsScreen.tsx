@@ -1,14 +1,11 @@
 import { View, StyleSheet } from 'react-native'
 import { List } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
-import { NavigationProp, ParamListBase } from '@react-navigation/native'
+import { useRouter } from 'expo-router'
 
-export interface SettingsScreenProps {
-    readonly navigation: NavigationProp<ParamListBase>
-}
-
-export default function SettingsScreen({ navigation }: SettingsScreenProps) {
+export default function SettingsScreen() {
     const { t } = useTranslation()
+    const router = useRouter()
 
     return (
         <View style={styles.container}>
@@ -18,16 +15,18 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
                     left={() => <List.Icon icon="brightness-6" />}
                     right={() => <List.Icon icon="chevron-right" />}
                     onPress={() => {
-                        navigation.navigate('ThemeSettings')
+                        router.push('/theme-settings')
                     }}
+                    style={styles.listItem}
                 />
                 <List.Item
                     title={t('settings.language')}
                     left={() => <List.Icon icon="translate" />}
                     right={() => <List.Icon icon="chevron-right" />}
                     onPress={() => {
-                        navigation.navigate('LanguageSettings')
+                        router.push('/language-settings')
                     }}
+                    style={styles.listItem}
                 />
             </List.Section>
         </View>
@@ -37,6 +36,8 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingLeft: 16,
+    },
+    listItem: {
+        paddingHorizontal: 16,
     },
 })

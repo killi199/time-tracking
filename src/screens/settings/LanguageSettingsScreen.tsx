@@ -27,7 +27,7 @@ export default function LanguageSettingsScreen() {
 
     return (
         <View style={styles.container}>
-            <List.Section title={t('settings.language')}>
+            <List.Section>
                 <RadioButton.Group
                     onValueChange={handleLanguageChange}
                     value={language}
@@ -39,6 +39,7 @@ export default function LanguageSettingsScreen() {
                         onPress={() => {
                             handleLanguageChange('auto')
                         }}
+                        style={styles.listItem}
                     />
                     <List.Item
                         title={t('settings.english')}
@@ -47,6 +48,7 @@ export default function LanguageSettingsScreen() {
                         onPress={() => {
                             handleLanguageChange('en')
                         }}
+                        style={styles.listItem}
                     />
                     <List.Item
                         title={t('settings.german')}
@@ -55,6 +57,7 @@ export default function LanguageSettingsScreen() {
                         onPress={() => {
                             handleLanguageChange('de')
                         }}
+                        style={styles.listItem}
                     />
                 </RadioButton.Group>
             </List.Section>
@@ -65,6 +68,8 @@ export default function LanguageSettingsScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingLeft: 16,
+    },
+    listItem: {
+        paddingHorizontal: 16,
     },
 })
