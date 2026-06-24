@@ -11,8 +11,9 @@
         "android:release-foss": "cross-env EXPO_PUBLIC_FOSS_BUILD=true expo run:android --variant=release",
         "ios": "expo run:ios --variant=debug",
         "ios:release": "expo run:ios --variant=release",
-        "typecheck": "node scripts/typecheck.js",
-        "lint": "eslint src",
+        "typecheck": "tsc --noEmit",
+        "typecheck:foss": "tsc -p tsconfig.foss.json --noEmit",
+        "lint": "eslint .",
         "test": "vitest",
         "generate-licenses": "yarn dlx license-checker-rseidelsohn --production --json --out src/licenses.json"
     },
