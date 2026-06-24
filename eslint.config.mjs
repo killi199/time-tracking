@@ -6,14 +6,32 @@ import tseslint from 'typescript-eslint'
 import eslintConfigPrettier from 'eslint-config-prettier/flat'
 import sonarjs from 'eslint-plugin-sonarjs'
 import vitest from '@vitest/eslint-plugin'
+import globals from 'globals'
 
 export default defineConfig(
+    {
+        ignores: [
+            '.expo/**',
+            'dist/**',
+            'web-build/**',
+            'android/**',
+            'ios/**',
+            'coverage/**',
+            '.yarn/**',
+            'node_modules/**',
+        ],
+    },
     eslint.configs.recommended,
-    tseslint.configs.strictTypeChecked,
+    ...tseslint.configs.strictTypeChecked.map((config) => ({
+        ...config,
+        files: config.files ?? ['**/*.ts', '**/*.tsx'],
+    })),
     {
         languageOptions: {
             parserOptions: {
-                projectService: true,
+                projectService: {
+                    allowDefaultProject: ['*.js', '*.mjs'],
+                },
             },
         },
     },
@@ -35,6 +53,14 @@ export default defineConfig(
         files: ['**/*.{ts,tsx}'],
         rules: {
             'react/prop-types': 'off',
+        },
+    },
+    {
+        files: ['*.js', '*.mjs', 'plugins/**/*.ts'],
+        languageOptions: {
+            globals: {
+                ...globals.node,
+            },
         },
     },
 )

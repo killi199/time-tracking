@@ -38,9 +38,7 @@ jobs:
               run: yarn lint
 
             - name: Typecheck
-              run: yarn typecheck
-              env:
-                  EXPO_PUBLIC_FOSS_BUILD: ${{ matrix.variant == 'default' && 'false' || 'true' }}
+              run: ${{ matrix.variant == 'default' && 'yarn typecheck' || 'yarn typecheck:foss' }}
 
             - name: Expo Doctor
               if: matrix.variant == 'default'
