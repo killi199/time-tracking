@@ -1,4 +1,3 @@
-
 export interface TimeEvent {
     id: number
     date: string

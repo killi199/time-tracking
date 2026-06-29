@@ -10,7 +10,6 @@ export default function SettingsScreen() {
     return (
         <View style={styles.container}>
             <List.Section>
-
                 <List.Item
                     title={t('settings.language')}
                     left={() => <List.Icon icon="translate" />}
