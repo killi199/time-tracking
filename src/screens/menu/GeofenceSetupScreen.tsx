@@ -86,6 +86,7 @@ export default function GeofenceSetupScreen() {
     const theme = useTheme()
     const { t } = useTranslation()
     const [isEnabled, setIsEnabled] = useState(false)
+    const [mapLoaded, setMapLoaded] = useState(false)
 
     // Map state
     const [centerCoordinate, setCenterCoordinate] = useState<number[]>(
@@ -337,12 +338,15 @@ export default function GeofenceSetupScreen() {
         <View style={styles.container}>
             <Map
                 ref={mapRef}
-                style={styles.map}
+                style={[styles.map, { opacity: mapLoaded ? 1 : 0 }]}
                 mapStyle={
                     theme.dark
                         ? 'https://tiles.openfreemap.org/styles/dark'
                         : 'https://tiles.openfreemap.org/styles/bright'
                 }
+                onDidFinishLoadingStyle={() => {
+                    setMapLoaded(true)
+                }}
                 onLongPress={onMapLongPress}
                 logo={false}
                 attribution={false}
