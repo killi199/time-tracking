@@ -5,12 +5,12 @@ import { Stack, ThemeProvider as NavThemeProvider } from 'expo-router'
 import { useTheme } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
 
-import { ThemeProvider } from '../src/context/ThemeProvider'
-import { initDatabase } from '../src/db/database'
-import initI18n from '../src/i18n/i18n'
-import { initNfcService } from '../src/services/NFCService'
-import { initQuickActions } from '../src/services/QuickActionService'
-import '../src/services/LocationTask'
+import { ThemeProvider } from '../context/ThemeProvider'
+import { initDatabase } from '../db/database'
+import initI18n from '../i18n/i18n'
+import { initNfcService } from '../services/NFCService'
+import { initQuickActions } from '../services/QuickActionService'
+import '../services/LocationTask'
 
 /**
  * Renders the root Stack with the navigation theme derived from the current

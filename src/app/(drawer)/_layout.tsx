@@ -1,7 +1,7 @@
 import { Drawer } from 'expo-router/drawer'
 import { useTheme } from 'react-native-paper'
 
-import MenuDrawerContent from '../../src/components/MenuDrawerContent'
+import MenuDrawerContent from '../../components/MenuDrawerContent'
 
 export default function DrawerLayout() {
     const paperTheme = useTheme()

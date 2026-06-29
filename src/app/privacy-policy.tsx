@@ -1,4 +1,4 @@
-import PrivacyPolicyScreen from '../src/screens/menu/PrivacyPolicyScreen'
+import PrivacyPolicyScreen from '../screens/menu/PrivacyPolicyScreen'
 
 export default function PrivacyPolicyRoute() {
     return <PrivacyPolicyScreen />

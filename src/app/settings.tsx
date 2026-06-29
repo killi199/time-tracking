@@ -1,4 +1,4 @@
-import SettingsScreen from '../src/screens/settings/SettingsScreen'
+import SettingsScreen from '../screens/settings/SettingsScreen'
 
 export default function SettingsRoute() {
     return <SettingsScreen />
