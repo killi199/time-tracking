@@ -4,7 +4,7 @@ import { getFormattedTime, getFormattedDate } from '../utils/time'
 import i18next from 'i18next'
 
 const handleUrl = (url: string | null) => {
-    if (url && url.includes('timetracking')) {
+    if (url && url.includes('timetracking://nfc')) {
         try {
             const today = getFormattedDate(new Date())
             const events = getTodayEvents(today)
