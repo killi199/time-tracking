@@ -37,3 +37,6 @@ licenses.json
 
 # Coverage
 coverage/
+
+# Android Studio
+.idea/
