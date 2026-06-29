@@ -10,15 +10,7 @@ export default function SettingsScreen() {
     return (
         <View style={styles.container}>
             <List.Section>
-                <List.Item
-                    title={t('settings.theme')}
-                    left={() => <List.Icon icon="brightness-6" />}
-                    right={() => <List.Icon icon="chevron-right" />}
-                    onPress={() => {
-                        router.push('/theme-settings')
-                    }}
-                    style={styles.listItem}
-                />
+
                 <List.Item
                     title={t('settings.language')}
                     left={() => <List.Icon icon="translate" />}

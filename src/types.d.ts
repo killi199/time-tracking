@@ -25,7 +25,3 @@ export interface ProcessedTimeEvent extends TimeEvent {
     showDateHeader?: boolean
     separatorData?: SeparatorData
 }
-
-export interface Settings {
-    theme: 'auto' | 'light' | 'dark'
-}

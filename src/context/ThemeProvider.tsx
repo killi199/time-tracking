@@ -1,10 +1,4 @@
-import {
-    createContext,
-    useState,
-    useContext,
-    ReactNode,
-    useEffect,
-} from 'react'
+import { ReactNode, useEffect } from 'react'
 import * as SystemUI from 'expo-system-ui'
 import { useColorScheme, Platform } from 'react-native'
 import {
@@ -14,49 +8,9 @@ import {
 } from 'react-native-paper'
 import { getMaterialColors } from '@expo/ui/jetpack-compose'
 import { StatusBar } from 'expo-status-bar'
-import { getSetting, setSetting } from '../db/database'
-
-export type ThemeMode = 'auto' | 'light' | 'dark'
-
-interface ThemeContextType {
-    themeMode: ThemeMode
-    setThemeMode: (mode: ThemeMode) => void
-}
-
-const ThemeContext = createContext<ThemeContextType>({
-    themeMode: 'auto',
-    setThemeMode: () => {},
-})
-
-export const useAppTheme = () => useContext(ThemeContext)
-
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     const systemColorScheme = useColorScheme()
-    const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
-        try {
-            const savedTheme = getSetting('themeMode')
-            if (
-                savedTheme &&
-                (savedTheme === 'auto' ||
-                    savedTheme === 'light' ||
-                    savedTheme === 'dark')
-            ) {
-                return savedTheme
-            }
-        } catch (e) {
-            console.error('Failed to load theme setting', e)
-        }
-        return 'auto'
-    })
-
-    const handleSetTheme = (mode: ThemeMode) => {
-        setThemeMode(mode)
-        setSetting('themeMode', mode)
-    }
-
-    const isDark =
-        themeMode === 'dark' ||
-        (themeMode === 'auto' && systemColorScheme === 'dark')
+    const isDark = systemColorScheme === 'dark'
 
     const paperTheme = (() => {
         const baseTheme = isDark ? MD3DarkTheme : MD3LightTheme
@@ -66,8 +20,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         }
 
         // On Android, always apply Material You / M3 dynamic colors, passing
-        // the resolved scheme so the correct tonal palette is returned even
-        // when the user has overridden the system appearance in-app.
+        // the resolved system scheme so the correct tonal palette is returned.
         const m3 = getMaterialColors({ scheme: isDark ? 'dark' : 'light' })
 
         return {
@@ -124,11 +77,9 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     }, [paperTheme.colors.background])
 
     return (
-        <ThemeContext value={{ themeMode, setThemeMode: handleSetTheme }}>
-            <PaperProvider theme={paperTheme}>
-                <StatusBar style={isDark ? 'light' : 'dark'} />
-                {children}
-            </PaperProvider>
-        </ThemeContext>
+        <PaperProvider theme={paperTheme}>
+            <StatusBar style={isDark ? 'light' : 'dark'} />
+            {children}
+        </PaperProvider>
     )
 }

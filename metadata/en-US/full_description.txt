@@ -17,7 +17,7 @@ Your data belongs to you.
 
 Adaptive UI Integration:
 A user interface that feels right at home on your device.
-- Dark & Light Mode: Seamlessly switches between light and dark themes based on your system settings or manual preference.
+- Dark & Light Mode: Seamlessly switches between light and dark themes based on your system settings.
 - Material You: Supports Android's dynamic color system, adapting the app's color palette to match your wallpaper and system theme for a personalized look.
 
 Multi-language Support:
