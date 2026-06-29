@@ -18,9 +18,9 @@ const isFOSS = process.env.EXPO_PUBLIC_FOSS_BUILD !== 'false'
 
 export default ({ config }: ConfigContext): CustomExpoConfig => {
     const plugins: (string | [string, object])[] = [
-        './plugins/withNfcIntent',
-        './plugins/withDisableDependencyMetadata',
-        './plugins/withRemovePermissions',
+        './src/plugins/withNfcIntent',
+        './src/plugins/withDisableDependencyMetadata',
+        './src/plugins/withRemovePermissions',
         'expo-sqlite',
         'expo-sharing',
         'expo-localization',
