@@ -5,7 +5,7 @@ import { Stack, ThemeProvider as NavThemeProvider } from 'expo-router'
 import { useTheme } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
 
-import { ThemeProvider } from '../src/context/ThemeContext'
+import { ThemeProvider } from '../src/context/ThemeProvider'
 import { initDatabase } from '../src/db/database'
 import initI18n from '../src/i18n/i18n'
 import { initNfcService } from '../src/services/NFCService'
@@ -60,10 +60,7 @@ function ThemedStack() {
                     name="settings"
                     options={{ title: t('settings.title') }}
                 />
-                <Stack.Screen
-                    name="theme-settings"
-                    options={{ title: t('settings.themeTitle') }}
-                />
+
                 <Stack.Screen
                     name="language-settings"
                     options={{ title: t('settings.languageTitle') }}
