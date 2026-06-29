@@ -82,6 +82,7 @@ This documentation provides guidelines for AI agents and developers working on t
     - `src/context`: React Context providers.
 - **Restrictions**:
     - **node_modules**: Agents are NOT allowed to edit anything in the `node_modules` folder.
+    - **Formatting**: After making changes to any file, agents MUST run `yarn format` or `yarn prettier --write <file>` to format the code according to the project's Prettier config. Never leave code unformatted.
 
 ## 4. Workflow for Agents
 
@@ -100,3 +101,4 @@ This documentation provides guidelines for AI agents and developers working on t
 - [ ] New translation keys added to `src/i18n/locales/*.ts`?
 - [ ] Styles use `theme.colors`?
 - [ ] No manual memoization (`useMemo`/`useCallback`/`React.memo`) introduced?
+- [ ] Did you run `yarn format` after your code changes?
