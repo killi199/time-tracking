@@ -14,6 +14,7 @@
         "typecheck": "tsc --noEmit",
         "typecheck:foss": "tsc -p tsconfig.foss.json --noEmit",
         "lint": "eslint .",
+        "format": "prettier --write .",
         "test": "vitest",
         "generate-licenses": "yarn dlx license-checker-rseidelsohn --production --json --out src/licenses.json"
     },
