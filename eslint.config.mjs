@@ -11,6 +11,7 @@ import globals from 'globals'
 export default defineConfig(
     {
         ignores: [
+            '.agents/**',
             '.expo/**',
             'dist/**',
             'web-build/**',
