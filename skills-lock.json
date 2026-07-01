@@ -5,7 +5,7 @@
             "source": "expo/skills",
             "sourceType": "github",
             "skillPath": "plugins/expo/skills/building-native-ui/SKILL.md",
-            "computedHash": "1c46c05dfcd276872f9660f7795d15f7253f0f0be31c009953ba6ff8b40b3e2b"
+            "computedHash": "cd399ab81b3aaf6b682f7c91adb34eaa27c892652b42ecd210890a1ec1151f7e"
         },
         "expo-examples": {
             "source": "expo/skills",
@@ -17,7 +17,7 @@
             "source": "expo/skills",
             "sourceType": "github",
             "skillPath": "plugins/expo/skills/expo-ui/SKILL.md",
-            "computedHash": "c2e69c9979a8f39b33c2d53fe4e3577fcf92d90788aef7f588563478f464cb93"
+            "computedHash": "39c617d5aff2e0123caa35c13991e2c6d33ea3dc154b432972fb6ecbc73c2434"
         },
         "modern-web-guidance": {
             "source": "GoogleChrome/modern-web-guidance",
