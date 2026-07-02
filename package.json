@@ -37,7 +37,7 @@
     "dependencies": {
         "@expo/log-box": "57.0.0",
         "@expo/ui": "~57.0.2",
-        "@maplibre/maplibre-react-native": "11.3.4",
+        "@maplibre/maplibre-react-native": "11.3.6",
         "@react-native-community/slider": "5.2.0",
         "@react-native-vector-icons/material-design-icons": "^13.1.2",
         "@react-native/metro-config": "0.86.0",
