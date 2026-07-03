@@ -1,5 +1,6 @@
 import * as SQLite from 'expo-sqlite'
 import { TimeEvent } from '../types'
+import { resolveDailyTarget, WorkHoursEntry } from '../utils/workHours'
 
 const db = SQLite.openDatabaseSync('time_tracking.db')
 
@@ -22,6 +23,70 @@ export const initDatabase = (): void => {
           value TEXT
         );
     `)
+
+    // Work Hours Table (effective-dated daily target history)
+    db.execSync(`
+        CREATE TABLE IF NOT EXISTS work_hours (
+          effective_date TEXT PRIMARY KEY,
+          daily_minutes INTEGER NOT NULL
+        );
+    `)
+}
+
+export const getWorkHoursHistory = (): WorkHoursEntry[] =>
+    db.getAllSync<WorkHoursEntry>(
+        'SELECT effective_date AS effectiveDate, daily_minutes AS dailyMinutes FROM work_hours ORDER BY effective_date ASC',
+    )
+
+/**
+ * Returns the daily work-hours target (in minutes) that is active on the given date.
+ *
+ * @param date - Date string in YYYY-MM-DD format. Use `getFormattedDate()` helper.
+ */
+export const getDailyTargetMinutes = (date: string): number =>
+    resolveDailyTarget(getWorkHoursHistory(), date)
+
+/**
+ * Sets the daily work-hours target from the given date onward.
+ * Setting it again with the same date replaces that entry.
+ *
+ * @param minutes - The daily target in minutes.
+ * @param effectiveDate - Date string in YYYY-MM-DD format. Use `getFormattedDate()` helper.
+ */
+export const setDailyTargetMinutes = (
+    minutes: number,
+    effectiveDate: string,
+): void => {
+    const statement = db.prepareSync(
+        'INSERT OR REPLACE INTO work_hours (effective_date, daily_minutes) VALUES ($date, $minutes)',
+    )
+    try {
+        statement.executeSync({ $date: effectiveDate, $minutes: minutes })
+    } finally {
+        statement.finalizeSync()
+    }
+}
+
+/**
+ * Imports work-hours history entries. Entries with an already existing
+ * effective date replace the stored one; all others are kept.
+ */
+export const importWorkHours = (entries: WorkHoursEntry[]): void => {
+    const statement = db.prepareSync(
+        'INSERT OR REPLACE INTO work_hours (effective_date, daily_minutes) VALUES ($date, $minutes)',
+    )
+    try {
+        db.withTransactionSync(() => {
+            entries.forEach((entry) => {
+                statement.executeSync({
+                    $date: entry.effectiveDate,
+                    $minutes: entry.dailyMinutes,
+                })
+            })
+        })
+    } finally {
+        statement.finalizeSync()
+    }
 }
 
 export const getSetting = (key: string): string | null => {
@@ -189,8 +254,12 @@ export const getOverallStats = (
         }
     })
 
-    // Calculate expected minutes (8 hours per worked day)
-    const expectedMinutes = workedDays.size * 8 * 60
+    // Calculate expected minutes (daily target per worked day)
+    const history = getWorkHoursHistory()
+    let expectedMinutes = 0
+    workedDays.forEach((date) => {
+        expectedMinutes += resolveDailyTarget(history, date)
+    })
     const overallBalanceMinutes = totalMinutesWorked - expectedMinutes
 
     return {

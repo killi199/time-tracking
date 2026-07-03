@@ -89,6 +89,9 @@ export default {
             auto: 'Automatisch (System)',
             english: 'Englisch',
             german: 'Deutsch',
+            workHours: 'Arbeitszeit pro Tag',
+            workHoursEffectiveNote:
+                'Änderungen gelten ab heute. Frühere Tage behalten ihr bisheriges Ziel.',
         },
         dialog: {
             checkInTitle: 'Einchecken',

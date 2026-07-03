@@ -87,6 +87,9 @@ export default {
             auto: 'Automatic (System)',
             english: 'English',
             german: 'German',
+            workHours: 'Daily work hours',
+            workHoursEffectiveNote:
+                'Changes apply from today onward. Earlier days keep their previous target.',
         },
         dialog: {
             checkInTitle: 'Check In',

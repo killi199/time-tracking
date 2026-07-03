@@ -3,7 +3,11 @@ import { View, FlatList, StyleSheet } from 'react-native'
 import { Text, Card, useTheme, FAB } from 'react-native-paper'
 import { EventListItem } from '../components/EventListItem'
 import { TimeSeparator } from '../components/TimeSeparator'
-import { getTodayEvents, getOverallStats } from '../db/database'
+import {
+    getTodayEvents,
+    getOverallStats,
+    getDailyTargetMinutes,
+} from '../db/database'
 import { TimeEvent, ProcessedTimeEvent } from '../types'
 import { useTranslation } from 'react-i18next'
 import { formatTime, getFormattedDate } from '../utils/time'
@@ -46,9 +50,11 @@ function calculateMetrics(currentEvents: TimeEvent[], date: string) {
 
     const todayWorked = formatTime(totalMinutesToday)
 
-    // 2. Day Balance (Target: 8 hours = 480 minutes)
+    // 2. Day Balance (Target: daily target of the viewed date)
     const dayBalanceMinutes =
-        sortedEvents.length > 0 ? totalMinutesToday - 480 : 0
+        sortedEvents.length > 0
+            ? totalMinutesToday - getDailyTargetMinutes(date)
+            : 0
     const dayBalance = formatTime(dayBalanceMinutes, true)
 
     // 3. Overall Balance

@@ -3,10 +3,15 @@ import { View, FlatList, StyleSheet } from 'react-native'
 import { Text, Card, List, useTheme } from 'react-native-paper'
 import { EventListItem } from '../components/EventListItem'
 import { TimeSeparator } from '../components/TimeSeparator'
-import { getMonthEvents, getOverallStats } from '../db/database'
+import {
+    getMonthEvents,
+    getOverallStats,
+    getWorkHoursHistory,
+} from '../db/database'
 import { TimeEvent } from '../types'
 import { useTranslation } from 'react-i18next'
 import { formatTime, getFormattedDate } from '../utils/time'
+import { resolveDailyTarget } from '../utils/workHours'
 
 interface ProcessedEvent extends TimeEvent {
     type: 'start' | 'end'
@@ -72,8 +77,12 @@ function calculateMetrics(currentEvents: TimeEvent[], month: string) {
 
     const todayWorked = formatTime(totalMinutesMonth)
 
-    // Month Balance (Target: 8 hours per worked day)
-    const expectedMinutes = workedDays.size * 8 * 60
+    // Month Balance (Target: daily target per worked day)
+    const workHoursHistory = getWorkHoursHistory()
+    let expectedMinutes = 0
+    workedDays.forEach((d) => {
+        expectedMinutes += resolveDailyTarget(workHoursHistory, d)
+    })
     const monthBalanceMinutes = totalMinutesMonth - expectedMinutes
     const dayBalance = formatTime(monthBalanceMinutes, true)
 
