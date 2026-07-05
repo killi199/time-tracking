@@ -8,6 +8,7 @@ export default {
             confirm: 'Confirm',
             back: 'Back',
             error: 'Error',
+            unknownError: 'Unknown error',
             success: 'Success',
             loading: 'Loading...',
             info: 'Info',
@@ -80,6 +81,17 @@ export default {
             rightsText:
                 "You have the right and the ability to delete your locally stored data at any time from within the app. Furthermore, you can revoke the location permission in your device's system settings at any time.",
         },
+        csv: {
+            exportFailed: 'Failed to export CSV.',
+            sharingUnavailable: 'Sharing is not available on this device.',
+            importFailed: 'Failed to import CSV.',
+            noImportableData: 'No importable data found in CSV.',
+            importedEvents: 'Successfully imported {{count}} events.',
+            importedWorkHours:
+                'Successfully imported {{count}} work hours entries.',
+            importedBoth:
+                'Successfully imported {{events}} events and {{workHours}} work hours entries.',
+        },
         settings: {
             title: 'Settings',
             language: 'Language',
@@ -87,6 +99,10 @@ export default {
             auto: 'Automatic (System)',
             english: 'English',
             german: 'German',
+            workHours: 'Daily work hours',
+            workHoursInvalid: 'The daily work hours must be greater than 0.',
+            workHoursEffectiveNote:
+                'Changes apply from today onward. Earlier days keep their previous target.',
         },
         dialog: {
             checkInTitle: 'Check In',

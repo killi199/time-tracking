@@ -3,10 +3,15 @@ import { View, FlatList, StyleSheet } from 'react-native'
 import { Text, Card, List, useTheme } from 'react-native-paper'
 import { EventListItem } from '../components/EventListItem'
 import { TimeSeparator } from '../components/TimeSeparator'
-import { getEventsRange, getOverallStats } from '../db/database'
+import {
+    getEventsRange,
+    getOverallStats,
+    getWorkHoursHistory,
+} from '../db/database'
 import { TimeEvent } from '../types'
 import { useTranslation } from 'react-i18next'
 import { formatTime, getFormattedDate } from '../utils/time'
+import { sumDailyTargets } from '../utils/workHours'
 
 interface ProcessedEvent extends TimeEvent {
     type: 'start' | 'end'
@@ -98,13 +103,14 @@ function calculateMetrics(
 
     const weekWorked = formatTime(totalMinutesWeek)
 
-    // Week Balance (Target: 8 hours per worked day)
-    const expectedMinutes = workedDays.size * 8 * 60
+    // Week Balance (Target: daily target per worked day)
+    const workHoursHistory = getWorkHoursHistory()
+    const expectedMinutes = sumDailyTargets(workHoursHistory, workedDays)
     const weekBalanceMinutes = totalMinutesWeek - expectedMinutes
     const weekBalance = formatTime(weekBalanceMinutes, true)
 
     // Overall Balance (Target: total accumulated until end of this week)
-    const { overallBalanceMinutes } = getOverallStats(endDate)
+    const { overallBalanceMinutes } = getOverallStats(endDate, workHoursHistory)
     let finalOverallBalance = overallBalanceMinutes
 
     // Add active session if exists (getOverallStats doesn't include active)

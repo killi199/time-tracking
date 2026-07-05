@@ -8,6 +8,7 @@ export default {
             confirm: 'Bestätigen',
             back: 'Zurück',
             error: 'Fehler',
+            unknownError: 'Unbekannter Fehler',
             success: 'Erfolgreich',
             loading: 'Laden...',
             info: 'Info',
@@ -82,6 +83,18 @@ export default {
             rightsText:
                 'Sie haben jederzeit das Recht und die Möglichkeit, die in der App lokal gespeicherten Daten zu löschen. Zudem können Sie die Standortberechtigung in den Systemeinstellungen des Geräts jederzeit widerrufen.',
         },
+        csv: {
+            exportFailed: 'CSV-Export fehlgeschlagen.',
+            sharingUnavailable: 'Teilen ist auf diesem Gerät nicht verfügbar.',
+            importFailed: 'CSV-Import fehlgeschlagen.',
+            noImportableData:
+                'Keine importierbaren Daten in der CSV-Datei gefunden.',
+            importedEvents: '{{count}} Ereignisse erfolgreich importiert.',
+            importedWorkHours:
+                '{{count}} Arbeitszeit-Einträge erfolgreich importiert.',
+            importedBoth:
+                '{{events}} Ereignisse und {{workHours}} Arbeitszeit-Einträge erfolgreich importiert.',
+        },
         settings: {
             title: 'Einstellungen',
             language: 'Sprache',
@@ -89,6 +102,10 @@ export default {
             auto: 'Automatisch (System)',
             english: 'Englisch',
             german: 'Deutsch',
+            workHours: 'Arbeitszeit pro Tag',
+            workHoursInvalid: 'Die Arbeitszeit pro Tag muss größer als 0 sein.',
+            workHoursEffectiveNote:
+                'Änderungen gelten ab heute. Frühere Tage behalten ihr bisheriges Ziel.',
         },
         dialog: {
             checkInTitle: 'Einchecken',

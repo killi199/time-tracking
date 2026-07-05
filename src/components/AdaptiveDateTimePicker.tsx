@@ -9,7 +9,6 @@ export interface AdaptiveDateTimePickerProps {
     onConfirm: (date: Date) => void
     value: Date
     mode: 'date' | 'time'
-    is24Hour?: boolean
     locale?: string
     cancelLabel: string
     confirmLabel: string
@@ -45,7 +44,6 @@ const AdaptiveDateTimePicker = ({
     onConfirm,
     value,
     mode,
-    is24Hour,
     locale,
     cancelLabel,
     confirmLabel,
@@ -72,7 +70,6 @@ const AdaptiveDateTimePicker = ({
                                 value={tempDate}
                                 mode={mode}
                                 display="spinner"
-                                is24Hour={is24Hour}
                                 locale={locale}
                                 onValueChange={(_, selectedDate) => {
                                     setTempDate(selectedDate)
@@ -102,7 +99,6 @@ const AdaptiveDateTimePicker = ({
             value={androidValue}
             mode={mode}
             presentation="dialog"
-            is24Hour={is24Hour}
             onValueChange={(_, selectedDate) => {
                 onConfirm(
                     mode === 'date' ? shiftToLocal(selectedDate) : selectedDate,
