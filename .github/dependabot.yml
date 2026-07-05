@@ -30,6 +30,9 @@ updates:
           - dependency-name: 'expo-*'
           - dependency-name: '@expo/*'
           - dependency-name: '@babel/core'
+          - dependency-name: 'jest'
+          - dependency-name: '@jest/globals'
+          - dependency-name: 'jest-expo'
 
     - package-ecosystem: 'github-actions'
       directories:
