@@ -42,6 +42,7 @@ licenses.json
 
 # Coverage
 coverage/
+test-report.junit.xml
 
 # Android Studio
 .idea/

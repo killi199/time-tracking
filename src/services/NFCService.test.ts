@@ -1,41 +1,39 @@
 /* eslint-disable @typescript-eslint/unbound-method --
- * `expect(mock)` / `vi.mocked(mock)` never call the reference with `this`,
+ * `expect(mock)` / `jest.mocked(mock)` never call the reference with `this`,
  * so passing mocked methods unbound is safe here. */
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { Linking, ToastAndroid, BackHandler } from 'react-native'
+import {
+    describe,
+    it,
+    expect,
+    beforeEach,
+    afterEach,
+    jest,
+} from '@jest/globals'
+import { Platform, Linking, ToastAndroid, BackHandler } from 'react-native'
 import { getTodayEvents, addEvent } from '../db/database'
 import { initNfcService } from './NFCService'
 import { TimeEvent } from '../types'
 
-const state = vi.hoisted(() => ({
-    urlListener: null as ((event: { url: string }) => void) | null,
-    subscription: { remove: vi.fn() },
-}))
-
-const platform = vi.hoisted(() => ({ OS: 'android' }))
-
-vi.mock('react-native', () => ({
-    Platform: platform,
-    ToastAndroid: { show: vi.fn(), SHORT: 0 },
-    BackHandler: { exitApp: vi.fn() },
-    Linking: {
-        getInitialURL: vi.fn(),
-        addEventListener: (
-            _event: string,
-            listener: (event: { url: string }) => void,
-        ) => {
-            state.urlListener = listener
-            return state.subscription
+jest.mock('react-native', () => {
+    const subscription = { remove: jest.fn() }
+    return {
+        Platform: { OS: 'android' },
+        ToastAndroid: { show: jest.fn(), SHORT: 0 },
+        BackHandler: { exitApp: jest.fn() },
+        Linking: {
+            getInitialURL: jest.fn(),
+            addEventListener: jest.fn(() => subscription),
         },
-    },
+    }
+})
+
+jest.mock('../db/database', () => ({
+    getTodayEvents: jest.fn(),
+    addEvent: jest.fn(),
 }))
 
-vi.mock('../db/database', () => ({
-    getTodayEvents: vi.fn(),
-    addEvent: vi.fn(),
-}))
-
-vi.mock('i18next', () => ({
+jest.mock('i18next', () => ({
+    __esModule: true,
     default: { t: (key: string) => key },
 }))
 
@@ -48,34 +46,45 @@ const makeEvent = (id: number, time: string): TimeEvent => ({
     note: null,
 })
 
+const setPlatformOS = (os: string) => {
+    ;(Platform as { OS: string }).OS = os
+}
+
 const initAndFlush = async () => {
     initNfcService()
     // let the getInitialURL promise chain settle
-    await vi.advanceTimersByTimeAsync(0)
+    await jest.advanceTimersByTimeAsync(0)
 }
 
 const receiveUrl = (url: string) => {
-    if (!state.urlListener) throw new Error('url listener not registered')
-    state.urlListener({ url })
+    const listener = jest
+        .mocked(Linking.addEventListener)
+        .mock.calls.at(-1)?.[1]
+    if (!listener) throw new Error('url listener not registered')
+    listener({ url })
 }
 
+const registeredSubscription = () =>
+    jest.mocked(Linking.addEventListener).mock.results[0].value as {
+        remove: () => void
+    }
+
 beforeEach(() => {
-    vi.clearAllMocks()
-    state.urlListener = null
-    platform.OS = 'android'
-    vi.useFakeTimers()
-    vi.setSystemTime(new Date(2026, 6, 5, 9, 5))
-    vi.mocked(getTodayEvents).mockReturnValue([])
-    vi.mocked(Linking.getInitialURL).mockResolvedValue(null)
+    jest.clearAllMocks()
+    setPlatformOS('android')
+    jest.useFakeTimers()
+    jest.setSystemTime(new Date(2026, 6, 5, 9, 5))
+    jest.mocked(getTodayEvents).mockReturnValue([])
+    jest.mocked(Linking.getInitialURL).mockResolvedValue(null)
 })
 
 afterEach(() => {
-    vi.useRealTimers()
+    jest.useRealTimers()
 })
 
 describe('initNfcService', () => {
     it('checks in when launched with a matching initial url', async () => {
-        vi.mocked(Linking.getInitialURL).mockResolvedValue(NFC_URL)
+        jest.mocked(Linking.getInitialURL).mockResolvedValue(NFC_URL)
 
         await initAndFlush()
 
@@ -87,7 +96,7 @@ describe('initNfcService', () => {
     })
 
     it('checks out when the day has an odd number of events', async () => {
-        vi.mocked(getTodayEvents).mockReturnValue([makeEvent(1, '08:00')])
+        jest.mocked(getTodayEvents).mockReturnValue([makeEvent(1, '08:00')])
 
         await initAndFlush()
         receiveUrl(NFC_URL)
@@ -103,7 +112,7 @@ describe('initNfcService', () => {
         await initAndFlush()
         receiveUrl(NFC_URL)
 
-        expect(addEvent).toHaveBeenCalledOnce()
+        expect(addEvent).toHaveBeenCalledTimes(1)
         expect(ToastAndroid.show).toHaveBeenCalledWith(
             'nfc.checkedInAt 09:05',
             expect.anything(),
@@ -121,30 +130,30 @@ describe('initNfcService', () => {
         await initAndFlush()
         receiveUrl(NFC_URL)
 
-        vi.advanceTimersByTime(1499)
+        jest.advanceTimersByTime(1499)
         expect(BackHandler.exitApp).not.toHaveBeenCalled()
 
-        vi.advanceTimersByTime(1)
-        expect(BackHandler.exitApp).toHaveBeenCalledOnce()
+        jest.advanceTimersByTime(1)
+        expect(BackHandler.exitApp).toHaveBeenCalledTimes(1)
     })
 
     it('does not show a toast on iOS but still exits', async () => {
-        platform.OS = 'ios'
+        setPlatformOS('ios')
 
         await initAndFlush()
         receiveUrl(NFC_URL)
 
         expect(ToastAndroid.show).not.toHaveBeenCalled()
 
-        vi.advanceTimersByTime(1500)
-        expect(BackHandler.exitApp).toHaveBeenCalledOnce()
+        jest.advanceTimersByTime(1500)
+        expect(BackHandler.exitApp).toHaveBeenCalledTimes(1)
     })
 
     it('catches database errors without scheduling an app exit', async () => {
-        const errorSpy = vi
+        const errorSpy = jest
             .spyOn(console, 'error')
             .mockImplementation(() => undefined)
-        vi.mocked(getTodayEvents).mockImplementation(() => {
+        jest.mocked(getTodayEvents).mockImplementation(() => {
             throw new Error('db locked')
         })
 
@@ -153,16 +162,16 @@ describe('initNfcService', () => {
             receiveUrl(NFC_URL)
         }).not.toThrow()
 
-        vi.advanceTimersByTime(2000)
+        jest.advanceTimersByTime(2000)
         expect(BackHandler.exitApp).not.toHaveBeenCalled()
         expect(errorSpy).toHaveBeenCalled()
     })
 
     it('returns a cleanup that removes the url listener', async () => {
         const cleanup = initNfcService()
-        await vi.advanceTimersByTimeAsync(0)
+        await jest.advanceTimersByTimeAsync(0)
         cleanup()
 
-        expect(state.subscription.remove).toHaveBeenCalledOnce()
+        expect(registeredSubscription().remove).toHaveBeenCalledTimes(1)
     })
 })

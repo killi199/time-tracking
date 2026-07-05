@@ -1,4 +1,11 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import {
+    describe,
+    it,
+    expect,
+    beforeEach,
+    afterEach,
+    jest,
+} from '@jest/globals'
 import * as Sharing from 'expo-sharing'
 import * as DocumentPicker from 'expo-document-picker'
 import {
@@ -10,14 +17,17 @@ import {
 import { exportToCSV, importFromCSV } from './csv'
 import { TimeEvent } from '../types'
 
-const fileState = vi.hoisted(() => ({
+// The name must start with `mock` so the hoisted jest.mock factory below may
+// reference it; the factory only reads it lazily (inside File methods), after
+// this initializer has run.
+const mockFileState = {
     written: [] as { name: string; content: string }[],
     textContent: '',
     writeError: null as Error | null,
     textError: null as Error | null,
-}))
+}
 
-vi.mock('expo-file-system', () => {
+jest.mock('expo-file-system', () => {
     class File {
         readonly name: string
 
@@ -34,35 +44,35 @@ vi.mock('expo-file-system', () => {
         }
 
         write(content: string) {
-            if (fileState.writeError) throw fileState.writeError
-            fileState.written.push({ name: this.name, content })
+            if (mockFileState.writeError) throw mockFileState.writeError
+            mockFileState.written.push({ name: this.name, content })
         }
 
         text() {
-            if (fileState.textError) {
-                return Promise.reject(fileState.textError)
+            if (mockFileState.textError) {
+                return Promise.reject(mockFileState.textError)
             }
-            return Promise.resolve(fileState.textContent)
+            return Promise.resolve(mockFileState.textContent)
         }
     }
 
     return { File, Paths: { document: '/documents' } }
 })
 
-vi.mock('expo-sharing', () => ({
-    isAvailableAsync: vi.fn(),
-    shareAsync: vi.fn(),
+jest.mock('expo-sharing', () => ({
+    isAvailableAsync: jest.fn(),
+    shareAsync: jest.fn(),
 }))
 
-vi.mock('expo-document-picker', () => ({
-    getDocumentAsync: vi.fn(),
+jest.mock('expo-document-picker', () => ({
+    getDocumentAsync: jest.fn(),
 }))
 
-vi.mock('../db/database', () => ({
-    getAllEvents: vi.fn(),
-    getWorkHoursHistory: vi.fn(),
-    importEvents: vi.fn(),
-    importWorkHours: vi.fn(),
+jest.mock('../db/database', () => ({
+    getAllEvents: jest.fn(),
+    getWorkHoursHistory: jest.fn(),
+    importEvents: jest.fn(),
+    importWorkHours: jest.fn(),
 }))
 
 const makeEvent = (overrides: Partial<TimeEvent>): TimeEvent => ({
@@ -75,8 +85,8 @@ const makeEvent = (overrides: Partial<TimeEvent>): TimeEvent => ({
 })
 
 const pickFile = (content: string) => {
-    fileState.textContent = content
-    vi.mocked(DocumentPicker.getDocumentAsync).mockResolvedValue({
+    mockFileState.textContent = content
+    jest.mocked(DocumentPicker.getDocumentAsync).mockResolvedValue({
         canceled: false,
         assets: [
             {
@@ -90,18 +100,18 @@ const pickFile = (content: string) => {
 }
 
 beforeEach(() => {
-    vi.clearAllMocks()
-    fileState.written = []
-    fileState.textContent = ''
-    fileState.writeError = null
-    fileState.textError = null
-    vi.mocked(getAllEvents).mockReturnValue([])
-    vi.mocked(getWorkHoursHistory).mockReturnValue([])
-    vi.mocked(Sharing.isAvailableAsync).mockResolvedValue(true)
+    jest.clearAllMocks()
+    mockFileState.written = []
+    mockFileState.textContent = ''
+    mockFileState.writeError = null
+    mockFileState.textError = null
+    jest.mocked(getAllEvents).mockReturnValue([])
+    jest.mocked(getWorkHoursHistory).mockReturnValue([])
+    jest.mocked(Sharing.isAvailableAsync).mockResolvedValue(true)
 })
 
 afterEach(() => {
-    vi.useRealTimers()
+    jest.useRealTimers()
 })
 
 describe('exportToCSV', () => {
@@ -109,25 +119,25 @@ describe('exportToCSV', () => {
         const result = await exportToCSV()
 
         expect(result).toEqual({ success: true })
-        expect(fileState.written).toHaveLength(1)
+        expect(mockFileState.written).toHaveLength(1)
         // papaparse emits a trailing newline when there are no data rows
-        expect(fileState.written[0].content).toBe(
+        expect(mockFileState.written[0].content).toBe(
             'Date,Time,Note,IsManualEntry\r\n',
         )
         expect(Sharing.shareAsync).toHaveBeenCalledWith(
-            `file://${fileState.written[0].name}`,
+            `file://${mockFileState.written[0].name}`,
         )
     })
 
     it('writes one row per event with true/false manual-entry strings', async () => {
-        vi.mocked(getAllEvents).mockReturnValue([
+        jest.mocked(getAllEvents).mockReturnValue([
             makeEvent({ note: 'Morning', isManualEntry: true }),
             makeEvent({ id: 2, time: '17:00' }),
         ])
 
         await exportToCSV()
 
-        expect(fileState.written[0].content).toBe(
+        expect(mockFileState.written[0].content).toBe(
             'Date,Time,Note,IsManualEntry\r\n' +
                 '2024-01-15,09:00,Morning,true\r\n' +
                 '2024-01-15,17:00,,false',
@@ -135,14 +145,14 @@ describe('exportToCSV', () => {
     })
 
     it('appends the work-hours section when history exists', async () => {
-        vi.mocked(getWorkHoursHistory).mockReturnValue([
+        jest.mocked(getWorkHoursHistory).mockReturnValue([
             { effectiveDate: '2024-01-01', dailyMinutes: 480 },
             { effectiveDate: '2024-06-01', dailyMinutes: 420 },
         ])
 
         await exportToCSV()
 
-        expect(fileState.written[0].content).toBe(
+        expect(mockFileState.written[0].content).toBe(
             'Date,Time,Note,IsManualEntry\r\n' +
                 '\r\n\r\n[WorkHours]\r\n' +
                 '2024-01-01=480\r\n2024-06-01=420',
@@ -152,22 +162,22 @@ describe('exportToCSV', () => {
     it('omits the work-hours section when the history is empty', async () => {
         await exportToCSV()
 
-        expect(fileState.written[0].content).not.toContain('[WorkHours]')
+        expect(mockFileState.written[0].content).not.toContain('[WorkHours]')
     })
 
     it('names the file with the current date', async () => {
-        vi.useFakeTimers()
-        vi.setSystemTime(new Date(2024, 0, 15, 12, 0))
+        jest.useFakeTimers()
+        jest.setSystemTime(new Date(2024, 0, 15, 12, 0))
 
         await exportToCSV()
 
-        expect(fileState.written[0].name).toBe(
+        expect(mockFileState.written[0].name).toBe(
             '/documents/time_tracking_export_2024-01-15.csv',
         )
     })
 
     it('reports when sharing is unavailable and does not share', async () => {
-        vi.mocked(Sharing.isAvailableAsync).mockResolvedValue(false)
+        jest.mocked(Sharing.isAvailableAsync).mockResolvedValue(false)
 
         const result = await exportToCSV()
 
@@ -179,10 +189,10 @@ describe('exportToCSV', () => {
     })
 
     it('reports a failure when writing throws', async () => {
-        const errorSpy = vi
+        const errorSpy = jest
             .spyOn(console, 'error')
             .mockImplementation(() => undefined)
-        fileState.writeError = new Error('disk full')
+        mockFileState.writeError = new Error('disk full')
 
         const result = await exportToCSV()
 
@@ -193,7 +203,7 @@ describe('exportToCSV', () => {
 
 describe('importFromCSV', () => {
     it('reports cancellation without touching the database', async () => {
-        vi.mocked(DocumentPicker.getDocumentAsync).mockResolvedValue({
+        jest.mocked(DocumentPicker.getDocumentAsync).mockResolvedValue({
             canceled: true,
             assets: null,
         })
@@ -367,15 +377,15 @@ describe('importFromCSV', () => {
 
         expect(result).toEqual({ success: true, count: 0, workHoursCount: 1 })
         expect(importEvents).not.toHaveBeenCalled()
-        expect(importWorkHours).toHaveBeenCalledOnce()
+        expect(importWorkHours).toHaveBeenCalledTimes(1)
     })
 
     it('reports a failure when reading the file throws', async () => {
-        const errorSpy = vi
+        const errorSpy = jest
             .spyOn(console, 'error')
             .mockImplementation(() => undefined)
         pickFile('irrelevant')
-        fileState.textError = new Error('unreadable')
+        mockFileState.textError = new Error('unreadable')
 
         const result = await importFromCSV()
 
@@ -389,17 +399,17 @@ describe('importFromCSV', () => {
             'has "quotes" inside',
             'spans\nmultiple lines',
         ]
-        vi.mocked(getAllEvents).mockReturnValue(
+        jest.mocked(getAllEvents).mockReturnValue(
             trickyNotes.map((note, index) =>
                 makeEvent({ id: index + 1, note }),
             ),
         )
-        vi.mocked(getWorkHoursHistory).mockReturnValue([
+        jest.mocked(getWorkHoursHistory).mockReturnValue([
             { effectiveDate: '2024-01-01', dailyMinutes: 480 },
         ])
 
         await exportToCSV()
-        pickFile(fileState.written[0].content)
+        pickFile(mockFileState.written[0].content)
 
         const result = await importFromCSV()
 

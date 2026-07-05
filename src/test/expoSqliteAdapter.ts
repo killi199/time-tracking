@@ -3,7 +3,8 @@ import { DatabaseSync } from 'node:sqlite'
 /**
  * In-memory stand-in for expo-sqlite backed by node:sqlite, implementing
  * exactly the API surface used by src/db/database.ts. Used via
- * `vi.mock('expo-sqlite', () => import('../test/expoSqliteAdapter'))` so the
+ * `jest.mock('expo-sqlite', () => jest.requireActual('../test/expoSqliteAdapter'))`
+ * so the
  * database module runs its real SQL against a real (in-memory) SQLite.
  */
 

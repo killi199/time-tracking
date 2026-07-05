@@ -1,9 +1,9 @@
-import { describe, it, expect, afterEach, vi } from 'vitest'
+import { describe, it, expect, afterEach, jest } from '@jest/globals'
 import withRemovePermissions from './withRemovePermissions'
 
 // Execute the manifest modifier directly instead of running expo's
 // build-time plugin machinery.
-vi.mock('@expo/config-plugins', () => ({
+jest.mock('@expo/config-plugins', () => ({
     withAndroidManifest: (
         config: unknown,
         action: (config: unknown) => unknown,
@@ -30,13 +30,21 @@ const runPlugin = (manifest: TestManifest) => {
     return manifest
 }
 
+// expo's env typings widen EXPO_PUBLIC_* variables to `any`
+const originalFossBuild = process.env.EXPO_PUBLIC_FOSS_BUILD as
+    string | undefined
+
 afterEach(() => {
-    vi.unstubAllEnvs()
+    if (originalFossBuild === undefined) {
+        delete process.env.EXPO_PUBLIC_FOSS_BUILD
+    } else {
+        process.env.EXPO_PUBLIC_FOSS_BUILD = originalFossBuild
+    }
 })
 
 describe('withRemovePermissions', () => {
     it('removes the unwanted permissions in default builds', () => {
-        vi.stubEnv('EXPO_PUBLIC_FOSS_BUILD', 'false')
+        process.env.EXPO_PUBLIC_FOSS_BUILD = 'false'
 
         const manifest = runPlugin({
             $: {},
@@ -56,7 +64,7 @@ describe('withRemovePermissions', () => {
     })
 
     it('also removes network permissions in FOSS builds', () => {
-        vi.stubEnv('EXPO_PUBLIC_FOSS_BUILD', 'true')
+        process.env.EXPO_PUBLIC_FOSS_BUILD = 'true'
 
         const manifest = runPlugin({
             $: {},
@@ -88,7 +96,7 @@ describe('withRemovePermissions', () => {
     })
 
     it('adds the tools namespace in FOSS builds', () => {
-        vi.stubEnv('EXPO_PUBLIC_FOSS_BUILD', 'true')
+        process.env.EXPO_PUBLIC_FOSS_BUILD = 'true'
 
         const manifest = runPlugin({ $: {} })
 
@@ -98,7 +106,7 @@ describe('withRemovePermissions', () => {
     })
 
     it('handles a manifest without permissions', () => {
-        vi.stubEnv('EXPO_PUBLIC_FOSS_BUILD', 'false')
+        process.env.EXPO_PUBLIC_FOSS_BUILD = 'false'
 
         const manifest = runPlugin({ $: {} })
 

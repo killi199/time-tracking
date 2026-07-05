@@ -1,17 +1,18 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, jest } from '@jest/globals'
 
 // Run the real SQL against an in-memory node:sqlite database.
-vi.mock('expo-sqlite', () => import('../test/expoSqliteAdapter'))
+jest.mock('expo-sqlite', () => jest.requireActual('../test/expoSqliteAdapter'))
 
 type DatabaseModule = typeof import('./database')
 
 let db: DatabaseModule
 
-beforeEach(async () => {
-    // The database handle is a module-level singleton; re-importing the
-    // module gives every test a fresh in-memory database.
-    vi.resetModules()
-    db = await import('./database')
+beforeEach(() => {
+    // The database handle is a module-level singleton; re-requiring the
+    // module gives every test a fresh in-memory database. (jest.requireActual
+    // instead of a dynamic import, which jest's CJS runtime cannot execute.)
+    jest.resetModules()
+    db = jest.requireActual<DatabaseModule>('./database')
     db.initDatabase()
 })
 

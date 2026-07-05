@@ -1,45 +1,57 @@
 /* eslint-disable @typescript-eslint/unbound-method --
- * `expect(mock)` / `vi.mocked(mock)` never call the reference with `this`,
+ * `expect(mock)` / `jest.mocked(mock)` never call the reference with `this`,
  * so passing mocked methods unbound is safe here. */
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import {
+    describe,
+    it,
+    expect,
+    beforeEach,
+    afterEach,
+    jest,
+} from '@jest/globals'
 import * as QuickActions from 'expo-quick-actions'
-import { ToastAndroid } from 'react-native'
+import { Platform, ToastAndroid } from 'react-native'
 import { getTodayEvents, addEvent } from '../db/database'
 import { initQuickActions } from './QuickActionService'
 import { TimeEvent } from '../types'
 
-const state = vi.hoisted(() => ({
-    initial: null as { id: string } | null,
-    listener: null as ((action: { id: string } | null) => void) | null,
-    subscription: { remove: vi.fn() },
+jest.mock('expo-quick-actions', () => {
+    const state = { initial: null as { id: string } | null }
+    const subscription = { remove: jest.fn() }
+    return {
+        get initial() {
+            return state.initial
+        },
+        __setInitial: (action: { id: string } | null) => {
+            state.initial = action
+        },
+        setItems: jest.fn(),
+        addListener: jest.fn(() => subscription),
+    }
+})
+
+jest.mock('react-native', () => ({
+    Platform: { OS: 'android' },
+    ToastAndroid: { show: jest.fn(), SHORT: 0 },
 }))
 
-const platform = vi.hoisted(() => ({ OS: 'android' }))
-
-vi.mock('expo-quick-actions', () => ({
-    get initial() {
-        return state.initial
-    },
-    setItems: vi.fn(),
-    addListener: (listener: (action: { id: string } | null) => void) => {
-        state.listener = listener
-        return state.subscription
-    },
+jest.mock('../db/database', () => ({
+    getTodayEvents: jest.fn(),
+    addEvent: jest.fn(),
 }))
 
-vi.mock('react-native', () => ({
-    Platform: platform,
-    ToastAndroid: { show: vi.fn(), SHORT: 0 },
-}))
-
-vi.mock('../db/database', () => ({
-    getTodayEvents: vi.fn(),
-    addEvent: vi.fn(),
-}))
-
-vi.mock('i18next', () => ({
+jest.mock('i18next', () => ({
+    __esModule: true,
     default: { t: (key: string) => key },
 }))
+
+// The factory replaces the read-only `initial` property with a getter and
+// exposes this setter for it.
+const setInitialAction = (
+    QuickActions as unknown as {
+        __setInitial: (action: { id: string } | null) => void
+    }
+).__setInitial
 
 const makeEvent = (id: number, time: string): TimeEvent => ({
     id,
@@ -48,25 +60,37 @@ const makeEvent = (id: number, time: string): TimeEvent => ({
     note: null,
 })
 
-const trigger = (action: { id: string } | null) => {
-    if (!state.listener) throw new Error('listener not registered')
-    state.listener(action)
+const setPlatformOS = (os: string) => {
+    ;(Platform as { OS: string }).OS = os
 }
+
+const trigger = (action: { id: string } | null) => {
+    const listener = jest
+        .mocked(QuickActions.addListener)
+        .mock.calls.at(-1)?.[0] as
+        ((action: { id: string } | null) => void) | undefined
+    if (!listener) throw new Error('listener not registered')
+    listener(action)
+}
+
+const registeredSubscription = () =>
+    jest.mocked(QuickActions.addListener).mock.results[0].value as {
+        remove: () => void
+    }
 
 const toggleAction = { id: 'toggle_status' }
 
 beforeEach(() => {
-    vi.clearAllMocks()
-    state.initial = null
-    state.listener = null
-    platform.OS = 'android'
-    vi.useFakeTimers()
-    vi.setSystemTime(new Date(2026, 6, 5, 9, 5))
-    vi.mocked(getTodayEvents).mockReturnValue([])
+    jest.clearAllMocks()
+    setInitialAction(null)
+    setPlatformOS('android')
+    jest.useFakeTimers()
+    jest.setSystemTime(new Date(2026, 6, 5, 9, 5))
+    jest.mocked(getTodayEvents).mockReturnValue([])
 })
 
 afterEach(() => {
-    vi.useRealTimers()
+    jest.useRealTimers()
 })
 
 describe('initQuickActions', () => {
@@ -83,11 +107,11 @@ describe('initQuickActions', () => {
     })
 
     it('handles a pending initial action', () => {
-        state.initial = { id: 'toggle_status' }
+        setInitialAction({ id: 'toggle_status' })
 
         initQuickActions()
 
-        expect(addEvent).toHaveBeenCalledOnce()
+        expect(addEvent).toHaveBeenCalledTimes(1)
     })
 
     it('checks in when the day has an even number of events', () => {
@@ -102,7 +126,7 @@ describe('initQuickActions', () => {
     })
 
     it('checks out when the day has an odd number of events', () => {
-        vi.mocked(getTodayEvents).mockReturnValue([makeEvent(1, '08:00')])
+        jest.mocked(getTodayEvents).mockReturnValue([makeEvent(1, '08:00')])
 
         initQuickActions()
         trigger(toggleAction)
@@ -125,12 +149,12 @@ describe('initQuickActions', () => {
     })
 
     it('does not show a toast on iOS', () => {
-        platform.OS = 'ios'
+        setPlatformOS('ios')
 
         initQuickActions()
         trigger(toggleAction)
 
-        expect(addEvent).toHaveBeenCalledOnce()
+        expect(addEvent).toHaveBeenCalledTimes(1)
         expect(ToastAndroid.show).not.toHaveBeenCalled()
     })
 
@@ -146,14 +170,14 @@ describe('initQuickActions', () => {
         const cleanup = initQuickActions()
         cleanup()
 
-        expect(state.subscription.remove).toHaveBeenCalledOnce()
+        expect(registeredSubscription().remove).toHaveBeenCalledTimes(1)
     })
 
     it('catches database errors without throwing', () => {
-        const errorSpy = vi
+        const errorSpy = jest
             .spyOn(console, 'error')
             .mockImplementation(() => undefined)
-        vi.mocked(getTodayEvents).mockImplementation(() => {
+        jest.mocked(getTodayEvents).mockImplementation(() => {
             throw new Error('db locked')
         })
 

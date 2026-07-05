@@ -1,9 +1,9 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, jest } from '@jest/globals'
 import withNfcIntent from './withNfcIntent'
 
 // Execute the manifest modifier directly instead of running expo's
 // build-time plugin machinery.
-vi.mock('@expo/config-plugins', () => ({
+jest.mock('@expo/config-plugins', () => ({
     withAndroidManifest: (
         config: unknown,
         action: (config: unknown) => unknown,

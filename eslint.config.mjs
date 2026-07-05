@@ -5,7 +5,7 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import tseslint from 'typescript-eslint'
 import eslintConfigPrettier from 'eslint-config-prettier/flat'
 import sonarjs from 'eslint-plugin-sonarjs'
-import vitest from '@vitest/eslint-plugin'
+import jest from 'eslint-plugin-jest'
 import globals from 'globals'
 
 export default defineConfig(
@@ -43,12 +43,7 @@ export default defineConfig(
     sonarjs.configs.recommended,
     {
         files: ['**/*.test.ts', '**/*.test.tsx'],
-        plugins: {
-            vitest,
-        },
-        rules: {
-            ...vitest.configs.recommended.rules,
-        },
+        ...jest.configs['flat/recommended'],
     },
     {
         files: ['**/*.{ts,tsx}'],

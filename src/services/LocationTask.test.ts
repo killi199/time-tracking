@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import {
+    describe,
+    it,
+    expect,
+    beforeEach,
+    afterEach,
+    jest,
+} from '@jest/globals'
+import * as TaskManager from 'expo-task-manager'
 import * as Notifications from 'expo-notifications'
 import { addEvent, getTodayEvents } from '../db/database'
 import { LOCATION_TASK_NAME } from './LocationTask'
@@ -6,41 +14,34 @@ import { TimeEvent } from '../types'
 
 type TaskBody = { data: unknown; error: unknown }
 
-const state = vi.hoisted(() => ({
-    taskName: null as string | null,
-    taskCallback: null as ((body: TaskBody) => Promise<void> | void) | null,
-    notificationHandler: null as {
-        handleNotification: () => Promise<unknown>
-    } | null,
+jest.mock('expo-task-manager', () => ({
+    defineTask: jest.fn(),
 }))
 
-vi.mock('expo-task-manager', () => ({
-    defineTask: (
-        name: string,
-        callback: (body: TaskBody) => Promise<void> | void,
-    ) => {
-        state.taskName = name
-        state.taskCallback = callback
-    },
-}))
-
-vi.mock('expo-location', () => ({
+jest.mock('expo-location', () => ({
     GeofencingEventType: { Enter: 1, Exit: 2 },
 }))
 
-vi.mock('expo-notifications', () => ({
-    setNotificationHandler: (handler: {
-        handleNotification: () => Promise<unknown>
-    }) => {
-        state.notificationHandler = handler
-    },
-    scheduleNotificationAsync: vi.fn(),
+jest.mock('expo-notifications', () => ({
+    setNotificationHandler: jest.fn(),
+    scheduleNotificationAsync: jest.fn(),
 }))
 
-vi.mock('../db/database', () => ({
-    addEvent: vi.fn(),
-    getTodayEvents: vi.fn(),
+jest.mock('../db/database', () => ({
+    addEvent: jest.fn(),
+    getTodayEvents: jest.fn(),
 }))
+
+// Importing ./LocationTask above already registered the task and the
+// notification handler; capture both here, before the jest.clearAllMocks()
+// in beforeEach wipes the recorded calls.
+const [taskName, taskCallback] = jest.mocked(TaskManager.defineTask).mock
+    .calls[0] as unknown as [string, (body: TaskBody) => Promise<void> | void]
+
+const notificationHandler = jest.mocked(Notifications.setNotificationHandler)
+    .mock.calls[0][0] as unknown as {
+    handleNotification: () => Promise<unknown>
+}
 
 const ENTER = { eventType: 1 }
 const EXIT = { eventType: 2 }
@@ -53,30 +54,29 @@ const makeEvent = (id: number, time: string): TimeEvent => ({
 })
 
 const runTask = async (body: TaskBody) => {
-    if (!state.taskCallback) throw new Error('task not registered')
-    await state.taskCallback(body)
+    await taskCallback(body)
 }
 
 beforeEach(() => {
-    vi.clearAllMocks()
-    vi.spyOn(console, 'log').mockImplementation(() => undefined)
-    vi.useFakeTimers()
-    vi.setSystemTime(new Date(2026, 6, 5, 9, 5))
-    vi.mocked(getTodayEvents).mockReturnValue([])
+    jest.clearAllMocks()
+    jest.spyOn(console, 'log').mockImplementation(() => undefined)
+    jest.useFakeTimers()
+    jest.setSystemTime(new Date(2026, 6, 5, 9, 5))
+    jest.mocked(getTodayEvents).mockReturnValue([])
 })
 
 afterEach(() => {
-    vi.useRealTimers()
+    jest.useRealTimers()
 })
 
 describe('LocationTask', () => {
     it('registers the geofence task and a notification handler on import', async () => {
-        expect(state.taskName).toBe(LOCATION_TASK_NAME)
-        expect(state.taskCallback).not.toBeNull()
+        expect(taskName).toBe(LOCATION_TASK_NAME)
+        expect(taskCallback).toBeDefined()
 
-        expect(state.notificationHandler).not.toBeNull()
+        expect(notificationHandler).toBeDefined()
         await expect(
-            state.notificationHandler?.handleNotification(),
+            notificationHandler.handleNotification(),
         ).resolves.toMatchObject({ shouldShowBanner: true })
     })
 
@@ -92,13 +92,13 @@ describe('LocationTask', () => {
             expect.objectContaining({
                 content: expect.objectContaining({
                     body: 'Checked in at 09:05',
-                }) as unknown,
+                }),
             }),
         )
     })
 
     it('skips the auto check-in when already checked in', async () => {
-        vi.mocked(getTodayEvents).mockReturnValue([makeEvent(1, '08:00')])
+        jest.mocked(getTodayEvents).mockReturnValue([makeEvent(1, '08:00')])
 
         await runTask({ data: ENTER, error: null })
 
@@ -107,7 +107,7 @@ describe('LocationTask', () => {
     })
 
     it('checks out with a notification when exiting while checked in', async () => {
-        vi.mocked(getTodayEvents).mockReturnValue([makeEvent(1, '08:00')])
+        jest.mocked(getTodayEvents).mockReturnValue([makeEvent(1, '08:00')])
 
         await runTask({ data: EXIT, error: null })
 
@@ -120,7 +120,7 @@ describe('LocationTask', () => {
             expect.objectContaining({
                 content: expect.objectContaining({
                     body: 'Checked out at 09:05',
-                }) as unknown,
+                }),
             }),
         )
     })
@@ -132,7 +132,7 @@ describe('LocationTask', () => {
     })
 
     it('logs task errors without touching the database', async () => {
-        const errorSpy = vi
+        const errorSpy = jest
             .spyOn(console, 'error')
             .mockImplementation(() => undefined)
 
@@ -149,10 +149,10 @@ describe('LocationTask', () => {
     })
 
     it('catches database errors and does not notify', async () => {
-        const errorSpy = vi
+        const errorSpy = jest
             .spyOn(console, 'error')
             .mockImplementation(() => undefined)
-        vi.mocked(addEvent).mockImplementation(() => {
+        jest.mocked(addEvent).mockImplementation(() => {
             throw new Error('db locked')
         })
 
