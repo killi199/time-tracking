@@ -8,6 +8,7 @@ export default {
             confirm: 'Bestätigen',
             back: 'Zurück',
             error: 'Fehler',
+            unknownError: 'Unbekannter Fehler',
             success: 'Erfolgreich',
             loading: 'Laden...',
             info: 'Info',
@@ -81,6 +82,18 @@ export default {
             rightsTitle: 'Ihre Rechte & Speicherdauer',
             rightsText:
                 'Sie haben jederzeit das Recht und die Möglichkeit, die in der App lokal gespeicherten Daten zu löschen. Zudem können Sie die Standortberechtigung in den Systemeinstellungen des Geräts jederzeit widerrufen.',
+        },
+        csv: {
+            exportFailed: 'CSV-Export fehlgeschlagen.',
+            sharingUnavailable: 'Teilen ist auf diesem Gerät nicht verfügbar.',
+            importFailed: 'CSV-Import fehlgeschlagen.',
+            noImportableData:
+                'Keine importierbaren Daten in der CSV-Datei gefunden.',
+            importedEvents: '{{count}} Ereignisse erfolgreich importiert.',
+            importedWorkHours:
+                '{{count}} Arbeitszeit-Einträge erfolgreich importiert.',
+            importedBoth:
+                '{{events}} Ereignisse und {{workHours}} Arbeitszeit-Einträge erfolgreich importiert.',
         },
         settings: {
             title: 'Einstellungen',

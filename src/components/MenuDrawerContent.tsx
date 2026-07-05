@@ -141,13 +141,13 @@ export default function MenuDrawerContent(
                                 if (!result.success && result.message) {
                                     showDialog(
                                         t('common.error'),
-                                        result.message,
+                                        t(result.message),
                                     )
                                 } else if (result.success) {
                                     if (result.message) {
                                         showDialog(
                                             t('common.success'),
-                                            result.message,
+                                            t(result.message),
                                         )
                                     }
                                 }
@@ -176,27 +176,30 @@ export default function MenuDrawerContent(
                                     await import('../utils/csv')
                                 const result = await importFromCSV()
                                 if (result.success) {
-                                    const parts = []
-                                    if (result.count) {
-                                        parts.push(
-                                            `${result.count.toString()} events`,
-                                        )
+                                    const events = result.count ?? 0
+                                    const workHours = result.workHoursCount ?? 0
+                                    let message: string
+                                    if (events > 0 && workHours > 0) {
+                                        message = t('csv.importedBoth', {
+                                            events,
+                                            workHours,
+                                        })
+                                    } else if (workHours > 0) {
+                                        message = t('csv.importedWorkHours', {
+                                            count: workHours,
+                                        })
+                                    } else {
+                                        message = t('csv.importedEvents', {
+                                            count: events,
+                                        })
                                     }
-                                    if (result.workHoursCount) {
-                                        parts.push(
-                                            `${result.workHoursCount.toString()} work hours entries`,
-                                        )
-                                    }
-                                    showDialog(
-                                        t('common.success'),
-                                        parts.length > 0
-                                            ? `Successfully imported ${parts.join(' and ')}.`
-                                            : 'Successfully imported events.',
-                                    )
-                                } else if (result.message !== 'Cancelled') {
+                                    showDialog(t('common.success'), message)
+                                } else if (!result.cancelled) {
                                     showDialog(
                                         t('common.error'),
-                                        result.message || 'Unknown error',
+                                        result.message
+                                            ? t(result.message)
+                                            : t('common.unknownError'),
                                     )
                                 }
                             })()

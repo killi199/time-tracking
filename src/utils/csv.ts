@@ -14,7 +14,9 @@ import { getFormattedDate } from './time'
 
 export type CSVResult = {
     success: boolean
+    /** i18n key of the error message, translated by the caller. */
     message?: string
+    cancelled?: boolean
     count?: number
     workHoursCount?: number
 }
@@ -65,12 +67,12 @@ export const exportToCSV = async (): Promise<CSVResult> => {
         } else {
             return {
                 success: false,
-                message: 'Sharing is not available on this device',
+                message: 'csv.sharingUnavailable',
             }
         }
     } catch (error) {
         console.error('Error exporting CSV:', error)
-        return { success: false, message: 'Failed to export CSV' }
+        return { success: false, message: 'csv.exportFailed' }
     }
 }
 
@@ -86,7 +88,7 @@ export const importFromCSV = async (): Promise<CSVResult> => {
         })
 
         if (result.canceled) {
-            return { success: false, message: 'Cancelled' }
+            return { success: false, cancelled: true }
         }
 
         const fileUri = result.assets[0].uri
@@ -147,7 +149,7 @@ export const importFromCSV = async (): Promise<CSVResult> => {
         if (eventsToImport.length === 0 && workHoursToImport.length === 0) {
             return {
                 success: false,
-                message: 'No importable data found in CSV.',
+                message: 'csv.noImportableData',
             }
         }
         if (eventsToImport.length > 0) {
@@ -163,6 +165,6 @@ export const importFromCSV = async (): Promise<CSVResult> => {
         }
     } catch (error) {
         console.error('Error importing CSV:', error)
-        return { success: false, message: 'Failed to import CSV' }
+        return { success: false, message: 'csv.importFailed' }
     }
 }
