@@ -95,7 +95,7 @@
     "devDependencies": {
         "@babel/core": "^7.29.0",
         "@eslint/js": "9.39.2",
-        "@jest/globals": "^29.7.0",
+        "@jest/globals": "^30.4.1",
         "@react-native/jest-preset": "0.86.0",
         "@types/papaparse": "5.5.2",
         "@types/react": "~19.2.14",
