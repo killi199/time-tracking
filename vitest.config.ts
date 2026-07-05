@@ -17,6 +17,7 @@ export default defineConfig({
                 'src/**/*.test.{ts,tsx}',
                 'src/**/*.d.ts',
                 'src/i18n/locales/*.ts', // often don't need coverage for just translation files
+                'src/test/**', // test-support code
             ],
         },
     },
