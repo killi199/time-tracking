@@ -6,6 +6,7 @@
     "exclude": [
         "node_modules",
         "src/screens/menu/GeofenceSetupScreen.tsx",
-        "src/services/LocationTask.ts"
+        "src/services/LocationTask.ts",
+        "src/services/LocationTask.test.ts"
     ]
 }
