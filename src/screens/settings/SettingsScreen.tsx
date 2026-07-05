@@ -64,7 +64,6 @@ export default function SettingsScreen() {
                 // Fixed DST-free date: only hours/minutes are read from it
                 value={new Date(2000, 0, 1, targetHours, targetMinutes)}
                 mode="time"
-                is24Hour={true}
                 locale={i18n.language}
                 cancelLabel={t('common.cancel')}
                 confirmLabel={t('common.confirm')}

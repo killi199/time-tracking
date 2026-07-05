@@ -485,7 +485,6 @@ export default function HomeScreen({
                     return d
                 })()}
                 mode="time"
-                is24Hour={true}
                 locale={i18n.language}
                 cancelLabel={t('common.cancel')}
                 confirmLabel={t('common.confirm')}
