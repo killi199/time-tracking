@@ -76,6 +76,9 @@
         "roots": [
             "<rootDir>/src"
         ],
+        "setupFilesAfterEnv": [
+            "<rootDir>/src/test/jestSetup.ts"
+        ],
         "collectCoverageFrom": [
             "src/**/*.{ts,tsx}",
             "!src/**/*.test.{ts,tsx}",
