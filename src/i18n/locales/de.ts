@@ -90,6 +90,7 @@ export default {
             english: 'Englisch',
             german: 'Deutsch',
             workHours: 'Arbeitszeit pro Tag',
+            workHoursInvalid: 'Die Arbeitszeit pro Tag muss größer als 0 sein.',
             workHoursEffectiveNote:
                 'Änderungen gelten ab heute. Frühere Tage behalten ihr bisheriges Ziel.',
         },

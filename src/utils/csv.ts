@@ -16,31 +16,39 @@ export type CSVResult = {
     success: boolean
     message?: string
     count?: number
+    workHoursCount?: number
 }
 
+// Marker row starting the work-hours section. Its rows are single-column
+// ('YYYY-MM-DD=minutes') on purpose: importers of app versions without this
+// feature parse them as rows lacking a Time field and skip them.
 const WORK_HOURS_SECTION = '[WorkHours]'
+const WORK_HOURS_LINE_PATTERN = /^(\d{4}-\d{2}-\d{2})=(\d+)$/
 
 export const exportToCSV = async (): Promise<CSVResult> => {
     try {
         const events = getAllEvents()
 
-        const data = events.map((event) => ({
-            Date: event.date,
-            Time: event.time,
-            Note: event.note || '',
-            IsManualEntry: event.isManualEntry ? 'true' : 'false',
-        }))
-
-        let csvContent = Papa.unparse(data)
+        // Explicit fields so the header row is emitted even without events —
+        // the import relies on it to parse the file (and the section marker).
+        let csvContent = Papa.unparse({
+            fields: ['Date', 'Time', 'Note', 'IsManualEntry'],
+            data: events.map((event) => [
+                event.date,
+                event.time,
+                event.note || '',
+                event.isManualEntry ? 'true' : 'false',
+            ]),
+        })
 
         const workHours = getWorkHoursHistory()
         if (workHours.length > 0) {
-            const workHoursContent = Papa.unparse(
-                workHours.map((entry) => ({
-                    EffectiveDate: entry.effectiveDate,
-                    DailyMinutes: entry.dailyMinutes,
-                })),
-            )
+            const workHoursContent = workHours
+                .map(
+                    (entry) =>
+                        `${entry.effectiveDate}=${String(entry.dailyMinutes)}`,
+                )
+                .join('\r\n')
             csvContent += `\r\n\r\n${WORK_HOURS_SECTION}\r\n${workHoursContent}`
         }
 
@@ -92,25 +100,40 @@ export const importFromCSV = async (): Promise<CSVResult> => {
             IsManualEntry?: string
         }
 
-        // Split off the optional work-hours section (see exportToCSV)
-        let eventsContent = content
-        let workHoursContent: string | null = null
-        const sectionIndex = content.indexOf(WORK_HOURS_SECTION)
-        if (sectionIndex !== -1) {
-            eventsContent = content.slice(0, sectionIndex)
-            workHoursContent = content.slice(
-                sectionIndex + WORK_HOURS_SECTION.length,
-            )
-        }
-
-        const parsed = Papa.parse<CSVRow>(eventsContent, {
+        const parsed = Papa.parse<CSVRow>(content, {
             header: true,
             skipEmptyLines: true,
         })
 
         const eventsToImport: Omit<TimeEvent, 'id'>[] = []
+        const workHoursToImport: WorkHoursEntry[] = []
+
+        // Rows are events until the [WorkHours] marker row. Papa respects CSV
+        // quoting, so the marker inside a note can never start the section.
+        let inWorkHoursSection = false
 
         parsed.data.forEach((row) => {
+            if (!inWorkHoursSection && row.Date === WORK_HOURS_SECTION) {
+                inWorkHoursSection = true
+                return
+            }
+
+            if (inWorkHoursSection) {
+                const match = row.Date
+                    ? WORK_HOURS_LINE_PATTERN.exec(row.Date)
+                    : null
+                if (match) {
+                    const dailyMinutes = Number(match[2])
+                    if (dailyMinutes > 0 && dailyMinutes < 24 * 60) {
+                        workHoursToImport.push({
+                            effectiveDate: match[1],
+                            dailyMinutes,
+                        })
+                    }
+                }
+                return
+            }
+
             if (row.Date && row.Time) {
                 eventsToImport.push({
                     date: row.Date,
@@ -121,49 +144,22 @@ export const importFromCSV = async (): Promise<CSVResult> => {
             }
         })
 
-        const workHoursToImport: WorkHoursEntry[] = []
-
-        if (workHoursContent) {
-            type WorkHoursRow = {
-                EffectiveDate?: string
-                DailyMinutes?: string
+        if (eventsToImport.length === 0 && workHoursToImport.length === 0) {
+            return {
+                success: false,
+                message: 'No importable data found in CSV.',
             }
-
-            const parsedWorkHours = Papa.parse<WorkHoursRow>(
-                workHoursContent.trim(),
-                {
-                    header: true,
-                    skipEmptyLines: true,
-                },
-            )
-
-            parsedWorkHours.data.forEach((row) => {
-                const dailyMinutes = Number(row.DailyMinutes)
-                if (
-                    row.EffectiveDate &&
-                    /^\d{4}-\d{2}-\d{2}$/.test(row.EffectiveDate) &&
-                    Number.isInteger(dailyMinutes) &&
-                    dailyMinutes > 0 &&
-                    dailyMinutes < 24 * 60
-                ) {
-                    workHoursToImport.push({
-                        effectiveDate: row.EffectiveDate,
-                        dailyMinutes,
-                    })
-                }
-            })
         }
-
-        if (eventsToImport.length > 0 || workHoursToImport.length > 0) {
-            if (eventsToImport.length > 0) {
-                importEvents(eventsToImport)
-            }
-            if (workHoursToImport.length > 0) {
-                importWorkHours(workHoursToImport)
-            }
-            return { success: true, count: eventsToImport.length }
-        } else {
-            return { success: false, message: 'No valid events found in CSV.' }
+        if (eventsToImport.length > 0) {
+            importEvents(eventsToImport)
+        }
+        if (workHoursToImport.length > 0) {
+            importWorkHours(workHoursToImport)
+        }
+        return {
+            success: true,
+            count: eventsToImport.length,
+            workHoursCount: workHoursToImport.length,
         }
     } catch (error) {
         console.error('Error importing CSV:', error)

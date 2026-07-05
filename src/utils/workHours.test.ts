@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import {
     DEFAULT_DAILY_TARGET_MINUTES,
     resolveDailyTarget,
+    sumDailyTargets,
     WorkHoursEntry,
 } from './workHours'
 
@@ -55,5 +56,36 @@ describe('resolveDailyTarget', () => {
             DEFAULT_DAILY_TARGET_MINUTES,
         )
         expect(resolveDailyTarget(boundary, '2026-01-01')).toBe(400)
+    })
+})
+
+describe('sumDailyTargets', () => {
+    const history: WorkHoursEntry[] = [
+        { effectiveDate: '2026-01-10', dailyMinutes: 462 },
+        { effectiveDate: '2026-03-01', dailyMinutes: 420 },
+    ]
+
+    it('returns 0 for no dates', () => {
+        expect(sumDailyTargets(history, [])).toBe(0)
+    })
+
+    it('sums the default for dates with an empty history', () => {
+        expect(sumDailyTargets([], ['2026-01-01', '2026-01-02'])).toBe(
+            2 * DEFAULT_DAILY_TARGET_MINUTES,
+        )
+    })
+
+    it('sums mixed targets across effective dates', () => {
+        expect(
+            sumDailyTargets(history, [
+                '2026-01-09',
+                '2026-02-15',
+                '2026-03-01',
+            ]),
+        ).toBe(DEFAULT_DAILY_TARGET_MINUTES + 462 + 420)
+    })
+
+    it('accepts a Set of dates', () => {
+        expect(sumDailyTargets(history, new Set(['2026-02-15']))).toBe(462)
     })
 })

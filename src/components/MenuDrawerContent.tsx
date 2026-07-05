@@ -176,10 +176,21 @@ export default function MenuDrawerContent(
                                     await import('../utils/csv')
                                 const result = await importFromCSV()
                                 if (result.success) {
+                                    const parts = []
+                                    if (result.count) {
+                                        parts.push(
+                                            `${result.count.toString()} events`,
+                                        )
+                                    }
+                                    if (result.workHoursCount) {
+                                        parts.push(
+                                            `${result.workHoursCount.toString()} work hours entries`,
+                                        )
+                                    }
                                     showDialog(
                                         t('common.success'),
-                                        result.count !== undefined
-                                            ? `Successfully imported ${result.count.toString()} events.`
+                                        parts.length > 0
+                                            ? `Successfully imported ${parts.join(' and ')}.`
                                             : 'Successfully imported events.',
                                     )
                                 } else if (result.message !== 'Cancelled') {

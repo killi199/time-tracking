@@ -28,3 +28,21 @@ export const resolveDailyTarget = (
     }
     return target
 }
+
+/**
+ * Sums the daily work-hours targets for the given dates.
+ *
+ * @param history - Entries sorted ascending by effectiveDate.
+ * @param dates - Date strings in YYYY-MM-DD format.
+ * @returns The total expected minutes across all given dates.
+ */
+export const sumDailyTargets = (
+    history: WorkHoursEntry[],
+    dates: Iterable<string>,
+): number => {
+    let total = 0
+    for (const date of dates) {
+        total += resolveDailyTarget(history, date)
+    }
+    return total
+}

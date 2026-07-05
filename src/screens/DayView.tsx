@@ -6,11 +6,12 @@ import { TimeSeparator } from '../components/TimeSeparator'
 import {
     getTodayEvents,
     getOverallStats,
-    getDailyTargetMinutes,
+    getWorkHoursHistory,
 } from '../db/database'
 import { TimeEvent, ProcessedTimeEvent } from '../types'
 import { useTranslation } from 'react-i18next'
 import { formatTime, getFormattedDate } from '../utils/time'
+import { resolveDailyTarget } from '../utils/workHours'
 
 interface DayViewProps {
     date: string
@@ -51,14 +52,15 @@ function calculateMetrics(currentEvents: TimeEvent[], date: string) {
     const todayWorked = formatTime(totalMinutesToday)
 
     // 2. Day Balance (Target: daily target of the viewed date)
+    const workHoursHistory = getWorkHoursHistory()
     const dayBalanceMinutes =
         sortedEvents.length > 0
-            ? totalMinutesToday - getDailyTargetMinutes(date)
+            ? totalMinutesToday - resolveDailyTarget(workHoursHistory, date)
             : 0
     const dayBalance = formatTime(dayBalanceMinutes, true)
 
     // 3. Overall Balance
-    const { overallBalanceMinutes } = getOverallStats(date)
+    const { overallBalanceMinutes } = getOverallStats(date, workHoursHistory)
 
     // Add today's active session to overall balance if any
     let finalOverallBalance = overallBalanceMinutes

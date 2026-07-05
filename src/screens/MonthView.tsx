@@ -11,7 +11,7 @@ import {
 import { TimeEvent } from '../types'
 import { useTranslation } from 'react-i18next'
 import { formatTime, getFormattedDate } from '../utils/time'
-import { resolveDailyTarget } from '../utils/workHours'
+import { sumDailyTargets } from '../utils/workHours'
 
 interface ProcessedEvent extends TimeEvent {
     type: 'start' | 'end'
@@ -79,10 +79,7 @@ function calculateMetrics(currentEvents: TimeEvent[], month: string) {
 
     // Month Balance (Target: daily target per worked day)
     const workHoursHistory = getWorkHoursHistory()
-    let expectedMinutes = 0
-    workedDays.forEach((d) => {
-        expectedMinutes += resolveDailyTarget(workHoursHistory, d)
-    })
+    const expectedMinutes = sumDailyTargets(workHoursHistory, workedDays)
     const monthBalanceMinutes = totalMinutesMonth - expectedMinutes
     const dayBalance = formatTime(monthBalanceMinutes, true)
 
@@ -93,7 +90,10 @@ function calculateMetrics(currentEvents: TimeEvent[], month: string) {
     const lastDay = new Date(year, monthNum, 0).getDate()
     const cutoffDate = `${month}-${String(lastDay).padStart(2, '0')}`
 
-    const { overallBalanceMinutes } = getOverallStats(cutoffDate)
+    const { overallBalanceMinutes } = getOverallStats(
+        cutoffDate,
+        workHoursHistory,
+    )
     let finalOverallBalance = overallBalanceMinutes
 
     // Add active session if exists (getOverallStats doesn't include active)

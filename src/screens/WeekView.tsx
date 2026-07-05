@@ -11,7 +11,7 @@ import {
 import { TimeEvent } from '../types'
 import { useTranslation } from 'react-i18next'
 import { formatTime, getFormattedDate } from '../utils/time'
-import { resolveDailyTarget } from '../utils/workHours'
+import { sumDailyTargets } from '../utils/workHours'
 
 interface ProcessedEvent extends TimeEvent {
     type: 'start' | 'end'
@@ -105,15 +105,12 @@ function calculateMetrics(
 
     // Week Balance (Target: daily target per worked day)
     const workHoursHistory = getWorkHoursHistory()
-    let expectedMinutes = 0
-    workedDays.forEach((d) => {
-        expectedMinutes += resolveDailyTarget(workHoursHistory, d)
-    })
+    const expectedMinutes = sumDailyTargets(workHoursHistory, workedDays)
     const weekBalanceMinutes = totalMinutesWeek - expectedMinutes
     const weekBalance = formatTime(weekBalanceMinutes, true)
 
     // Overall Balance (Target: total accumulated until end of this week)
-    const { overallBalanceMinutes } = getOverallStats(endDate)
+    const { overallBalanceMinutes } = getOverallStats(endDate, workHoursHistory)
     let finalOverallBalance = overallBalanceMinutes
 
     // Add active session if exists (getOverallStats doesn't include active)

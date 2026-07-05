@@ -15,7 +15,7 @@ export default function SettingsScreen() {
         getDailyTargetMinutes(getFormattedDate(new Date())),
     )
     const [workHoursPickerVisible, setWorkHoursPickerVisible] = useState(false)
-    const [snackbarVisible, setSnackbarVisible] = useState(false)
+    const [snackbarText, setSnackbarText] = useState<string | null>(null)
 
     const targetHours = Math.floor(dailyTarget / 60)
     const targetMinutes = dailyTarget % 60
@@ -24,11 +24,12 @@ export default function SettingsScreen() {
         const minutes = date.getHours() * 60 + date.getMinutes()
         setWorkHoursPickerVisible(false)
         if (minutes === 0) {
+            setSnackbarText(t('settings.workHoursInvalid'))
             return
         }
         setDailyTargetMinutes(minutes, getFormattedDate(new Date()))
         setDailyTarget(minutes)
-        setSnackbarVisible(true)
+        setSnackbarText(t('settings.workHoursEffectiveNote'))
     }
 
     return (
@@ -60,11 +61,8 @@ export default function SettingsScreen() {
                     setWorkHoursPickerVisible(false)
                 }}
                 onConfirm={handleWorkHoursConfirm}
-                value={(() => {
-                    const d = new Date()
-                    d.setHours(targetHours, targetMinutes, 0, 0)
-                    return d
-                })()}
+                // Fixed DST-free date: only hours/minutes are read from it
+                value={new Date(2000, 0, 1, targetHours, targetMinutes)}
                 mode="time"
                 is24Hour={true}
                 locale={i18n.language}
@@ -73,12 +71,12 @@ export default function SettingsScreen() {
             />
 
             <Snackbar
-                visible={snackbarVisible}
+                visible={snackbarText !== null}
                 onDismiss={() => {
-                    setSnackbarVisible(false)
+                    setSnackbarText(null)
                 }}
             >
-                {t('settings.workHoursEffectiveNote')}
+                {snackbarText}
             </Snackbar>
         </View>
     )

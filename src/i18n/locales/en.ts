@@ -88,6 +88,7 @@ export default {
             english: 'English',
             german: 'German',
             workHours: 'Daily work hours',
+            workHoursInvalid: 'The daily work hours must be greater than 0.',
             workHoursEffectiveNote:
                 'Changes apply from today onward. Earlier days keep their previous target.',
         },

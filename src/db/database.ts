@@ -1,6 +1,10 @@
 import * as SQLite from 'expo-sqlite'
 import { TimeEvent } from '../types'
-import { resolveDailyTarget, WorkHoursEntry } from '../utils/workHours'
+import {
+    resolveDailyTarget,
+    sumDailyTargets,
+    WorkHoursEntry,
+} from '../utils/workHours'
 
 const db = SQLite.openDatabaseSync('time_tracking.db')
 
@@ -57,14 +61,7 @@ export const setDailyTargetMinutes = (
     minutes: number,
     effectiveDate: string,
 ): void => {
-    const statement = db.prepareSync(
-        'INSERT OR REPLACE INTO work_hours (effective_date, daily_minutes) VALUES ($date, $minutes)',
-    )
-    try {
-        statement.executeSync({ $date: effectiveDate, $minutes: minutes })
-    } finally {
-        statement.finalizeSync()
-    }
+    importWorkHours([{ effectiveDate, dailyMinutes: minutes }])
 }
 
 /**
@@ -205,6 +202,7 @@ export const getAllEvents = (): TimeEvent[] => {
 
 export const getOverallStats = (
     cutoffDate?: string,
+    workHoursHistory?: WorkHoursEntry[],
 ): {
     totalMinutesWorked: number
     overallBalanceMinutes: number
@@ -255,11 +253,8 @@ export const getOverallStats = (
     })
 
     // Calculate expected minutes (daily target per worked day)
-    const history = getWorkHoursHistory()
-    let expectedMinutes = 0
-    workedDays.forEach((date) => {
-        expectedMinutes += resolveDailyTarget(history, date)
-    })
+    const history = workHoursHistory ?? getWorkHoursHistory()
+    const expectedMinutes = sumDailyTargets(history, workedDays)
     const overallBalanceMinutes = totalMinutesWorked - expectedMinutes
 
     return {
