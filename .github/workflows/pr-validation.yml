@@ -46,7 +46,7 @@ jobs:
 
             - name: Test
               if: matrix.variant == 'default'
-              run: yarn test --run --coverage --reporter=junit --outputFile=test-report.junit.xml
+              run: yarn test --ci --coverage --reporters=default --reporters=jest-junit
 
             - name: Upload test results to Codecov
               if: ${{ !cancelled() && matrix.variant == 'default' }}

@@ -12,11 +12,6 @@ updates:
       cooldown:
           default-days: 3
       open-pull-requests-limit: 10
-      groups:
-          vitest:
-              patterns:
-                  - 'vitest'
-                  - '@vitest/coverage*'
       ignore:
           - dependency-name: 'react-native'
           - dependency-name: 'react'

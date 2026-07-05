@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Platform, View } from 'react-native'
 import { Portal, Dialog, Button } from 'react-native-paper'
 import DateTimePicker from '@expo/ui/community/datetime-picker'
+import { shiftToUTC, shiftToLocal } from '../utils/dateShift'
 
 export interface AdaptiveDateTimePickerProps {
     visible: boolean
@@ -12,30 +13,6 @@ export interface AdaptiveDateTimePickerProps {
     locale?: string
     cancelLabel: string
     confirmLabel: string
-}
-
-const shiftToUTC = (date: Date) => {
-    return new Date(
-        Date.UTC(
-            date.getFullYear(),
-            date.getMonth(),
-            date.getDate(),
-            date.getHours(),
-            date.getMinutes(),
-            date.getSeconds(),
-        ),
-    )
-}
-
-const shiftToLocal = (date: Date) => {
-    return new Date(
-        date.getUTCFullYear(),
-        date.getUTCMonth(),
-        date.getUTCDate(),
-        date.getUTCHours(),
-        date.getUTCMinutes(),
-        date.getUTCSeconds(),
-    )
 }
 
 const AdaptiveDateTimePicker = ({
