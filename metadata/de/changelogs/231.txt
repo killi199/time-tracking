@@ -1,0 +1,6 @@
+- New: Implement different working hours (#324)
+- Fix: Initial NFC checkin fixes (#307)
+- Fix: Prevent white flash on map load (#304)
+- Fix: Remove theme setting (#302)
+- Fix: Android Status Bar (White on White) in Expo SDK 56 fix (#286)
+- General improvements to app stability, dependencies, and code maintenance.
