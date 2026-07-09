@@ -20,6 +20,7 @@ export default defineConfig(
             'coverage/**',
             '.yarn/**',
             'node_modules/**',
+            '.github/scripts/**',
         ],
     },
     eslint.configs.recommended,
