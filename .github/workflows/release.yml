@@ -94,7 +94,9 @@ jobs:
               run: npx expo prebuild --platform android --clean
 
             - name: Configure Gradle Memory
-              run: echo "org.gradle.jvmargs=-Xmx3g -XX:MaxMetaspaceSize=1024m" >> android/gradle.properties
+              run: |
+                  echo "" >> android/gradle.properties
+                  echo "org.gradle.jvmargs=-Xmx3g -XX:MaxMetaspaceSize=1024m" >> android/gradle.properties
 
             - name: Build Android APK
               working-directory: android
