@@ -1282,7 +1282,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/dom-webview@npm:^57.0.0, @expo/dom-webview@npm:^57.0.1, @expo/dom-webview@npm:~57.0.1":
+"@expo/dom-webview@npm:^57.0.1, @expo/dom-webview@npm:~57.0.1":
   version: 57.0.1
   resolution: "@expo/dom-webview@npm:57.0.1"
   peerDependencies:
@@ -1388,22 +1388,6 @@ __metadata:
     "@expo/config": "npm:~57.0.5"
     chalk: "npm:^4.1.2"
   checksum: 10c0/ab730d58253dd0685c86f5a2663316d43f25fc3235272a4a8413a1f72e07ca68d87e4e2c1cedf021e1a2b17ec6a3bfa246256b62b7768314352bdf9979771191
-  languageName: node
-  linkType: hard
-
-"@expo/log-box@npm:57.0.0":
-  version: 57.0.0
-  resolution: "@expo/log-box@npm:57.0.0"
-  dependencies:
-    "@expo/dom-webview": "npm:^57.0.0"
-    anser: "npm:^1.4.9"
-    stacktrace-parser: "npm:^0.1.10"
-  peerDependencies:
-    "@expo/dom-webview": ^57.0.0
-    expo: "*"
-    react: "*"
-    react-native: "*"
-  checksum: 10c0/b8261ce395cab83b223c54effc336b702247d738f5764a2d4764adbfe58f0f123a5b67820c3d56058a85b45ce7e3f75340fd6788dc226770920a0a2ff396e731
   languageName: node
   linkType: hard
 
@@ -10636,7 +10620,6 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.29.0"
     "@eslint/js": "npm:9.39.2"
-    "@expo/log-box": "npm:57.0.0"
     "@expo/ui": "npm:~57.0.7"
     "@jest/globals": "npm:^29.7.0"
     "@maplibre/maplibre-react-native": "npm:11.3.6"
