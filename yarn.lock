@@ -1282,18 +1282,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/dom-webview@npm:^57.0.0":
-  version: 57.0.0
-  resolution: "@expo/dom-webview@npm:57.0.0"
-  peerDependencies:
-    expo: "*"
-    react: "*"
-    react-native: "*"
-  checksum: 10c0/0f7b8329f341ced97581935b541987f45bab65632d9cfd37cffbf9877d0f91ed0c12a51bc420ffb8ff1046a8d099841f87ea1e61dd4194fa9af9a279e0e1dcef
-  languageName: node
-  linkType: hard
-
-"@expo/dom-webview@npm:^57.0.1, @expo/dom-webview@npm:~57.0.1":
+"@expo/dom-webview@npm:^57.0.0, @expo/dom-webview@npm:^57.0.1, @expo/dom-webview@npm:~57.0.1":
   version: 57.0.1
   resolution: "@expo/dom-webview@npm:57.0.1"
   peerDependencies:
