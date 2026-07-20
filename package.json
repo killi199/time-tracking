@@ -59,7 +59,7 @@
         "papaparse": "5.5.4",
         "react": "19.2.3",
         "react-dom": "19.2.3",
-        "react-i18next": "17.0.9",
+        "react-i18next": "17.0.10",
         "react-native": "0.86.0",
         "react-native-gesture-handler": "~2.32.0",
         "react-native-nfc-manager": "3.17.2",
