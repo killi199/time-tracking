@@ -2591,9 +2591,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native/babel-preset@npm:0.86.0":
-  version: 0.86.0
-  resolution: "@react-native/babel-preset@npm:0.86.0"
+"@react-native/babel-plugin-codegen@npm:0.86.1":
+  version: 0.86.1
+  resolution: "@react-native/babel-plugin-codegen@npm:0.86.1"
+  dependencies:
+    "@babel/traverse": "npm:^7.29.0"
+    "@react-native/codegen": "npm:0.86.1"
+  checksum: 10c0/a8e37ff3b7241fb33d1653c42c7c47c6b1bf2fb296157fffcc0d262b2a353685c1a454b4e155dfd229d69b640bbc9cf9798d0808e08cc9455fd85b7c401701b0
+  languageName: node
+  linkType: hard
+
+"@react-native/babel-preset@npm:0.86.1":
+  version: 0.86.1
+  resolution: "@react-native/babel-preset@npm:0.86.1"
   dependencies:
     "@babel/core": "npm:^7.25.2"
     "@babel/plugin-proposal-export-default-from": "npm:^7.24.7"
@@ -2624,13 +2634,13 @@ __metadata:
     "@babel/plugin-transform-runtime": "npm:^7.24.7"
     "@babel/plugin-transform-typescript": "npm:^7.25.2"
     "@babel/plugin-transform-unicode-regex": "npm:^7.24.7"
-    "@react-native/babel-plugin-codegen": "npm:0.86.0"
+    "@react-native/babel-plugin-codegen": "npm:0.86.1"
     babel-plugin-syntax-hermes-parser: "npm:0.36.0"
     babel-plugin-transform-flow-enums: "npm:^0.0.2"
     react-refresh: "npm:^0.14.0"
   peerDependencies:
     "@babel/core": "*"
-  checksum: 10c0/cf86875fa72d9bdd0b6ac3819b7a683764f154ff8df5144cce9cc60dd734d9d100bde563acbb48104e0033650dcc28d968eb985ff59e47349dc6861169df02f6
+  checksum: 10c0/036336f0d3b8ad179864b7a26f55bfdecba138f60b32206048aabd3718138c214f0ad04e0d4bce7147bae88e1b5b8ae37ac7dd9c39800b3c59cdbc33c9b16731
   languageName: node
   linkType: hard
 
@@ -2648,6 +2658,23 @@ __metadata:
   peerDependencies:
     "@babel/core": "*"
   checksum: 10c0/22ca5657595438f5e464223a65b25567b3e7106995c8ae59c5853d8cdb3df59065db54c4cb74e958bbe2930b0aded8cd518c2fc1ef13a4740a05fb1faa3ae160
+  languageName: node
+  linkType: hard
+
+"@react-native/codegen@npm:0.86.1":
+  version: 0.86.1
+  resolution: "@react-native/codegen@npm:0.86.1"
+  dependencies:
+    "@babel/core": "npm:^7.25.2"
+    "@babel/parser": "npm:^7.29.0"
+    hermes-parser: "npm:0.36.0"
+    invariant: "npm:^2.2.4"
+    nullthrows: "npm:^1.1.1"
+    tinyglobby: "npm:^0.2.15"
+    yargs: "npm:^17.6.2"
+  peerDependencies:
+    "@babel/core": "*"
+  checksum: 10c0/eb8d6d350e8171bcd14fb3f9ec4ba47eb20fe6553fcf31971e8c42b18f51a892d617b2c7bf3c450abc257b2e24c23690286ef07f89e8066f73743189871e715b
   languageName: node
   linkType: hard
 
@@ -2741,29 +2768,36 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native/metro-babel-transformer@npm:0.86.0":
-  version: 0.86.0
-  resolution: "@react-native/metro-babel-transformer@npm:0.86.0"
+"@react-native/js-polyfills@npm:0.86.1":
+  version: 0.86.1
+  resolution: "@react-native/js-polyfills@npm:0.86.1"
+  checksum: 10c0/de0fe407c8a81ffb48f963160f96535119149b862448fd5622dfcd2aea7d4969b8e892559fa255be8b097e2df63aa72962ebd34d9c83fe5f40996c20410d323e
+  languageName: node
+  linkType: hard
+
+"@react-native/metro-babel-transformer@npm:0.86.1":
+  version: 0.86.1
+  resolution: "@react-native/metro-babel-transformer@npm:0.86.1"
   dependencies:
     "@babel/core": "npm:^7.25.2"
-    "@react-native/babel-preset": "npm:0.86.0"
+    "@react-native/babel-preset": "npm:0.86.1"
     hermes-parser: "npm:0.36.0"
     nullthrows: "npm:^1.1.1"
   peerDependencies:
     "@babel/core": "*"
-  checksum: 10c0/8b4ab63d32f28f3663204110d37c50a8dd82eef622d57fb236f3d05b69bdfc1fe277f7572e4cf9135790921922f35fe4aea5f7c183fe17cd2ead19ed8e1db5d1
+  checksum: 10c0/fd0564f4ca1e117823c802ff3fa4812df262cae52ecda554b51038127291330a2dd7328fea64ad5b5e306fa01449762a886050a171cd06cde671032babe39c05
   languageName: node
   linkType: hard
 
-"@react-native/metro-config@npm:0.86.0":
-  version: 0.86.0
-  resolution: "@react-native/metro-config@npm:0.86.0"
+"@react-native/metro-config@npm:0.86.1":
+  version: 0.86.1
+  resolution: "@react-native/metro-config@npm:0.86.1"
   dependencies:
-    "@react-native/js-polyfills": "npm:0.86.0"
-    "@react-native/metro-babel-transformer": "npm:0.86.0"
+    "@react-native/js-polyfills": "npm:0.86.1"
+    "@react-native/metro-babel-transformer": "npm:0.86.1"
     metro-config: "npm:^0.84.3"
     metro-runtime: "npm:^0.84.3"
-  checksum: 10c0/92c043b8e4d959a3d8c0aa56940a9ff455c9de21bb6fe2a799fb5a847e45587d9783c3b55e3254f2b17fa71dfc66fff30ce0a70505e0d699dbbf2c76e0ff539c
+  checksum: 10c0/87bfd632196c60215a6c44eb3742892f413edb0c7e8d8000d5391881dcf0598937e8ed3a0bc7581d91a940297cad4d79eb228cec340b7e00946127eb8511543f
   languageName: node
   linkType: hard
 
@@ -10624,7 +10658,7 @@ __metadata:
     "@react-native-community/slider": "npm:5.2.0"
     "@react-native-vector-icons/material-design-icons": "npm:^13.1.2"
     "@react-native/jest-preset": "npm:0.86.0"
-    "@react-native/metro-config": "npm:0.86.0"
+    "@react-native/metro-config": "npm:0.86.1"
     "@types/papaparse": "npm:5.5.2"
     "@types/react": "npm:~19.2.14"
     "@types/react-dom": "npm:~19.2.0"

@@ -39,7 +39,7 @@
         "@maplibre/maplibre-react-native": "11.3.6",
         "@react-native-community/slider": "5.2.0",
         "@react-native-vector-icons/material-design-icons": "^13.1.2",
-        "@react-native/metro-config": "0.86.0",
+        "@react-native/metro-config": "0.86.1",
         "expo": "~57.0.8",
         "expo-constants": "~57.0.7",
         "expo-document-picker": "~57.0.1",
