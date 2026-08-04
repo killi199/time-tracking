@@ -2746,18 +2746,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native/jest-preset@npm:0.86.1":
-  version: 0.86.1
-  resolution: "@react-native/jest-preset@npm:0.86.1"
+"@react-native/jest-preset@npm:0.86.2":
+  version: 0.86.2
+  resolution: "@react-native/jest-preset@npm:0.86.2"
   dependencies:
     "@jest/create-cache-key-function": "npm:^29.7.0"
-    "@react-native/js-polyfills": "npm:0.86.1"
+    "@react-native/js-polyfills": "npm:0.86.2"
     babel-jest: "npm:^29.7.0"
     jest-environment-node: "npm:^29.7.0"
     regenerator-runtime: "npm:^0.13.2"
   peerDependencies:
     react: ^19.2.3
-  checksum: 10c0/8bab17fce7266d4865e4055921dfccd29b26ee1ad5793ee2b3a149f926383b1255afde60efafdcb0adf7525036647771a2dce51a25bbe9c728239f17255fd947
+  checksum: 10c0/ae6b0665a74f98a86c04eb761360bc854258f98b35f2eb1977cdad7b3e50cee66f6c7c6a9b4486d1eec5102f9c8ac68ba234fcee18ea9ca44ba3737d406ed8ec
   languageName: node
   linkType: hard
 
@@ -10657,7 +10657,7 @@ __metadata:
     "@maplibre/maplibre-react-native": "npm:11.3.6"
     "@react-native-community/slider": "npm:5.2.0"
     "@react-native-vector-icons/material-design-icons": "npm:^13.1.2"
-    "@react-native/jest-preset": "npm:0.86.1"
+    "@react-native/jest-preset": "npm:0.86.2"
     "@react-native/metro-config": "npm:0.86.1"
     "@types/papaparse": "npm:5.5.2"
     "@types/react": "npm:~19.2.14"
