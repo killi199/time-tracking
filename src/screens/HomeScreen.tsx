@@ -17,6 +17,11 @@ import {
     Checkbox,
 } from 'react-native-paper'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
+import Animated, {
+    SlideInLeft,
+    SlideInRight,
+    FadeIn,
+} from 'react-native-reanimated'
 import { scheduleOnRN } from 'react-native-worklets'
 import AdaptiveDateTimePicker from '../components/AdaptiveDateTimePicker'
 import { useFocusEffect, useNavigation } from 'expo-router'
@@ -49,6 +54,17 @@ const getWeekRangeData = (dateStr: string) => {
 }
 
 type ViewMode = 'day' | 'week' | 'month'
+type SlideDirection = 'left' | 'right' | 'none'
+
+const getEnteringAnimation = (direction: SlideDirection) => {
+    if (direction === 'right') {
+        return SlideInRight.duration(220)
+    }
+    if (direction === 'left') {
+        return SlideInLeft.duration(220)
+    }
+    return FadeIn.duration(150)
+}
 
 interface HomeScreenProps {
     readonly viewMode: ViewMode
@@ -64,6 +80,7 @@ export default function HomeScreen({
     const [currentMonth, setCurrentMonth] = useState<string>(
         getFormattedMonth(new Date()), // YYYY-MM
     )
+    const [direction, setDirection] = useState<SlideDirection>('none')
 
     // Refresh trigger to force updates in child components
     const [refreshTrigger, setRefreshTrigger] = useState(0)
@@ -138,6 +155,7 @@ export default function HomeScreen({
     })
 
     const changeDate = (step: number) => {
+        setDirection(step > 0 ? 'right' : 'left')
         if (viewMode === 'month') {
             const [year, month] = currentMonth.split('-').map(Number)
             const date = new Date(year, month - 1 + step, 1)
@@ -155,8 +173,27 @@ export default function HomeScreen({
 
     const goToToday = () => {
         const now = new Date()
-        setCurrentDate(getFormattedDate(now))
-        setCurrentMonth(getFormattedMonth(now))
+        const todayDate = getFormattedDate(now)
+        const todayMonth = getFormattedMonth(now)
+        if (viewMode === 'month') {
+            let nextDirection: SlideDirection = 'none'
+            if (todayMonth > currentMonth) {
+                nextDirection = 'right'
+            } else if (todayMonth < currentMonth) {
+                nextDirection = 'left'
+            }
+            setDirection(nextDirection)
+        } else {
+            let nextDirection: SlideDirection = 'none'
+            if (todayDate > currentDate) {
+                nextDirection = 'right'
+            } else if (todayDate < currentDate) {
+                nextDirection = 'left'
+            }
+            setDirection(nextDirection)
+        }
+        setCurrentDate(todayDate)
+        setCurrentMonth(todayMonth)
     }
 
     const formattedDate = (() => {
@@ -358,16 +395,28 @@ export default function HomeScreen({
 
     const onConfirmDatePicker = (params: { date: Date | undefined }) => {
         setDatePickerVisible(false)
-        if (params.date) {
-            if (viewMode === 'month') {
-                // Update month
-                const newMonth = getFormattedMonth(params.date)
-                setCurrentMonth(newMonth)
-            } else {
-                // Update date
-                const newDate = getFormattedDate(params.date)
-                setCurrentDate(newDate)
+        if (!params.date) return
+
+        if (viewMode === 'month') {
+            const newMonth = getFormattedMonth(params.date)
+            let nextDirection: SlideDirection = 'none'
+            if (newMonth > currentMonth) {
+                nextDirection = 'right'
+            } else if (newMonth < currentMonth) {
+                nextDirection = 'left'
             }
+            setDirection(nextDirection)
+            setCurrentMonth(newMonth)
+        } else {
+            const newDate = getFormattedDate(params.date)
+            let nextDirection: SlideDirection = 'none'
+            if (newDate > currentDate) {
+                nextDirection = 'right'
+            } else if (newDate < currentDate) {
+                nextDirection = 'left'
+            }
+            setDirection(nextDirection)
+            setCurrentDate(newDate)
         }
     }
 
@@ -508,38 +557,44 @@ export default function HomeScreen({
             />
 
             <GestureDetector gesture={swipeGesture}>
-                <View style={{ flex: 1 }}>
-                    {(() => {
-                        if (viewMode === 'day') {
-                            return (
-                                <DayView
-                                    date={currentDate}
-                                    onEditEvent={showEditDialog}
-                                    onDeleteEvent={showDeleteDialog}
-                                    onAddEvent={handleAddEvent}
-                                    refreshTrigger={refreshTrigger}
-                                />
-                            )
-                        } else if (viewMode === 'week') {
-                            return (
-                                <WeekView
-                                    date={currentDate}
-                                    onEditEvent={showEditDialog}
-                                    onDeleteEvent={showDeleteDialog}
-                                    refreshTrigger={refreshTrigger}
-                                />
-                            )
-                        } else {
-                            return (
-                                <MonthView
-                                    month={currentMonth}
-                                    onEditEvent={showEditDialog}
-                                    onDeleteEvent={showDeleteDialog}
-                                    refreshTrigger={refreshTrigger}
-                                />
-                            )
-                        }
-                    })()}
+                <View style={styles.contentContainer}>
+                    <Animated.View
+                        key={`${viewMode}-${viewMode === 'month' ? currentMonth : currentDate}`}
+                        entering={getEnteringAnimation(direction)}
+                        style={styles.animatedView}
+                    >
+                        {(() => {
+                            if (viewMode === 'day') {
+                                return (
+                                    <DayView
+                                        date={currentDate}
+                                        onEditEvent={showEditDialog}
+                                        onDeleteEvent={showDeleteDialog}
+                                        onAddEvent={handleAddEvent}
+                                        refreshTrigger={refreshTrigger}
+                                    />
+                                )
+                            } else if (viewMode === 'week') {
+                                return (
+                                    <WeekView
+                                        date={currentDate}
+                                        onEditEvent={showEditDialog}
+                                        onDeleteEvent={showDeleteDialog}
+                                        refreshTrigger={refreshTrigger}
+                                    />
+                                )
+                            } else {
+                                return (
+                                    <MonthView
+                                        month={currentMonth}
+                                        onEditEvent={showEditDialog}
+                                        onDeleteEvent={showDeleteDialog}
+                                        refreshTrigger={refreshTrigger}
+                                    />
+                                )
+                            }
+                        })()}
+                    </Animated.View>
                 </View>
             </GestureDetector>
 
@@ -648,6 +703,13 @@ export default function HomeScreen({
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
+    },
+    contentContainer: {
+        flex: 1,
+        overflow: 'hidden',
+    },
+    animatedView: {
         flex: 1,
     },
     header: {
