@@ -6,6 +6,9 @@ import tseslint from 'typescript-eslint'
 import eslintConfigPrettier from 'eslint-config-prettier/flat'
 import sonarjs from 'eslint-plugin-sonarjs'
 import jest from 'eslint-plugin-jest'
+import jestDom from 'eslint-plugin-jest-dom'
+import testingLibrary from 'eslint-plugin-testing-library'
+import unusedImports from 'eslint-plugin-unused-imports'
 import globals from 'globals'
 
 export default defineConfig(
@@ -45,11 +48,26 @@ export default defineConfig(
     {
         files: ['**/*.test.ts', '**/*.test.tsx'],
         ...jest.configs['flat/recommended'],
+        ...testingLibrary.configs['flat/react-native'],
+        ...jestDom['flat/recommended'],
     },
     {
         files: ['**/*.{ts,tsx}'],
+        plugins: {
+            'unused-imports': unusedImports,
+        },
         rules: {
-            'react/prop-types': 'off',
+            'no-unused-vars': 'off', // or "@typescript-eslint/no-unused-vars": "off",
+            'unused-imports/no-unused-imports': 'error',
+            'unused-imports/no-unused-vars': [
+                'warn',
+                {
+                    vars: 'all',
+                    varsIgnorePattern: '^_',
+                    args: 'after-used',
+                    argsIgnorePattern: '^_',
+                },
+            ],
         },
     },
     {
