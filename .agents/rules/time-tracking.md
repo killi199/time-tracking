@@ -9,7 +9,7 @@ This documentation provides guidelines for AI agents and developers working on t
 ## 1. Project Overview
 
 - **Type**: Mobile Application
-- **Framework**: Expo (React Native)
+- **Framework**: Expo (React Native) — **Expo has changed**: Always check the official versioned Expo documentation (matching the SDK version in `package.json`) before writing code.
 - **Language**: TypeScript
 - **State Management**: React Context & Hooks
 - **Navigation**: React Navigation
@@ -67,12 +67,13 @@ This documentation provides guidelines for AI agents and developers working on t
 - **Why**: React Compiler automatically handles memoization of components and hooks under the hood.
 - **Rules & Guidelines**:
     - **Never** add manual memoization hooks in standard React Native components/screens.
-    - **Do NOT use `eslint-disable`**: Bypassing React hook or other linting rules with comments like `eslint-disable-next-line` is strictly forbidden. Always solve the underlying dependency, type, or styling issue cleanly instead.
     - **Synchronous Rendering (No Flash)**: When dealing with synchronous local data (e.g., SQLite database reads), perform data queries and metrics calculations directly in the render phase rather than using asynchronous `useEffect` updates. This prevents stale state flashes and intermediate blank screen rendering.
 
 ## 3. coding Standards
 
-- **TypeScript**: Strictly type all props, state, and function return values. Avoid `any`.
+- **TypeScript Strictness**: Strictly type all props, state, variables, and function return values. Do NOT use `any`.
+- **Error Handling**: Implement proper `try/catch` blocks and user-facing error messages. Never silently ignore errors or leave empty `catch` blocks.
+- **ESLint**: Do NOT disable eslint rules (e.g., using `eslint-disable` or `eslint-disable-next-line`) just because it is easier. Always fix the underlying issue cleanly instead.
 - **Component Props**: Always create a Props interface for React components. The interface MUST be named after the file followed by `Props` (e.g., `App.tsx` -> `interface AppProps`).
 - **Hooks**: Use functional components.
 - **File Structure**:
@@ -82,7 +83,6 @@ This documentation provides guidelines for AI agents and developers working on t
     - `src/context`: React Context providers.
 - **Restrictions**:
     - **node_modules**: Agents are NOT allowed to edit anything in the `node_modules` folder.
-    - **Formatting**: After making changes to any file, agents MUST run `yarn format` or `yarn prettier --write <file>` to format the code according to the project's Prettier config. Never leave code unformatted.
 
 ## 4. Workflow for Agents
 
@@ -101,4 +101,3 @@ This documentation provides guidelines for AI agents and developers working on t
 - [ ] New translation keys added to `src/i18n/locales/*.ts`?
 - [ ] Styles use `theme.colors`?
 - [ ] No manual memoization (`useMemo`/`useCallback`/`React.memo`) introduced?
-- [ ] Did you run `yarn format` after your code changes?
