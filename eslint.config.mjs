@@ -51,6 +51,18 @@ export default defineConfig(
             ...jest.configs['flat/recommended'].rules,
             '@typescript-eslint/unbound-method': 'off', // Replaced by jest/unbound-method for tests
             'jest/unbound-method': 'error',
+            'no-restricted-imports': [
+                'error',
+                {
+                    paths: [
+                        {
+                            name: '@testing-library/react-native',
+                            importNames: ['fireEvent'],
+                            message: 'Use userEvent instead of fireEvent.',
+                        },
+                    ],
+                },
+            ],
         },
     },
     {
