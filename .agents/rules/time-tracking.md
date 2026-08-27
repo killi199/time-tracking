@@ -69,6 +69,19 @@ This documentation provides guidelines for AI agents and developers working on t
     - **Never** add manual memoization hooks in standard React Native components/screens.
     - **Synchronous Rendering (No Flash)**: When dealing with synchronous local data (e.g., SQLite database reads), perform data queries and metrics calculations directly in the render phase rather than using asynchronous `useEffect` updates. This prevents stale state flashes and intermediate blank screen rendering.
 
+### Testing & Component Mocking Rules
+
+- **Prefer Real Components**: Default to using real `react-native-paper` UI components (`Button`, `IconButton`, `Text`, `TextInput`, `Checkbox`, `Dialog`, etc.) wrapped in `<PaperProvider>`.
+- **Selective Mocking**: It is acceptable to mock specific complex UI elements, subcomponents, or child views when setting up their cascading dependencies/bridges would require disproportionate effort or when isolating a screen hierarchy.
+- **Generic `jestSetup.ts`**: Keep `src/test/jestSetup.ts` strictly generic and minimal for app-wide cross-cutting concerns (e.g., global `i18next` / `react-i18next` translation mocks and `@testing-library/react-native/matchers`). Do NOT add mocks into `jestSetup.ts` that only serve specific test files or screens; keep those mocks local to their respective test files.
+- **User Interactions**: Use `const user = userEvent.setup()` and `await user.press(...)` / `await user.type(...)` from `@testing-library/react-native` to ensure React 19 microtasks and state updates flush properly.
+- **What to Mock**:
+    - **Global test setup (`src/test/jestSetup.ts`)**: `i18next` / `react-i18next` translations (returns translation keys and stubbed translation hooks across all tests).
+    - **Native hardware/device bridges**: `react-native-nfc-manager`, `expo-location`, `@maplibre/maplibre-react-native`.
+    - **Database queries**: `src/db/database.ts`.
+    - **Navigation**: `expo-router` (`useNavigation`, `useFocusEffect`).
+    - **Animation / Worklet runtimes**: Mock locally in the specific test file when using native gesture/worklet modules (`ReanimatedSwipeable`, etc.).
+
 ## 3. coding Standards
 
 - **TypeScript Strictness**: Strictly type all props, state, variables, and function return values. Do NOT use `any`.
@@ -101,3 +114,4 @@ This documentation provides guidelines for AI agents and developers working on t
 - [ ] New translation keys added to `src/i18n/locales/*.ts`?
 - [ ] Styles use `theme.colors`?
 - [ ] No manual memoization (`useMemo`/`useCallback`/`React.memo`) introduced?
+- [ ] Tests use real `react-native-paper` components with `<PaperProvider>` rather than artificial UI mocks?
