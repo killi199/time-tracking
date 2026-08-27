@@ -37,11 +37,6 @@ jest.mock('../db/database', () => ({
     addEvent: jest.fn(),
 }))
 
-jest.mock('i18next', () => ({
-    __esModule: true,
-    default: { t: (key: string) => key },
-}))
-
 // The factory replaces the read-only `initial` property with a getter and
 // exposes this setter for it.
 const setInitialAction = (

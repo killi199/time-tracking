@@ -475,6 +475,7 @@ export default function HomeScreen({
                 <View style={styles.dateNav}>
                     <IconButton
                         icon="chevron-left"
+                        testID="prev-date-btn"
                         onPress={() => {
                             changeDate(-1)
                         }}
@@ -491,6 +492,7 @@ export default function HomeScreen({
                     </TouchableOpacity>
                     <IconButton
                         icon="chevron-right"
+                        testID="next-date-btn"
                         onPress={() => {
                             changeDate(1)
                         }}

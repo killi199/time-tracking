@@ -29,11 +29,6 @@ jest.mock('../db/database', () => ({
     addEvent: jest.fn(),
 }))
 
-jest.mock('i18next', () => ({
-    __esModule: true,
-    default: { t: (key: string) => key },
-}))
-
 const NFC_URL = 'timetracking://nfc'
 
 const makeEvent = (id: number, time: string): TimeEvent => ({
