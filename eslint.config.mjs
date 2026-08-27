@@ -47,17 +47,20 @@ export default defineConfig(
     {
         files: ['**/*.test.ts', '**/*.test.tsx'],
         ...jest.configs['flat/recommended'],
+        rules: {
+            ...jest.configs['flat/recommended'].rules,
+            '@typescript-eslint/unbound-method': 'off', // Replaced by jest/unbound-method for tests
+            'jest/unbound-method': 'error',
+        },
     },
     {
-        files: ['**/*.test.ts', '**/*.test.tsx'],
+        files: ['**/*.test.tsx'],
         ...testingLibrary.configs['flat/react'],
         rules: {
             ...testingLibrary.configs['flat/react'].rules,
             'testing-library/no-dom-import': ['error', 'react-native'],
             'testing-library/prefer-user-event': 'warn',
             'testing-library/prefer-user-event-setup': 'warn',
-            '@typescript-eslint/unbound-method': 'off', // Replaced by jest/unbound-method for tests
-            'jest/unbound-method': 'error',
             'jest/no-restricted-matchers': [
                 'warn',
                 {
