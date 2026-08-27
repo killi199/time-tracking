@@ -56,6 +56,7 @@ export default defineConfig(
             'testing-library/no-dom-import': ['error', 'react-native'],
             'testing-library/prefer-user-event': 'warn',
             'testing-library/prefer-user-event-setup': 'warn',
+            '@typescript-eslint/unbound-method': 'off', // Replaced by jest/unbound-method for tests
             'jest/unbound-method': 'error',
             'jest/no-restricted-matchers': [
                 'warn',
