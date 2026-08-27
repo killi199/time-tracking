@@ -6,7 +6,6 @@ import tseslint from 'typescript-eslint'
 import eslintConfigPrettier from 'eslint-config-prettier/flat'
 import sonarjs from 'eslint-plugin-sonarjs'
 import jest from 'eslint-plugin-jest'
-import jestDom from 'eslint-plugin-jest-dom'
 import testingLibrary from 'eslint-plugin-testing-library'
 import unusedImports from 'eslint-plugin-unused-imports'
 import globals from 'globals'
@@ -48,8 +47,26 @@ export default defineConfig(
     {
         files: ['**/*.test.ts', '**/*.test.tsx'],
         ...jest.configs['flat/recommended'],
-        ...testingLibrary.configs['flat/react-native'],
-        ...jestDom['flat/recommended'],
+    },
+    {
+        files: ['**/*.test.ts', '**/*.test.tsx'],
+        ...testingLibrary.configs['flat/react'],
+        rules: {
+            ...testingLibrary.configs['flat/react'].rules,
+            'testing-library/no-dom-import': ['error', 'react-native'],
+            'testing-library/prefer-user-event': 'warn',
+            'testing-library/prefer-user-event-setup': 'warn',
+            'jest/unbound-method': 'error',
+            'jest/no-restricted-matchers': [
+                'warn',
+                {
+                    toBeTruthy:
+                        'Avoid `toBeTruthy()` for rendered elements. Prefer `expect(element).toBeOnTheScreen()` or `expect(element).toBeVisible()`.',
+                    toBeDefined:
+                        'Avoid `toBeDefined()` for rendered elements. Prefer `expect(element).toBeOnTheScreen()`.',
+                },
+            ],
+        },
     },
     {
         files: ['**/*.{ts,tsx}'],
