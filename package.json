@@ -13,7 +13,7 @@
         "ios:release": "expo run:ios --variant=release",
         "typecheck": "tsc --noEmit",
         "typecheck:foss": "tsc -p tsconfig.foss.json --noEmit",
-        "lint": "eslint .",
+        "lint": "eslint --max-warnings 0 .",
         "format": "prettier --write .",
         "test": "jest",
         "generate-licenses": "yarn dlx license-checker-rseidelsohn --production --json --out src/licenses.json"
