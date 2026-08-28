@@ -1,16 +1,10 @@
 import { StyleSheet, View } from 'react-native'
-import { Button, Icon, Text, useTheme } from 'react-native-paper'
+import { Icon, Text, useTheme } from 'react-native-paper'
 
 export interface EmptyStateProps {
     readonly icon: string
     readonly title: string
     readonly description?: string
-    readonly action?: {
-        label: string
-        onPress: () => void
-        icon?: string
-        testID?: string
-    }
     readonly testID?: string
 }
 
@@ -18,7 +12,6 @@ export function EmptyState({
     icon,
     title,
     description,
-    action,
     testID,
 }: Readonly<EmptyStateProps>) {
     const theme = useTheme()
@@ -50,17 +43,6 @@ export function EmptyState({
                     {description}
                 </Text>
             ) : null}
-            {action ? (
-                <Button
-                    mode="contained-tonal"
-                    icon={action.icon}
-                    onPress={action.onPress}
-                    style={styles.actionButton}
-                    testID={action.testID}
-                >
-                    {action.label}
-                </Button>
-            ) : null}
         </View>
     )
 }
@@ -88,8 +70,5 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginTop: 8,
         lineHeight: 20,
-    },
-    actionButton: {
-        marginTop: 20,
     },
 })

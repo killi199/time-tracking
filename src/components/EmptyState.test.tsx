@@ -1,5 +1,5 @@
-import { render, screen, userEvent } from '@testing-library/react-native'
-import { describe, it, expect, jest } from '@jest/globals'
+import { render, screen } from '@testing-library/react-native'
+import { describe, it, expect } from '@jest/globals'
 import { PaperProvider } from 'react-native-paper'
 import { EmptyState } from './EmptyState'
 
@@ -32,29 +32,5 @@ describe('EmptyState', () => {
 
         expect(screen.getByText('No events this week')).toBeVisible()
         expect(screen.getByText('Check in to start tracking.')).toBeVisible()
-    })
-
-    it('renders action button and triggers onPress', async () => {
-        const onActionPress = jest.fn()
-        await renderWithProvider(
-            <EmptyState
-                icon="calendar-today"
-                title="No events"
-                action={{
-                    label: 'Check In',
-                    onPress: onActionPress,
-                    icon: 'play',
-                    testID: 'empty-state-action',
-                }}
-            />,
-        )
-
-        const button = screen.getByTestId('empty-state-action')
-        expect(button).toBeVisible()
-        expect(screen.getByText('Check In')).toBeVisible()
-
-        const user = userEvent.setup()
-        await user.press(button)
-        expect(onActionPress).toHaveBeenCalledTimes(1)
     })
 })
