@@ -28,6 +28,7 @@ Before presenting your work to the user or declaring a task complete, run the va
 ## 3. Specific Rules
 
 - For all technical coding standards, UI (React Native Paper), state, database, and localization rules, refer to `.agents/rules/time-tracking.md`.
+- For testing standards and component mocking rules, refer to `.agents/rules/testing.md`.
 
 ## 4. Workflow & Architecture
 
