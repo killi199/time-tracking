@@ -303,19 +303,6 @@ export default function HomeScreen({
             return
         }
 
-        const now = new Date()
-        const todayStr = getFormattedDate(now)
-        const currentTimeStr = getFormattedTime(now)
-        const targetDate = editingEvent ? editingEvent.date : dialogDate
-
-        if (
-            targetDate > todayStr ||
-            (targetDate === todayStr && dialogTime > currentTimeStr)
-        ) {
-            alert(t('dialog.futureEntryError'))
-            return
-        }
-
         if (editingEvent) {
             updateEvent(
                 editingEvent.id,
@@ -365,9 +352,7 @@ export default function HomeScreen({
     const onConfirmCreateDatePicker = (params: { date: Date | undefined }) => {
         setCreateDatePickerVisible(false)
         if (params.date) {
-            const now = new Date()
-            const selectedDate = params.date > now ? now : params.date
-            setDialogDate(getFormattedDate(selectedDate))
+            setDialogDate(getFormattedDate(params.date))
         }
     }
 
@@ -416,33 +401,26 @@ export default function HomeScreen({
         setDatePickerVisible(false)
         if (!params.date) return
 
-        const now = new Date()
-        const selectedDate = params.date > now ? now : params.date
-        const todayDate = getFormattedDate(now)
-        const todayMonth = getFormattedMonth(now)
-
         if (viewMode === 'month') {
-            const newMonth = getFormattedMonth(selectedDate)
-            const targetMonth = newMonth > todayMonth ? todayMonth : newMonth
+            const newMonth = getFormattedMonth(params.date)
             let nextDirection: SlideDirection = 'none'
-            if (targetMonth > currentMonth) {
+            if (newMonth > currentMonth) {
                 nextDirection = 'right'
-            } else if (targetMonth < currentMonth) {
+            } else if (newMonth < currentMonth) {
                 nextDirection = 'left'
             }
             setDirection(nextDirection)
-            setCurrentMonth(targetMonth)
+            setCurrentMonth(newMonth)
         } else {
-            const newDate = getFormattedDate(selectedDate)
-            const targetDate = newDate > todayDate ? todayDate : newDate
+            const newDate = getFormattedDate(params.date)
             let nextDirection: SlideDirection = 'none'
-            if (targetDate > currentDate) {
+            if (newDate > currentDate) {
                 nextDirection = 'right'
-            } else if (targetDate < currentDate) {
+            } else if (newDate < currentDate) {
                 nextDirection = 'left'
             }
             setDirection(nextDirection)
-            setCurrentDate(targetDate)
+            setCurrentDate(newDate)
         }
     }
 

@@ -381,49 +381,4 @@ describe('HomeScreen', () => {
         expect(screen.getByTestId('next-date-btn')).toBeDisabled()
         expect(screen.getByText('home.backToNow')).toBeDisabled()
     })
-
-    it('prevents creating events in the future and shows alert', async () => {
-        jest.useFakeTimers({
-            now: new Date('2024-06-15T10:00:00'),
-        })
-        const originalAlert = global.alert
-        const mockAlert = jest.fn()
-        global.alert = mockAlert
-
-        const user = userEvent.setup({
-            advanceTimers: (ms) => {
-                jest.advanceTimersByTime(ms)
-            },
-        })
-        await renderWithProvider(<HomeScreen viewMode="day" />)
-
-        const options = (
-            mockSetOptions.mock.calls[0] as unknown as [
-                {
-                    headerRight: () => React.ReactElement<{
-                        onPress: () => void
-                    }>
-                },
-            ]
-        )[0]
-        const headerRightElement = options.headerRight()
-        await act(() => {
-            headerRightElement.props.onPress()
-        })
-
-        expect(screen.getByText('addEntry.addTitle')).toBeOnTheScreen()
-
-        // Time is 10:00. If we submit with 12:30 (future time on today):
-        const timeInput = screen.getByDisplayValue('10:00')
-        await user.press(timeInput)
-        expect(screen.getByTestId('confirm-time')).toBeVisible()
-        await user.press(screen.getByTestId('confirm-time')) // Mock sends 12:30
-
-        await user.press(screen.getByText('common.confirm'))
-        expect(mockAlert).toHaveBeenCalledWith('dialog.futureEntryError')
-        expect(addEvent).not.toHaveBeenCalled()
-
-        global.alert = originalAlert
-        jest.useRealTimers()
-    })
 })
