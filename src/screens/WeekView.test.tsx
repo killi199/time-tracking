@@ -69,6 +69,11 @@ describe('WeekView', () => {
         expect(screen.getByText('home.weekBalance')).toBeVisible()
         expect(screen.getByText('home.overall')).toBeVisible()
         expect(screen.getByText('+02:00')).toBeVisible() // overall balance
+
+        // Empty state is rendered
+        expect(screen.getByTestId('week-empty-state')).toBeVisible()
+        expect(screen.getByText('emptyState.weekTitle')).toBeVisible()
+        expect(screen.getByText('emptyState.weekDescription')).toBeVisible()
     })
 
     it('calculates statistics correctly with multiple events', async () => {

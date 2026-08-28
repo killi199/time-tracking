@@ -68,6 +68,11 @@ describe('MonthView', () => {
         expect(screen.getByText('home.monthBalance')).toBeVisible()
         expect(screen.getByText('home.overall')).toBeVisible()
         expect(screen.getByText('-01:00')).toBeVisible() // overall balance
+
+        // Empty state is rendered
+        expect(screen.getByTestId('month-empty-state')).toBeVisible()
+        expect(screen.getByText('emptyState.monthTitle')).toBeVisible()
+        expect(screen.getByText('emptyState.monthDescription')).toBeVisible()
     })
 
     it('calculates statistics correctly with multiple events', async () => {

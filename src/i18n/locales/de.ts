@@ -58,6 +58,20 @@ export default {
             title: 'Verlauf',
             noHistory: 'Noch kein Verlauf',
         },
+        emptyState: {
+            dayTitle: 'Keine Zeiteinträge heute',
+            dayDescription:
+                'Erfasse deine täglichen Arbeitszeiten, um deinen Fortschritt und deine Bilanz zu sehen.',
+            dayTitleOther: 'Keine Zeiteinträge für diesen Tag',
+            dayDescriptionOther:
+                'Für dieses Datum wurden keine Arbeitszeiten aufgezeichnet.',
+            weekTitle: 'Keine Zeiteinträge diese Woche',
+            weekDescription:
+                'Erfasse deine täglichen Arbeitszeiten, um deinen wöchentlichen Fortschritt und deine Bilanz zu sehen.',
+            monthTitle: 'Keine Zeiteinträge diesen Monat',
+            monthDescription:
+                'Erfasse deine täglichen Arbeitszeiten, um deinen monatlichen Fortschritt und deine Bilanz zu sehen.',
+        },
         menu: {
             title: 'Menü',
             headline: 'Zeiterfassung',

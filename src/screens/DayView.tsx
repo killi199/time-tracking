@@ -3,6 +3,7 @@ import { View, FlatList, StyleSheet } from 'react-native'
 import { Text, Card, useTheme, FAB } from 'react-native-paper'
 import { EventListItem } from '../components/EventListItem'
 import { TimeSeparator } from '../components/TimeSeparator'
+import { EmptyState } from '../components/EmptyState'
 import {
     getTodayEvents,
     getOverallStats,
@@ -126,6 +127,72 @@ function processEvents(rawEvents: TimeEvent[]): ProcessedTimeEvent[] {
     return processed
 }
 
+interface EmptyStateConfig {
+    title: string
+    description: string
+}
+
+function getEmptyStateConfig(
+    isToday: boolean,
+    translate: (key: string) => string,
+): EmptyStateConfig {
+    if (isToday) {
+        return {
+            title: translate('emptyState.dayTitle'),
+            description: translate('emptyState.dayDescription'),
+        }
+    }
+    return {
+        title: translate('emptyState.dayTitleOther'),
+        description: translate('emptyState.dayDescriptionOther'),
+    }
+}
+
+interface DayStatusProps {
+    readonly isCheckedIn: boolean
+}
+
+function DayStatus({ isCheckedIn }: DayStatusProps) {
+    const theme = useTheme()
+    const { t } = useTranslation()
+    const color = isCheckedIn ? theme.colors.primary : theme.colors.secondary
+    const label = isCheckedIn
+        ? t('home.currentlyWorking')
+        : t('home.notWorking')
+
+    return (
+        <View style={styles.statusContainer}>
+            <Text variant="titleMedium" style={{ color }}>
+                {label}
+            </Text>
+        </View>
+    )
+}
+
+interface DayFabProps {
+    readonly isCheckedIn: boolean
+    readonly onPress: () => void
+}
+
+function DayFab({ isCheckedIn, onPress }: DayFabProps) {
+    const theme = useTheme()
+    const { t } = useTranslation()
+    const icon = isCheckedIn ? 'stop' : 'play'
+    const label = isCheckedIn ? t('home.checkOut') : t('home.checkIn')
+    const backgroundColor = isCheckedIn
+        ? theme.colors.errorContainer
+        : theme.colors.primaryContainer
+
+    return (
+        <FAB
+            icon={icon}
+            label={label}
+            style={[styles.fab, { backgroundColor }]}
+            onPress={onPress}
+        />
+    )
+}
+
 export default function DayView({
     date,
     onEditEvent,
@@ -183,6 +250,14 @@ export default function DayView({
 
     const isToday = date === getFormattedDate(new Date())
     const isCheckedIn = events.length % 2 !== 0
+    const emptyStateConfig = getEmptyStateConfig(isToday, t)
+
+    const dayBalanceColor = dayBalance.startsWith('-')
+        ? theme.colors.error
+        : theme.colors.primary
+    const overallBalanceColor = overallBalance.startsWith('-')
+        ? theme.colors.error
+        : theme.colors.primary
 
     return (
         <View style={styles.container}>
@@ -199,11 +274,7 @@ export default function DayView({
                             </Text>
                             <Text
                                 variant="titleLarge"
-                                style={{
-                                    color: dayBalance.startsWith('-')
-                                        ? theme.colors.error
-                                        : theme.colors.primary,
-                                }}
+                                style={{ color: dayBalanceColor }}
                             >
                                 {dayBalance}
                             </Text>
@@ -214,33 +285,14 @@ export default function DayView({
                             </Text>
                             <Text
                                 variant="titleLarge"
-                                style={{
-                                    color: overallBalance.startsWith('-')
-                                        ? theme.colors.error
-                                        : theme.colors.primary,
-                                }}
+                                style={{ color: overallBalanceColor }}
                             >
                                 {overallBalance}
                             </Text>
                         </View>
                     </View>
 
-                    {isToday ? (
-                        <View style={styles.statusContainer}>
-                            <Text
-                                variant="titleMedium"
-                                style={{
-                                    color: isCheckedIn
-                                        ? theme.colors.primary
-                                        : theme.colors.secondary,
-                                }}
-                            >
-                                {isCheckedIn
-                                    ? t('home.currentlyWorking')
-                                    : t('home.notWorking')}
-                            </Text>
-                        </View>
-                    ) : null}
+                    {isToday ? <DayStatus isCheckedIn={isCheckedIn} /> : null}
                 </Card.Content>
             </Card>
 
@@ -252,23 +304,24 @@ export default function DayView({
                     ItemSeparatorComponent={(props) => (
                         <TimeSeparator {...props} />
                     )}
+                    contentContainerStyle={
+                        events.length === 0
+                            ? styles.emptyListContent
+                            : undefined
+                    }
+                    ListEmptyComponent={
+                        <EmptyState
+                            icon="calendar-today-outline"
+                            title={emptyStateConfig.title}
+                            description={emptyStateConfig.description}
+                            testID="day-empty-state"
+                        />
+                    }
                 />
             </View>
 
             {isToday ? (
-                <FAB
-                    icon={isCheckedIn ? 'stop' : 'play'}
-                    label={isCheckedIn ? t('home.checkOut') : t('home.checkIn')}
-                    style={[
-                        styles.fab,
-                        {
-                            backgroundColor: isCheckedIn
-                                ? theme.colors.errorContainer
-                                : theme.colors.primaryContainer,
-                        },
-                    ]}
-                    onPress={onAddEvent}
-                />
+                <DayFab isCheckedIn={isCheckedIn} onPress={onAddEvent} />
             ) : null}
         </View>
     )
@@ -297,6 +350,10 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         flex: 1,
+    },
+    emptyListContent: {
+        flexGrow: 1,
+        justifyContent: 'center',
     },
     fab: {
         position: 'absolute',

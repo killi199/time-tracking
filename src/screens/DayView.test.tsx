@@ -88,7 +88,7 @@ describe('DayView', () => {
         expect(toJSON()).toBeNull()
     })
 
-    it('renders empty state when there are no events', async () => {
+    it('renders empty state when there are no events on today', async () => {
         jest.mocked(getTodayEvents).mockReturnValue([])
         jest.mocked(resolveDailyTarget).mockReturnValue(480)
         jest.mocked(getOverallStats).mockReturnValue({
@@ -109,6 +109,34 @@ describe('DayView', () => {
         // Metrics are all zero / default
         expect(screen.getByText('00:00')).toBeVisible()
         expect(screen.getAllByText('+00:00')).toHaveLength(2)
+
+        // Empty state is rendered
+        expect(screen.getByTestId('day-empty-state')).toBeVisible()
+        expect(screen.getByText('emptyState.dayTitle')).toBeVisible()
+        expect(screen.getByText('emptyState.dayDescription')).toBeVisible()
+    })
+
+    it('renders empty state for past/future date', async () => {
+        jest.mocked(getTodayEvents).mockReturnValue([])
+        jest.mocked(resolveDailyTarget).mockReturnValue(480)
+        jest.mocked(getOverallStats).mockReturnValue({
+            overallBalanceMinutes: 0,
+            totalMinutesWorked: 0,
+        })
+
+        await renderWithProvider(
+            <DayView
+                date="2023-10-14"
+                onEditEvent={jest.fn()}
+                onDeleteEvent={jest.fn()}
+                onAddEvent={jest.fn()}
+                refreshTrigger={0}
+            />,
+        )
+
+        expect(screen.getByTestId('day-empty-state')).toBeVisible()
+        expect(screen.getByText('emptyState.dayTitleOther')).toBeVisible()
+        expect(screen.getByText('emptyState.dayDescriptionOther')).toBeVisible()
     })
 
     it('renders inactive state and triggers onAddEvent when check-in FAB is pressed', async () => {
