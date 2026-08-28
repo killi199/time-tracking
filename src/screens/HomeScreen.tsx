@@ -154,20 +154,46 @@ export default function HomeScreen({
         setRefreshTrigger((prev) => prev + 1)
     })
 
+    const canGoForward = (() => {
+        const today = new Date()
+        const todayStr = getFormattedDate(today)
+        const todayMonthStr = getFormattedMonth(today)
+
+        if (viewMode === 'month') {
+            return currentMonth < todayMonthStr
+        } else if (viewMode === 'week') {
+            const currentWeekStart =
+                getWeekRangeData(currentDate).start.getTime()
+            const todayWeekStart = getWeekRangeData(todayStr).start.getTime()
+            return currentWeekStart < todayWeekStart
+        } else {
+            return currentDate < todayStr
+        }
+    })()
+
     const changeDate = (step: number) => {
+        if (step > 0 && !canGoForward) return
+
         setDirection(step > 0 ? 'right' : 'left')
+        const today = new Date()
+        const todayStr = getFormattedDate(today)
+        const todayMonthStr = getFormattedMonth(today)
+
         if (viewMode === 'month') {
             const [year, month] = currentMonth.split('-').map(Number)
             const date = new Date(year, month - 1 + step, 1)
-            setCurrentMonth(getFormattedMonth(date))
+            const newMonth = getFormattedMonth(date)
+            setCurrentMonth(newMonth > todayMonthStr ? todayMonthStr : newMonth)
         } else if (viewMode === 'week') {
             const date = new Date(currentDate)
             date.setDate(date.getDate() + step * 7)
-            setCurrentDate(getFormattedDate(date))
+            const newDateStr = getFormattedDate(date)
+            setCurrentDate(newDateStr > todayStr ? todayStr : newDateStr)
         } else {
             const date = new Date(currentDate)
             date.setDate(date.getDate() + step)
-            setCurrentDate(getFormattedDate(date))
+            const newDateStr = getFormattedDate(date)
+            setCurrentDate(newDateStr > todayStr ? todayStr : newDateStr)
         }
     }
 
@@ -357,28 +383,6 @@ export default function HomeScreen({
         }
     }
 
-    const showBackToNowCalculated = (() => {
-        const today = new Date()
-        const todayStr = getFormattedDate(today)
-        const currentMonthStr = getFormattedMonth(today)
-
-        if (viewMode === 'month') {
-            return currentMonth !== currentMonthStr
-        } else if (viewMode === 'week') {
-            const { start, end } = getWeekRangeData(currentDate)
-            const todayTime = today.getTime()
-            // Extend end to include end of day
-            const endOfDay = new Date(end)
-            endOfDay.setHours(23, 59, 59, 999)
-
-            return !(
-                todayTime >= start.getTime() && todayTime <= endOfDay.getTime()
-            )
-        } else {
-            return currentDate !== todayStr
-        }
-    })()
-
     const handleAddEvent = () => {
         const now = new Date()
         const timeString = getFormattedTime(now)
@@ -461,7 +465,7 @@ export default function HomeScreen({
         .failOffsetY([-30, 30])
         .onEnd((e) => {
             if (e.translationX < -50) {
-                if (showBackToNowCalculated) {
+                if (canGoForward) {
                     scheduleOnRN(changeDate, 1) // Swipe left -> Next day/week/month
                 }
             } else if (e.translationX > 50) {
@@ -496,13 +500,13 @@ export default function HomeScreen({
                         onPress={() => {
                             changeDate(1)
                         }}
-                        disabled={!showBackToNowCalculated}
+                        disabled={!canGoForward}
                     />
                 </View>
                 <Button
                     mode="contained-tonal"
                     onPress={goToToday}
-                    disabled={!showBackToNowCalculated}
+                    disabled={!canGoForward}
                 >
                     {t('home.backToNow')}
                 </Button>
@@ -515,6 +519,7 @@ export default function HomeScreen({
                     onConfirmDatePicker({ date })
                 }}
                 value={validDateForPicker}
+                maximumDate={new Date()}
                 mode="date"
                 locale={i18n.language}
                 cancelLabel={t('common.cancel')}
@@ -552,6 +557,7 @@ export default function HomeScreen({
                     const [y, m, d] = dialogDate.split('-').map(Number)
                     return new Date(y, m - 1, d)
                 })()}
+                maximumDate={new Date()}
                 mode="date"
                 locale={i18n.language}
                 cancelLabel={t('common.cancel')}

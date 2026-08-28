@@ -361,4 +361,24 @@ describe('HomeScreen', () => {
         )
         expect(screen.getByTestId('day-view')).toBeOnTheScreen()
     })
+
+    it('disables next button and Now button on today, current week, and current month', async () => {
+        const { unmount } = await renderWithProvider(
+            <HomeScreen viewMode="day" />,
+        )
+        expect(screen.getByTestId('next-date-btn')).toBeDisabled()
+        expect(screen.getByText('home.backToNow')).toBeDisabled()
+        await unmount()
+
+        const { unmount: unmountWeek } = await renderWithProvider(
+            <HomeScreen viewMode="week" />,
+        )
+        expect(screen.getByTestId('next-date-btn')).toBeDisabled()
+        expect(screen.getByText('home.backToNow')).toBeDisabled()
+        await unmountWeek()
+
+        await renderWithProvider(<HomeScreen viewMode="month" />)
+        expect(screen.getByTestId('next-date-btn')).toBeDisabled()
+        expect(screen.getByText('home.backToNow')).toBeDisabled()
+    })
 })
