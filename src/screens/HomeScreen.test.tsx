@@ -25,10 +25,11 @@ jest.mock('react-native-worklets', () => ({
 }))
 
 jest.mock('react-native-reanimated', () => {
-    const RN = jest.requireActual<typeof import('react-native')>('react-native')
+    const { View } =
+        jest.requireActual<typeof import('react-native')>('react-native')
     return {
         __esModule: true,
-        default: { View: RN.View },
+        default: { View },
         SlideInLeft: { duration: jest.fn().mockReturnThis() },
         SlideInRight: { duration: jest.fn().mockReturnThis() },
         FadeIn: { duration: jest.fn().mockReturnThis() },
@@ -91,16 +92,17 @@ jest.mock('react-native-gesture-handler', () => {
 })
 
 jest.mock('./DayView', () => {
-    const RN = jest.requireActual<typeof import('react-native')>('react-native')
+    const { View, Text, TouchableOpacity } =
+        jest.requireActual<typeof import('react-native')>('react-native')
     return function MockDayView(props: {
         onEditEvent: (event: import('../types').TimeEvent) => void
         onDeleteEvent: (event: import('../types').TimeEvent) => void
         onAddEvent: () => void
     }) {
         return (
-            <RN.View testID="day-view">
-                <RN.Text>DayView Component</RN.Text>
-                <RN.TouchableOpacity
+            <View testID="day-view">
+                <Text>DayView Component</Text>
+                <TouchableOpacity
                     testID="edit-day"
                     onPress={() => {
                         props.onEditEvent({
@@ -112,9 +114,9 @@ jest.mock('./DayView', () => {
                         })
                     }}
                 >
-                    <RN.Text>Edit Day</RN.Text>
-                </RN.TouchableOpacity>
-                <RN.TouchableOpacity
+                    <Text>Edit Day</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
                     testID="delete-day"
                     onPress={() => {
                         props.onDeleteEvent({
@@ -126,43 +128,46 @@ jest.mock('./DayView', () => {
                         })
                     }}
                 >
-                    <RN.Text>Delete Day</RN.Text>
-                </RN.TouchableOpacity>
-                <RN.TouchableOpacity
+                    <Text>Delete Day</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
                     testID="add-day"
                     onPress={() => {
                         props.onAddEvent()
                     }}
                 >
-                    <RN.Text>Add Day</RN.Text>
-                </RN.TouchableOpacity>
-            </RN.View>
+                    <Text>Add Day</Text>
+                </TouchableOpacity>
+            </View>
         )
     }
 })
 jest.mock('./WeekView', () => {
-    const RN = jest.requireActual<typeof import('react-native')>('react-native')
+    const { View, Text } =
+        jest.requireActual<typeof import('react-native')>('react-native')
     return function MockWeekView() {
         return (
-            <RN.View testID="week-view">
-                <RN.Text>WeekView Component</RN.Text>
-            </RN.View>
+            <View testID="week-view">
+                <Text>WeekView Component</Text>
+            </View>
         )
     }
 })
 jest.mock('./MonthView', () => {
-    const RN = jest.requireActual<typeof import('react-native')>('react-native')
+    const { View, Text } =
+        jest.requireActual<typeof import('react-native')>('react-native')
     return function MockMonthView() {
         return (
-            <RN.View testID="month-view">
-                <RN.Text>MonthView Component</RN.Text>
-            </RN.View>
+            <View testID="month-view">
+                <Text>MonthView Component</Text>
+            </View>
         )
     }
 })
 
 jest.mock('../components/AdaptiveDateTimePicker', () => {
-    const RN = jest.requireActual<typeof import('react-native')>('react-native')
+    const { View, Text, TouchableOpacity } =
+        jest.requireActual<typeof import('react-native')>('react-native')
     return function MockAdaptiveDateTimePicker(props: {
         mode?: string
         visible?: boolean
@@ -171,28 +176,28 @@ jest.mock('../components/AdaptiveDateTimePicker', () => {
     }) {
         const mode = String(props.mode)
         return (
-            <RN.View testID={`adaptive-date-time-picker-${mode}`}>
+            <View testID={`adaptive-date-time-picker-${mode}`}>
                 {props.visible ? (
                     <>
-                        <RN.TouchableOpacity
+                        <TouchableOpacity
                             testID={`confirm-${mode}`}
                             onPress={() => {
                                 props.onConfirm(new Date('2023-10-15T12:30:00'))
                             }}
                         >
-                            <RN.Text>Confirm</RN.Text>
-                        </RN.TouchableOpacity>
-                        <RN.TouchableOpacity
+                            <Text>Confirm</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
                             testID={`dismiss-${mode}`}
                             onPress={() => {
                                 props.onDismiss()
                             }}
                         >
-                            <RN.Text>Dismiss</RN.Text>
-                        </RN.TouchableOpacity>
+                            <Text>Dismiss</Text>
+                        </TouchableOpacity>
                     </>
                 ) : null}
-            </RN.View>
+            </View>
         )
     }
 })

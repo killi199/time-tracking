@@ -6,7 +6,8 @@ import AdaptiveDateTimePicker from './AdaptiveDateTimePicker'
 import { shiftToUTC, shiftToLocal } from '../utils/dateShift'
 
 jest.mock('@expo/ui/community/datetime-picker', () => {
-    const RN = jest.requireActual<typeof import('react-native')>('react-native')
+    const { View, Text, TouchableOpacity } =
+        jest.requireActual<typeof import('react-native')>('react-native')
     return function MockDateTimePicker(props: {
         testID?: string
         value: Date
@@ -18,12 +19,10 @@ jest.mock('@expo/ui/community/datetime-picker', () => {
         onDismiss?: () => void
     }) {
         return (
-            <RN.View testID={props.testID ?? 'mock-datetime-picker'}>
-                <RN.Text testID="picker-value">
-                    {props.value.toISOString()}
-                </RN.Text>
-                <RN.Text testID="picker-mode">{props.mode}</RN.Text>
-                <RN.TouchableOpacity
+            <View testID={props.testID ?? 'mock-datetime-picker'}>
+                <Text testID="picker-value">{props.value.toISOString()}</Text>
+                <Text testID="picker-mode">{props.mode}</Text>
+                <TouchableOpacity
                     testID="trigger-change"
                     onPress={() => {
                         props.onValueChange?.(
@@ -32,17 +31,17 @@ jest.mock('@expo/ui/community/datetime-picker', () => {
                         )
                     }}
                 >
-                    <RN.Text>Change Date</RN.Text>
-                </RN.TouchableOpacity>
-                <RN.TouchableOpacity
+                    <Text>Change Date</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
                     testID="trigger-dismiss"
                     onPress={() => {
                         props.onDismiss?.()
                     }}
                 >
-                    <RN.Text>Dismiss</RN.Text>
-                </RN.TouchableOpacity>
-            </RN.View>
+                    <Text>Dismiss</Text>
+                </TouchableOpacity>
+            </View>
         )
     }
 })

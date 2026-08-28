@@ -10,7 +10,8 @@ import { getFormattedDate } from '../utils/time'
 import { PaperProvider } from 'react-native-paper'
 
 jest.mock('react-native-gesture-handler/ReanimatedSwipeable', () => {
-    const RN = jest.requireActual<typeof import('react-native')>('react-native')
+    const { View } =
+        jest.requireActual<typeof import('react-native')>('react-native')
     return {
         __esModule: true,
         default: (props: {
@@ -19,11 +20,11 @@ jest.mock('react-native-gesture-handler/ReanimatedSwipeable', () => {
             renderLeftActions?: () => React.ReactNode
             renderRightActions?: () => React.ReactNode
         }) => (
-            <RN.View testID={props.testID}>
+            <View testID={props.testID}>
                 {props.renderLeftActions ? props.renderLeftActions() : null}
                 {props.children}
                 {props.renderRightActions ? props.renderRightActions() : null}
-            </RN.View>
+            </View>
         ),
         SwipeDirection: { LEFT: 'left', RIGHT: 'right' },
     }

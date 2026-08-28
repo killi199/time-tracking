@@ -22,19 +22,18 @@ interface MockScreenProps {
 }
 
 jest.mock('expo-router/drawer', () => {
-    const RN = jest.requireActual<typeof import('react-native')>('react-native')
+    const { View, Text } =
+        jest.requireActual<typeof import('react-native')>('react-native')
     const MockDrawer = Object.assign(
         ({ drawerContent, children }: MockDrawerProps) => (
-            <RN.View testID="mock-drawer">
-                <RN.View testID="mock-drawer-content">
-                    {drawerContent?.({})}
-                </RN.View>
+            <View testID="mock-drawer">
+                <View testID="mock-drawer-content">{drawerContent?.({})}</View>
                 {children}
-            </RN.View>
+            </View>
         ),
         {
             Screen: ({ name }: MockScreenProps) => (
-                <RN.Text testID={`mock-drawer-screen-${name}`}>{name}</RN.Text>
+                <Text testID={`mock-drawer-screen-${name}`}>{name}</Text>
             ),
         },
     )
@@ -43,9 +42,9 @@ jest.mock('expo-router/drawer', () => {
 
 jest.mock('../../components/MenuDrawerContent', () => {
     return function MockMenuDrawerContent() {
-        const RN =
+        const { Text } =
             jest.requireActual<typeof import('react-native')>('react-native')
-        return <RN.Text testID="mock-menu-drawer-content">Menu Drawer</RN.Text>
+        return <Text testID="mock-menu-drawer-content">Menu Drawer</Text>
     }
 })
 

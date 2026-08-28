@@ -64,7 +64,8 @@ let capturedTabBarProps:
     | undefined
 
 jest.mock('expo-router', () => {
-    const RN = jest.requireActual<typeof import('react-native')>('react-native')
+    const { View, Text } =
+        jest.requireActual<typeof import('react-native')>('react-native')
     const MockTabs = Object.assign(
         ({ tabBar, screenOptions, children }: MockTabsProps) => {
             const mockTabBarProps: MockTabBarProps = {
@@ -97,18 +98,18 @@ jest.mock('expo-router', () => {
             capturedTabBarProps = tabBarElement
 
             return (
-                <RN.View testID="mock-tabs">
-                    <RN.View testID="mock-header-left">
+                <View testID="mock-tabs">
+                    <View testID="mock-header-left">
                         {screenOptions?.headerLeft?.()}
-                    </RN.View>
-                    <RN.View testID="mock-tab-bar">{tabBarElement}</RN.View>
+                    </View>
+                    <View testID="mock-tab-bar">{tabBarElement}</View>
                     {children}
-                </RN.View>
+                </View>
             )
         },
         {
             Screen: ({ name }: MockTabScreenProps) => (
-                <RN.Text testID={`mock-tab-screen-${name}`}>{name}</RN.Text>
+                <Text testID={`mock-tab-screen-${name}`}>{name}</Text>
             ),
         },
     )

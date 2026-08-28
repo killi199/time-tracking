@@ -9,7 +9,8 @@ import { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeab
 const mockClose = jest.fn()
 
 jest.mock('react-native-gesture-handler/ReanimatedSwipeable', () => {
-    const RN = jest.requireActual<typeof import('react-native')>('react-native')
+    const { View, Text, TouchableOpacity } =
+        jest.requireActual<typeof import('react-native')>('react-native')
     const ReactActual = jest.requireActual<typeof import('react')>('react')
     const MockSwipeable = ReactActual.forwardRef(
         (
@@ -29,25 +30,25 @@ jest.mock('react-native-gesture-handler/ReanimatedSwipeable', () => {
                 reset: jest.fn(),
             }))
             return (
-                <RN.View testID={props.testID}>
+                <View testID={props.testID}>
                     {props.renderLeftActions ? props.renderLeftActions() : null}
                     {props.children}
                     {props.renderRightActions
                         ? props.renderRightActions()
                         : null}
-                    <RN.TouchableOpacity
+                    <TouchableOpacity
                         testID="swipe-right-btn"
                         onPress={() => props.onSwipeableOpen?.('right')}
                     >
-                        <RN.Text>Swipe Right</RN.Text>
-                    </RN.TouchableOpacity>
-                    <RN.TouchableOpacity
+                        <Text>Swipe Right</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
                         testID="swipe-left-btn"
                         onPress={() => props.onSwipeableOpen?.('left')}
                     >
-                        <RN.Text>Swipe Left</RN.Text>
-                    </RN.TouchableOpacity>
-                </RN.View>
+                        <Text>Swipe Left</Text>
+                    </TouchableOpacity>
+                </View>
             )
         },
     )

@@ -25,32 +25,32 @@ jest.mock('../../components/AdaptiveDateTimePicker', () => {
         onConfirm?: (date: Date) => void
         onDismiss?: () => void
     }) {
-        const RN =
+        const { View, Button } =
             jest.requireActual<typeof import('react-native')>('react-native')
 
         if (!props.visible) return null
         return (
-            <RN.View testID="mock-date-picker">
-                <RN.Button
+            <View testID="mock-date-picker">
+                <Button
                     testID="mock-date-picker-confirm"
                     title="Confirm"
                     onPress={() =>
                         props.onConfirm?.(new Date(2000, 0, 1, 8, 30))
                     }
                 />
-                <RN.Button
+                <Button
                     testID="mock-date-picker-confirm-zero"
                     title="Confirm Zero"
                     onPress={() =>
                         props.onConfirm?.(new Date(2000, 0, 1, 0, 0))
                     }
                 />
-                <RN.Button
+                <Button
                     testID="mock-date-picker-cancel"
                     title="Cancel"
                     onPress={() => props.onDismiss?.()}
                 />
-            </RN.View>
+            </View>
         )
     }
 })

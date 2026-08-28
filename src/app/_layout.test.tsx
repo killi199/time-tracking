@@ -50,14 +50,15 @@ jest.mock('../services/QuickActionService', () => ({
 jest.mock('../services/LocationTask', () => ({}))
 
 jest.mock('expo-router', () => {
-    const RN = jest.requireActual<typeof import('react-native')>('react-native')
+    const { View, Text } =
+        jest.requireActual<typeof import('react-native')>('react-native')
     const MockStack = Object.assign(
         ({ children }: MockStackProps) => (
-            <RN.View testID="mock-stack">{children}</RN.View>
+            <View testID="mock-stack">{children}</View>
         ),
         {
             Screen: ({ name }: MockStackScreenProps) => (
-                <RN.Text testID={`mock-stack-screen-${name}`}>{name}</RN.Text>
+                <Text testID={`mock-stack-screen-${name}`}>{name}</Text>
             ),
         },
     )

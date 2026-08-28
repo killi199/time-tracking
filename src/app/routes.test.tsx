@@ -13,76 +13,72 @@ import SettingsRoute from './settings'
 
 jest.mock('../screens/HomeScreen', () => {
     return function MockHomeScreen(props: { viewMode: string }) {
-        const RN =
+        const { Text } =
             jest.requireActual<typeof import('react-native')>('react-native')
         return (
-            <RN.Text testID={`mock-home-screen-${props.viewMode}`}>
+            <Text testID={`mock-home-screen-${props.viewMode}`}>
                 {props.viewMode}
-            </RN.Text>
+            </Text>
         )
     }
 })
 
 jest.mock('../screens/menu/GeofenceSetupScreen', () => {
     return function MockGeofenceSetupScreen() {
-        const RN =
+        const { Text } =
             jest.requireActual<typeof import('react-native')>('react-native')
-        return <RN.Text testID="mock-geofence-screen">Geofence</RN.Text>
+        return <Text testID="mock-geofence-screen">Geofence</Text>
     }
 })
 
 jest.mock('../screens/settings/LanguageSettingsScreen', () => {
     return function MockLanguageSettingsScreen() {
-        const RN =
+        const { Text } =
             jest.requireActual<typeof import('react-native')>('react-native')
-        return <RN.Text testID="mock-language-screen">Language</RN.Text>
+        return <Text testID="mock-language-screen">Language</Text>
     }
 })
 
 jest.mock('../screens/menu/LicensesScreen', () => {
     return function MockLicensesScreen() {
-        const RN =
+        const { Text } =
             jest.requireActual<typeof import('react-native')>('react-native')
-        return <RN.Text testID="mock-licenses-screen">Licenses</RN.Text>
+        return <Text testID="mock-licenses-screen">Licenses</Text>
     }
 })
 
 jest.mock('../screens/menu/NFCSetupScreen', () => {
     return function MockNFCSetupScreen() {
-        const RN =
+        const { Text } =
             jest.requireActual<typeof import('react-native')>('react-native')
-        return <RN.Text testID="mock-nfc-setup-screen">NFC Setup</RN.Text>
+        return <Text testID="mock-nfc-setup-screen">NFC Setup</Text>
     }
 })
 
 jest.mock('../screens/menu/PrivacyPolicyScreen', () => {
     return function MockPrivacyPolicyScreen() {
-        const RN =
+        const { Text } =
             jest.requireActual<typeof import('react-native')>('react-native')
-        return (
-            <RN.Text testID="mock-privacy-policy-screen">
-                Privacy Policy
-            </RN.Text>
-        )
+        return <Text testID="mock-privacy-policy-screen">Privacy Policy</Text>
     }
 })
 
 jest.mock('../screens/settings/SettingsScreen', () => {
     return function MockSettingsScreen() {
-        const RN =
+        const { Text } =
             jest.requireActual<typeof import('react-native')>('react-native')
-        return <RN.Text testID="mock-settings-screen">Settings</RN.Text>
+        return <Text testID="mock-settings-screen">Settings</Text>
     }
 })
 
 jest.mock('expo-router', () => ({
     Redirect: (props: { href: string }) => {
-        const RN =
+        const { Text } =
             jest.requireActual<typeof import('react-native')>('react-native')
         return (
-            <RN.Text testID={`mock-redirect-${props.href}`}>
+            <Text testID={`mock-redirect-${props.href}`}>
                 Redirect {props.href}
-            </RN.Text>
+            </Text>
         )
     },
 }))

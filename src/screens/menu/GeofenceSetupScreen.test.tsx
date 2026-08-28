@@ -29,7 +29,8 @@ jest.mock('expo-location', () => ({
 
 jest.mock('@maplibre/maplibre-react-native', () => {
     const React = jest.requireActual<typeof import('react')>('react')
-    const RN = jest.requireActual<typeof import('react-native')>('react-native')
+    const { View } =
+        jest.requireActual<typeof import('react-native')>('react-native')
 
     interface MockMapProps {
         onDidFinishLoadingStyle?: () => void
@@ -42,32 +43,32 @@ jest.mock('@maplibre/maplibre-react-native', () => {
         React.useEffect(() => {
             onDidFinishLoadingStyle?.()
         }, [onDidFinishLoadingStyle])
-        return <RN.View testID="map" ref={ref as never} {...props} />
+        return <View testID="map" ref={ref as never} {...props} />
     })
     MockMap.displayName = 'MockMap'
 
     const MockCamera = React.forwardRef<
         unknown,
         Record<string, unknown> & { children?: React.ReactNode }
-    >((props, ref) => <RN.View testID="camera" ref={ref as never} {...props} />)
+    >((props, ref) => <View testID="camera" ref={ref as never} {...props} />)
     MockCamera.displayName = 'MockCamera'
 
     const MockMarker = (
         props: Record<string, unknown> & { children?: React.ReactNode },
-    ) => <RN.View testID="marker" {...props} />
+    ) => <View testID="marker" {...props} />
     MockMarker.displayName = 'MockMarker'
 
     const MockGeoJSONSource = (
         props: Record<string, unknown> & { children?: React.ReactNode },
-    ) => <RN.View testID="geojson-source" {...props} />
+    ) => <View testID="geojson-source" {...props} />
     MockGeoJSONSource.displayName = 'MockGeoJSONSource'
 
     const MockLayer = (
         props: Record<string, unknown> & { children?: React.ReactNode },
-    ) => <RN.View testID="layer" {...props} />
+    ) => <View testID="layer" {...props} />
     MockLayer.displayName = 'MockLayer'
 
-    const MockUserLocation = () => <RN.View testID="user-location" />
+    const MockUserLocation = () => <View testID="user-location" />
     MockUserLocation.displayName = 'MockUserLocation'
 
     return {
@@ -82,9 +83,10 @@ jest.mock('@maplibre/maplibre-react-native', () => {
 })
 
 jest.mock('@react-native-community/slider', () => {
-    const RN = jest.requireActual<typeof import('react-native')>('react-native')
+    const { View } =
+        jest.requireActual<typeof import('react-native')>('react-native')
     const MockSlider = (props: Record<string, unknown>) => (
-        <RN.View testID="slider" {...props} />
+        <View testID="slider" {...props} />
     )
     MockSlider.displayName = 'MockSlider'
     return MockSlider

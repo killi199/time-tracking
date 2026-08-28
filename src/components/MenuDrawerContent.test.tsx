@@ -20,17 +20,14 @@ jest.mock('expo-router', () => ({
 }))
 
 jest.mock('expo-router/drawer', () => {
-    const RN = jest.requireActual<typeof import('react-native')>('react-native')
+    const { ScrollView } =
+        jest.requireActual<typeof import('react-native')>('react-native')
     return {
         DrawerContentScrollView: ({
             children,
         }: {
             children: React.ReactNode
-        }) => (
-            <RN.ScrollView testID="drawer-scroll-view">
-                {children}
-            </RN.ScrollView>
-        ),
+        }) => <ScrollView testID="drawer-scroll-view">{children}</ScrollView>,
     }
 })
 
