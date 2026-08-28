@@ -61,7 +61,7 @@ export default {
         emptyState: {
             dayTitle: 'Keine Zeiteinträge heute',
             dayDescription:
-                'Tippe auf Einchecken oder das Plus-Symbol, um deine Arbeitszeit zu erfassen.',
+                'Erfasse deine täglichen Arbeitszeiten, um deinen Fortschritt und deine Bilanz zu sehen.',
             dayTitleOther: 'Keine Zeiteinträge für diesen Tag',
             dayDescriptionOther:
                 'Für dieses Datum wurden keine Arbeitszeiten aufgezeichnet.',
@@ -71,7 +71,6 @@ export default {
             monthTitle: 'Keine Zeiteinträge diesen Monat',
             monthDescription:
                 'Erfasse deine täglichen Arbeitszeiten, um deinen monatlichen Fortschritt und deine Bilanz zu sehen.',
-            checkInAction: 'Einchecken',
         },
         menu: {
             title: 'Menü',

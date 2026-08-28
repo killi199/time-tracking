@@ -96,13 +96,12 @@ describe('DayView', () => {
             totalMinutesWorked: 0,
         })
 
-        const onAddEvent = jest.fn()
         await renderWithProvider(
             <DayView
                 date={mockDate}
                 onEditEvent={jest.fn()}
                 onDeleteEvent={jest.fn()}
-                onAddEvent={onAddEvent}
+                onAddEvent={jest.fn()}
                 refreshTrigger={0}
             />,
         )
@@ -115,16 +114,9 @@ describe('DayView', () => {
         expect(screen.getByTestId('day-empty-state')).toBeVisible()
         expect(screen.getByText('emptyState.dayTitle')).toBeVisible()
         expect(screen.getByText('emptyState.dayDescription')).toBeVisible()
-
-        // Check In button inside empty state triggers onAddEvent
-        const emptyCheckInBtn = screen.getByTestId('empty-check-in-btn')
-        expect(emptyCheckInBtn).toBeVisible()
-        const user = userEvent.setup()
-        await user.press(emptyCheckInBtn)
-        expect(onAddEvent).toHaveBeenCalledTimes(1)
     })
 
-    it('renders empty state for past/future date without check-in action', async () => {
+    it('renders empty state for past/future date', async () => {
         jest.mocked(getTodayEvents).mockReturnValue([])
         jest.mocked(resolveDailyTarget).mockReturnValue(480)
         jest.mocked(getOverallStats).mockReturnValue({
@@ -145,7 +137,6 @@ describe('DayView', () => {
         expect(screen.getByTestId('day-empty-state')).toBeVisible()
         expect(screen.getByText('emptyState.dayTitleOther')).toBeVisible()
         expect(screen.getByText('emptyState.dayDescriptionOther')).toBeVisible()
-        expect(screen.queryByTestId('empty-check-in-btn')).toBeNull()
     })
 
     it('renders inactive state and triggers onAddEvent when check-in FAB is pressed', async () => {

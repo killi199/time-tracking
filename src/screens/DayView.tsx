@@ -130,29 +130,16 @@ function processEvents(rawEvents: TimeEvent[]): ProcessedTimeEvent[] {
 interface EmptyStateConfig {
     title: string
     description: string
-    action?: {
-        label: string
-        onPress: () => void
-        icon: string
-        testID: string
-    }
 }
 
 function getEmptyStateConfig(
     isToday: boolean,
-    onAddEvent: () => void,
     translate: (key: string) => string,
 ): EmptyStateConfig {
     if (isToday) {
         return {
             title: translate('emptyState.dayTitle'),
             description: translate('emptyState.dayDescription'),
-            action: {
-                label: translate('emptyState.checkInAction'),
-                onPress: onAddEvent,
-                icon: 'play',
-                testID: 'empty-check-in-btn',
-            },
         }
     }
     return {
@@ -263,7 +250,7 @@ export default function DayView({
 
     const isToday = date === getFormattedDate(new Date())
     const isCheckedIn = events.length % 2 !== 0
-    const emptyStateConfig = getEmptyStateConfig(isToday, onAddEvent, t)
+    const emptyStateConfig = getEmptyStateConfig(isToday, t)
 
     const dayBalanceColor = dayBalance.startsWith('-')
         ? theme.colors.error
@@ -327,7 +314,6 @@ export default function DayView({
                             icon="calendar-today-outline"
                             title={emptyStateConfig.title}
                             description={emptyStateConfig.description}
-                            action={emptyStateConfig.action}
                             testID="day-empty-state"
                         />
                     }

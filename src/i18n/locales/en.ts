@@ -59,7 +59,7 @@ export default {
         emptyState: {
             dayTitle: 'No time entries today',
             dayDescription:
-                'Tap Check In or the plus button to start tracking your work session.',
+                'Track your daily work hours to view your progress and balance.',
             dayTitleOther: 'No time entries for this day',
             dayDescriptionOther:
                 'No working hours were recorded for this date.',
@@ -69,7 +69,6 @@ export default {
             monthTitle: 'No time entries this month',
             monthDescription:
                 'Track your daily work hours to view your monthly progress and balance.',
-            checkInAction: 'Check In',
         },
         menu: {
             title: 'Menu',
