@@ -4,11 +4,13 @@
 
 Before presenting your work to the user or declaring a task complete, you MUST independently run and fix any issues found by the following commands:
 
-1. `yarn typecheck`
-2. `yarn typecheck:foss`
-3. `yarn lint`
-4. `yarn test`
-5. `yarn format`
+1. `yarn format`
+2. `yarn typecheck`
+3. `yarn typecheck:foss`
+4. `yarn lint`
+5. `yarn test`
+6. `yarn build`
+7. `yarn build:foss`
 
 **Looping Rule**: If any command fails, fix the underlying issue and **re-run all checks** to ensure your fix didn't break anything else. You must repeat this fix-and-check loop until all commands pass, for up to a maximum of 3 attempts. If issues persist after 3 attempts, stop and ask the user for guidance. Do not report completion if any of these commands are still failing within the 3 attempts.
 

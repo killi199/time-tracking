@@ -11,6 +11,8 @@
         "android:release-foss": "cross-env EXPO_PUBLIC_FOSS_BUILD=true expo run:android --variant=release",
         "ios": "expo run:ios --variant=debug",
         "ios:release": "expo run:ios --variant=release",
+        "build": "cross-env EXPO_PUBLIC_FOSS_BUILD=false expo export",
+        "build:foss": "cross-env EXPO_PUBLIC_FOSS_BUILD=true expo export",
         "typecheck": "tsc --noEmit",
         "typecheck:foss": "tsc -p tsconfig.foss.json --noEmit",
         "lint": "eslint --max-warnings 0 .",
