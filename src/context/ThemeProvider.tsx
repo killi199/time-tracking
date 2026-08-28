@@ -8,7 +8,11 @@ import {
 } from 'react-native-paper'
 import { getMaterialColors } from '@expo/ui/jetpack-compose'
 import { StatusBar } from 'expo-status-bar'
-export const ThemeProvider = ({ children }: { children: ReactNode }) => {
+export interface ThemeProviderProps {
+    children: ReactNode
+}
+
+export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     const systemColorScheme = useColorScheme()
     const isDark = systemColorScheme === 'dark'
 
