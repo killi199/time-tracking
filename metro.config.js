@@ -7,6 +7,8 @@ const config = getDefaultConfig(__dirname)
 config.resolver.assetExts.push('wasm')
 const isFOSS = process.env.EXPO_PUBLIC_FOSS_BUILD !== 'false'
 
+config.resolver.blockList = [/\.test\.[tj]sx?$/]
+
 if (isFOSS) {
     config.resolver.sourceExts = [
         'foss.ts',
