@@ -247,6 +247,11 @@ describe('HomeScreen', () => {
         // Check late entry checkbox and save
         await user.press(screen.getByLabelText('addEntry.lateEntryLabel'))
         await user.press(screen.getByText('common.confirm'))
+        await waitFor(() => {
+            expect(
+                screen.queryByText('addEntry.editTitle'),
+            ).not.toBeOnTheScreen()
+        })
 
         // After editing note, it should call updateEvent
         expect(updateEvent).toHaveBeenCalledWith(
@@ -296,6 +301,11 @@ describe('HomeScreen', () => {
 
         await user.press(screen.getByText('common.confirm'))
         expect(addEvent).toHaveBeenCalled()
+        await waitFor(() => {
+            expect(
+                screen.queryByText('addEntry.addTitle'),
+            ).not.toBeOnTheScreen()
+        })
     })
 
     it('handles navigating dates and swiping', async () => {

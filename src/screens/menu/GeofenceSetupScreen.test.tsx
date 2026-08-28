@@ -11,6 +11,10 @@ jest.mock('../../db/database', () => ({
     setSetting: jest.fn(),
 }))
 
+jest.mock('../../services/LocationTask', () => ({
+    LOCATION_TASK_NAME: 'background-geofence-task',
+}))
+
 jest.mock('expo-location', () => ({
     getForegroundPermissionsAsync: jest.fn(),
     requestForegroundPermissionsAsync: jest.fn(),

@@ -3,6 +3,7 @@ import {
     screen,
     userEvent,
     waitFor,
+    act,
 } from '@testing-library/react-native'
 import { describe, it, expect, beforeEach, jest } from '@jest/globals'
 import NFCSetupScreen from './NFCSetupScreen'
@@ -67,9 +68,9 @@ describe('NFCSetupScreen', () => {
         )
 
         // Resolve support
-        if (resolveSupport) {
-            resolveSupport(true)
-        }
+        await act(() => {
+            resolveSupport?.(true)
+        })
 
         // Should transition to supported state
         await waitFor(() => {
@@ -128,13 +129,19 @@ describe('NFCSetupScreen', () => {
     })
 
     it('cancels NFC scanning successfully', async () => {
-        // We need to keep the promise unresolved to test the cancel button
-        let resolveRequest: ((val: null) => void) | undefined
-        const requestPromise = new Promise<null>((res) => {
-            resolveRequest = res
+        // We need to keep the promise unresolved until cancel is called
+        let rejectRequest: ((err: Error) => void) | undefined
+        const requestPromise = new Promise<null>((_, rej) => {
+            rejectRequest = rej
         })
         jest.mocked(NfcManager.requestTechnology).mockReturnValueOnce(
             requestPromise,
+        )
+        jest.mocked(NfcManager.cancelTechnologyRequest).mockImplementationOnce(
+            () => {
+                rejectRequest?.(new Error('cancelled'))
+                return Promise.resolve()
+            },
         )
 
         await render(
@@ -162,11 +169,6 @@ describe('NFCSetupScreen', () => {
         await waitFor(() => {
             expect(screen.getByText('nfc.write')).toBeVisible()
         })
-
-        // Clean up the dangling promise
-        if (resolveRequest) {
-            resolveRequest(null)
-        }
     })
 
     it('shows error dialog on write failure', async () => {
