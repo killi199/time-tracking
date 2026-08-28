@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method --
- * `expect(mock)` / `jest.mocked(mock)` never call the reference with `this`,
- * so passing mocked methods unbound is safe here. */
 import {
     describe,
     it,
@@ -30,11 +27,6 @@ jest.mock('react-native', () => {
 jest.mock('../db/database', () => ({
     getTodayEvents: jest.fn(),
     addEvent: jest.fn(),
-}))
-
-jest.mock('i18next', () => ({
-    __esModule: true,
-    default: { t: (key: string) => key },
 }))
 
 const NFC_URL = 'timetracking://nfc'

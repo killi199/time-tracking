@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method --
- * `expect(mock)` / `jest.mocked(mock)` never call the reference with `this`,
- * so passing mocked methods unbound is safe here. */
 import { describe, it, expect, beforeEach, jest } from '@jest/globals'
 import i18n from 'i18next'
 import * as Localization from 'expo-localization'

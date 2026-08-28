@@ -1,3 +1,44 @@
-# Expo HAS CHANGED
+# General Agent Guidelines
 
-Read the exact versioned docs at https://docs.expo.dev/versions/v56.0.0/ before writing any code.
+## 1. Pre-Flight Checks
+
+Before presenting your work to the user or declaring a task complete, run the validation checks relevant to the files modified:
+
+- **Non-Code / Documentation Changes** (e.g., `.md` files):
+    - No automated checks required (run `yarn format` if markdown files were modified).
+
+- **Source Code & Test Changes** (`src/**/*.{ts,tsx,js}`):
+    1. `yarn format`
+    2. `yarn typecheck`
+    3. `yarn typecheck:foss`
+    4. `yarn lint`
+    5. `yarn test`
+
+- **Build / Dependency / Configuration Changes** (`package.json`, `app.json`, `metro.config.*`, `tsconfig*.json`, native build files, or when explicitly requested):
+    - Run all steps above, plus:
+    6. `yarn build`
+    7. `yarn build:foss`
+
+**Looping Rule**: If any command fails, fix the underlying issue and **re-run the relevant checks** to ensure your fix didn't break anything else. You must repeat this fix-and-check loop until all relevant commands pass, for up to a maximum of 3 attempts. If issues persist after 3 attempts, stop and ask the user for guidance. Do not report completion if any of these commands are still failing within the 3 attempts.
+
+## 2. Testing
+
+- **Test Every Change**: Every bug fix, new feature, or code modification MUST include corresponding tests. Do not leave new code untested.
+
+## 3. Specific Rules
+
+- For all technical coding standards, UI (React Native Paper), state, database, and localization rules, refer to `.agents/rules/time-tracking.md`.
+- For testing standards and component mocking rules, refer to `.agents/rules/testing.md`.
+
+## 4. Workflow & Architecture
+
+- **Scope of Changes**: Keep your changes tightly focused on the requested task. Do not perform large-scale refactors or modify unrelated files unless explicitly asked.
+
+## 5. Workspace & Dependencies
+
+- **Dependency Management**: Do NOT install new third-party packages unless absolutely necessary or explicitly approved by the user. If a package must be installed, always use `yarn`, never `npm`.
+- **Clean Workspace**: Always clean up any temporary scripts, scratch files, or logs you create during your work. Do not leave the workspace cluttered.
+
+## 6. Version Control
+
+- **Commit Standards**: Write clear, imperative commit messages describing the change (e.g., "Add xyz", "Remove xyz", "Refactor xyz", "Fix xyz").

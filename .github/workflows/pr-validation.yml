@@ -33,12 +33,12 @@ jobs:
               if: matrix.variant == 'default'
               run: yarn dedupe --check
 
+            - name: Typecheck
+              run: ${{ matrix.variant == 'default' && 'yarn typecheck' || 'yarn typecheck:foss' }}
+
             - name: Lint
               if: matrix.variant == 'default'
               run: yarn lint
-
-            - name: Typecheck
-              run: ${{ matrix.variant == 'default' && 'yarn typecheck' || 'yarn typecheck:foss' }}
 
             - name: Expo Doctor
               if: matrix.variant == 'default'
@@ -62,6 +62,4 @@ jobs:
                   token: ${{ secrets.CODECOV_TOKEN }}
 
             - name: Build
-              run: yarn expo export
-              env:
-                  EXPO_PUBLIC_FOSS_BUILD: ${{ matrix.variant == 'default' && 'false' || 'true' }}
+              run: ${{ matrix.variant == 'default' && 'yarn build' || 'yarn build:foss' }}

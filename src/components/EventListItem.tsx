@@ -40,6 +40,7 @@ export function EventListItem({
 
     return (
         <ReanimatedSwipeable
+            testID={`event-item-${String(item.id)}`}
             ref={swipeableRef}
             renderRightActions={renderRightActions}
             renderLeftActions={renderLeftActions}

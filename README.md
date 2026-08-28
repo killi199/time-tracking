@@ -108,7 +108,7 @@ To run a native debug build on your Android device or emulator:
     ```bash
     yarn android
     ```
-    This command runs `expo run:android`.
+    This command runs `expo run:android --variant=debug`.
 
 ### Installing Release Version on Phone
 
@@ -124,17 +124,43 @@ This command runs `expo run:android --variant=release`.
 
 The application supports a FOSS (Free and Open Source Software) build flavor. This build removes proprietary dependencies (such as `expo-location` and `expo-notifications`) and disables features relying on them, making the app compatible with platforms like F-Droid.
 
+To run the FOSS debug build:
+
+```bash
+yarn android:foss
+```
+
 To build and install the FOSS release version on your connected Android device:
 
 ```bash
 yarn android:release-foss
 ```
 
+### Running Locally on iOS
+
+To run a native build on iOS (macOS and Xcode required):
+
+Debug:
+
+```bash
+yarn ios
+# or FOSS variant
+yarn ios:foss
+```
+
+Release:
+
+```bash
+yarn ios:release
+# or FOSS variant
+yarn ios:release-foss
+```
+
 ## Scripts
 
 ### Running Tests
 
-To run the unit tests using Vitest:
+To run the unit tests using Jest:
 
 ```bash
 yarn test
@@ -148,12 +174,36 @@ To check for TypeScript errors:
 yarn typecheck
 ```
 
+To check for TypeScript errors in the FOSS build:
+
+```bash
+yarn typecheck:foss
+```
+
 ### Linting
 
 To lint the codebase:
 
 ```bash
 yarn lint
+```
+
+### Formatting
+
+To format the codebase using Prettier:
+
+```bash
+yarn format
+```
+
+### Export / Build
+
+To export the production bundles using Expo export:
+
+```bash
+yarn build
+# or FOSS variant
+yarn build:foss
 ```
 
 ### Generating Licenses
