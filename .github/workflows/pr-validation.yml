@@ -33,12 +33,12 @@ jobs:
               if: matrix.variant == 'default'
               run: yarn dedupe --check
 
+            - name: Typecheck
+              run: ${{ matrix.variant == 'default' && 'yarn typecheck' || 'yarn typecheck:foss' }}
+
             - name: Lint
               if: matrix.variant == 'default'
               run: yarn lint
-
-            - name: Typecheck
-              run: ${{ matrix.variant == 'default' && 'yarn typecheck' || 'yarn typecheck:foss' }}
 
             - name: Expo Doctor
               if: matrix.variant == 'default'
