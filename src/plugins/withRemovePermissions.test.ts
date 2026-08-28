@@ -31,8 +31,7 @@ const runPlugin = (manifest: TestManifest) => {
 }
 
 // expo's env typings widen EXPO_PUBLIC_* variables to `any`
-const originalFossBuild = process.env.EXPO_PUBLIC_FOSS_BUILD as
-    string | undefined
+const originalFossBuild = process.env.EXPO_PUBLIC_FOSS_BUILD
 
 afterEach(() => {
     if (originalFossBuild === undefined) {
