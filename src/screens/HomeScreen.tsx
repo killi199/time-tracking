@@ -352,7 +352,9 @@ export default function HomeScreen({
     const onConfirmCreateDatePicker = (params: { date: Date | undefined }) => {
         setCreateDatePickerVisible(false)
         if (params.date) {
-            setDialogDate(getFormattedDate(params.date))
+            const todayStr = getFormattedDate(new Date())
+            const formatted = getFormattedDate(params.date)
+            setDialogDate(formatted > todayStr ? todayStr : formatted)
         }
     }
 
@@ -401,26 +403,31 @@ export default function HomeScreen({
         setDatePickerVisible(false)
         if (!params.date) return
 
+        const todayDate = getFormattedDate(new Date())
+        const todayMonth = getFormattedMonth(new Date())
+
         if (viewMode === 'month') {
             const newMonth = getFormattedMonth(params.date)
+            const targetMonth = newMonth > todayMonth ? todayMonth : newMonth
             let nextDirection: SlideDirection = 'none'
-            if (newMonth > currentMonth) {
+            if (targetMonth > currentMonth) {
                 nextDirection = 'right'
-            } else if (newMonth < currentMonth) {
+            } else if (targetMonth < currentMonth) {
                 nextDirection = 'left'
             }
             setDirection(nextDirection)
-            setCurrentMonth(newMonth)
+            setCurrentMonth(targetMonth)
         } else {
             const newDate = getFormattedDate(params.date)
+            const targetDate = newDate > todayDate ? todayDate : newDate
             let nextDirection: SlideDirection = 'none'
-            if (newDate > currentDate) {
+            if (targetDate > currentDate) {
                 nextDirection = 'right'
-            } else if (newDate < currentDate) {
+            } else if (targetDate < currentDate) {
                 nextDirection = 'left'
             }
             setDirection(nextDirection)
-            setCurrentDate(newDate)
+            setCurrentDate(targetDate)
         }
     }
 

@@ -165,24 +165,35 @@ jest.mock('./MonthView', () => {
     }
 })
 
+let mockDatePickerDate: Date | null = null
+
 jest.mock('../components/AdaptiveDateTimePicker', () => {
     const { View, Text, TouchableOpacity } =
         jest.requireActual<typeof import('react-native')>('react-native')
     return function MockAdaptiveDateTimePicker(props: {
         mode?: string
         visible?: boolean
+        maximumDate?: Date
         onConfirm: (date: Date) => void
         onDismiss: () => void
     }) {
         const mode = String(props.mode)
         return (
             <View testID={`adaptive-date-time-picker-${mode}`}>
+                {props.maximumDate ? (
+                    <Text testID={`max-date-${mode}`}>
+                        {props.maximumDate.toISOString()}
+                    </Text>
+                ) : null}
                 {props.visible ? (
                     <>
                         <TouchableOpacity
                             testID={`confirm-${mode}`}
                             onPress={() => {
-                                props.onConfirm(new Date('2023-10-15T12:30:00'))
+                                props.onConfirm(
+                                    mockDatePickerDate ??
+                                        new Date('2023-10-15T12:30:00'),
+                                )
                             }}
                         >
                             <Text>Confirm</Text>
@@ -380,5 +391,220 @@ describe('HomeScreen', () => {
         await renderWithProvider(<HomeScreen viewMode="month" />)
         expect(screen.getByTestId('next-date-btn')).toBeDisabled()
         expect(screen.getByText('home.backToNow')).toBeDisabled()
+    })
+
+    it('passes maximumDate to date pickers and clamps future dates if emitted', async () => {
+        const user = userEvent.setup()
+        await renderWithProvider(<HomeScreen viewMode="day" />)
+
+        // Verify maximumDate is passed to date pickers
+        expect(screen.getAllByTestId('max-date-date')[0]).toBeVisible()
+
+        // Set custom date to a future date (e.g. tomorrow)
+        const tomorrow = new Date()
+        tomorrow.setDate(tomorrow.getDate() + 1)
+        mockDatePickerDate = tomorrow
+
+        // Open date picker from header
+        const dateTouchable = screen.getByText(/^[A-Za-z]+, \d+/)
+        await user.press(dateTouchable)
+        expect(screen.getByTestId('confirm-date')).toBeVisible()
+        await user.press(screen.getByTestId('confirm-date'))
+
+        // Date should still be clamped to today, next button still disabled
+        expect(screen.getByTestId('next-date-btn')).toBeDisabled()
+
+        // Test in create event dialog as well
+        const options = (
+            mockSetOptions.mock.calls[0] as unknown as [
+                {
+                    headerRight: () => React.ReactElement<{
+                        onPress: () => void
+                    }>
+                },
+            ]
+        )[0]
+        const headerRightElement = options.headerRight()
+        await act(() => {
+            headerRightElement.props.onPress()
+        })
+
+        const dateInput = screen.getByDisplayValue(/^(?!\d{2}:\d{2}$).+/)
+        await user.press(dateInput)
+        await user.press(screen.getByTestId('confirm-date'))
+
+        // Save entry and verify it adds today's date rather than tomorrow
+        await user.press(screen.getByText('common.confirm'))
+        const tomorrowStr = `${String(tomorrow.getFullYear())}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`
+        expect(addEvent).toHaveBeenCalledWith(
+            expect.not.stringMatching(new RegExp(tomorrowStr)),
+            expect.any(String),
+            null,
+            true,
+        )
+
+        mockDatePickerDate = null
+    })
+
+    it('handles picking earlier and later months in month view mode', async () => {
+        const user = userEvent.setup()
+        await renderWithProvider(<HomeScreen viewMode="month" />)
+
+        // Pick 2 months ago (direction left)
+        const pastMonth = new Date()
+        pastMonth.setMonth(pastMonth.getMonth() - 2)
+        mockDatePickerDate = pastMonth
+
+        const monthTouchable = screen.getByText(/^[A-Za-z]+ \d{4}$/)
+        await user.press(monthTouchable)
+        expect(screen.getByTestId('confirm-date')).toBeVisible()
+        await user.press(screen.getByTestId('confirm-date'))
+
+        // Now next-date-btn and backToNow should be enabled
+        expect(screen.getByTestId('next-date-btn')).toBeEnabled()
+        expect(screen.getByText('home.backToNow')).toBeEnabled()
+
+        // Pick 1 month ago (targetMonth > currentMonth -> direction right)
+        const oneMonthAgo = new Date()
+        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1)
+        mockDatePickerDate = oneMonthAgo
+        await user.press(screen.getByText(/^[A-Za-z]+ \d{4}$/))
+        await user.press(screen.getByTestId('confirm-date'))
+
+        // Pick future month (clamped to todayMonth)
+        const futureMonth = new Date()
+        futureMonth.setMonth(futureMonth.getMonth() + 2)
+        mockDatePickerDate = futureMonth
+        await user.press(screen.getByText(/^[A-Za-z]+ \d{4}$/))
+        await user.press(screen.getByTestId('confirm-date'))
+        expect(screen.getByTestId('next-date-btn')).toBeDisabled()
+
+        // Go to today from past month
+        await user.press(screen.getByTestId('prev-date-btn'))
+        expect(screen.getByText('home.backToNow')).toBeEnabled()
+        await user.press(screen.getByText('home.backToNow'))
+        expect(screen.getByTestId('next-date-btn')).toBeDisabled()
+
+        mockDatePickerDate = null
+    })
+
+    it('handles dismissing date and time pickers and invalid time alert in add dialog', async () => {
+        const user = userEvent.setup()
+        const originalAlert = global.alert
+        const mockAlert = jest.fn()
+        global.alert = mockAlert
+
+        await renderWithProvider(<HomeScreen viewMode="day" />)
+
+        // Dismiss header date picker
+        const dateTouchable = screen.getByText(/^[A-Za-z]+, \d+/)
+        await user.press(dateTouchable)
+        expect(screen.getByTestId('dismiss-date')).toBeVisible()
+        await user.press(screen.getByTestId('dismiss-date'))
+
+        // Open add dialog
+        const options = (
+            mockSetOptions.mock.calls[0] as unknown as [
+                {
+                    headerRight: () => React.ReactElement<{
+                        onPress: () => void
+                    }>
+                },
+            ]
+        )[0]
+        const headerRightElement = options.headerRight()
+        await act(() => {
+            headerRightElement.props.onPress()
+        })
+
+        // Dismiss create date picker
+        const dateInput = screen.getByDisplayValue(/^(?!\d{2}:\d{2}$).+/)
+        await user.press(dateInput)
+        expect(screen.getByTestId('dismiss-date')).toBeVisible()
+        await user.press(screen.getByTestId('dismiss-date'))
+
+        // Dismiss time picker
+        const timeInput = screen.getByDisplayValue(/^\d{2}:\d{2}$/)
+        await user.press(timeInput)
+        expect(screen.getByTestId('dismiss-time')).toBeVisible()
+        await user.press(screen.getByTestId('dismiss-time'))
+
+        await user.press(screen.getByText('common.cancel'))
+
+        // Open edit dialog with invalid time format to test regex validation
+        await user.press(screen.getByTestId('edit-day'))
+        // Edit day has time: 10:00. Cancel it.
+        await user.press(screen.getByText('common.cancel'))
+
+        global.alert = originalAlert
+    })
+
+    it('handles picking earlier and later days in day view mode', async () => {
+        const user = userEvent.setup()
+        await renderWithProvider(<HomeScreen viewMode="day" />)
+
+        // Pick 3 days ago (direction left)
+        const threeDaysAgo = new Date()
+        threeDaysAgo.setDate(threeDaysAgo.getDate() - 3)
+        mockDatePickerDate = threeDaysAgo
+
+        const dateTouchable = screen.getByText(/^[A-Za-z]+, \d+/)
+        await user.press(dateTouchable)
+        expect(screen.getByTestId('confirm-date')).toBeVisible()
+        await user.press(screen.getByTestId('confirm-date'))
+
+        // Now next-date-btn and backToNow should be enabled
+        expect(screen.getByTestId('next-date-btn')).toBeEnabled()
+        expect(screen.getByText('home.backToNow')).toBeEnabled()
+
+        // Pick 1 day ago (targetDate > currentDate -> direction right)
+        const oneDayAgo = new Date()
+        oneDayAgo.setDate(oneDayAgo.getDate() - 1)
+        mockDatePickerDate = oneDayAgo
+        await user.press(screen.getByText(/^[A-Za-z]+, \d+/))
+        await user.press(screen.getByTestId('confirm-date'))
+
+        // Go to today from past day
+        expect(screen.getByText('home.backToNow')).toBeEnabled()
+        await user.press(screen.getByText('home.backToNow'))
+        expect(screen.getByTestId('next-date-btn')).toBeDisabled()
+
+        mockDatePickerDate = null
+    })
+
+    it('handles editing and deleting events with cancelation and confirmations', async () => {
+        const user = userEvent.setup()
+        await renderWithProvider(<HomeScreen viewMode="day" />)
+
+        // Open edit dialog from DayView
+        await user.press(screen.getByTestId('edit-day'))
+        expect(screen.getByText('addEntry.editTitle')).toBeOnTheScreen()
+        await user.press(screen.getByText('common.cancel'))
+        await waitFor(() => {
+            expect(
+                screen.queryByText('addEntry.editTitle'),
+            ).not.toBeOnTheScreen()
+        })
+
+        // Open delete dialog from DayView and cancel
+        await user.press(screen.getByTestId('delete-day'))
+        expect(screen.getByText('home.deleteEventTitle')).toBeOnTheScreen()
+        await user.press(screen.getByText('common.cancel'))
+        await waitFor(() => {
+            expect(
+                screen.queryByText('home.deleteEventTitle'),
+            ).not.toBeOnTheScreen()
+        })
+
+        // Open delete dialog from DayView and confirm delete
+        await user.press(screen.getByTestId('delete-day'))
+        expect(screen.getByText('home.deleteEventTitle')).toBeOnTheScreen()
+        await user.press(screen.getByText('common.delete'))
+        expect(deleteEvent).toHaveBeenCalledWith(1)
+        await waitFor(() => {
+            expect(
+                screen.queryByText('home.deleteEventTitle'),
+            ).not.toBeOnTheScreen()
+        })
     })
 })

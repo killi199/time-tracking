@@ -89,17 +89,13 @@ const AdaptiveDateTimePicker = ({
     }
 
     const androidValue = mode === 'date' ? shiftToUTC(value) : value
-    const androidMaximumDate =
-        maximumDate && mode === 'date' ? shiftToUTC(maximumDate) : maximumDate
-    const androidMinimumDate =
-        minimumDate && mode === 'date' ? shiftToUTC(minimumDate) : minimumDate
 
     return (
         <DateTimePicker
             value={androidValue}
             mode={mode}
-            maximumDate={androidMaximumDate}
-            minimumDate={androidMinimumDate}
+            maximumDate={maximumDate}
+            minimumDate={minimumDate}
             presentation="dialog"
             onValueChange={(_, selectedDate) => {
                 onConfirm(
