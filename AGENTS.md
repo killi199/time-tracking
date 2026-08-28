@@ -2,17 +2,24 @@
 
 ## 1. Pre-Flight Checks
 
-Before presenting your work to the user or declaring a task complete, you MUST independently run and fix any issues found by the following commands:
+Before presenting your work to the user or declaring a task complete, run the validation checks relevant to the files modified:
 
-1. `yarn format`
-2. `yarn typecheck`
-3. `yarn typecheck:foss`
-4. `yarn lint`
-5. `yarn test`
-6. `yarn build`
-7. `yarn build:foss`
+- **Non-Code / Documentation Changes** (e.g., `.md` files):
+    - No automated checks required (run `yarn format` if markdown files were modified).
 
-**Looping Rule**: If any command fails, fix the underlying issue and **re-run all checks** to ensure your fix didn't break anything else. You must repeat this fix-and-check loop until all commands pass, for up to a maximum of 3 attempts. If issues persist after 3 attempts, stop and ask the user for guidance. Do not report completion if any of these commands are still failing within the 3 attempts.
+- **Source Code & Test Changes** (`src/**/*.{ts,tsx,js}`):
+    1. `yarn format`
+    2. `yarn typecheck`
+    3. `yarn typecheck:foss`
+    4. `yarn lint`
+    5. `yarn test`
+
+- **Build / Dependency / Configuration Changes** (`package.json`, `app.json`, `metro.config.*`, `tsconfig*.json`, native build files, or when explicitly requested):
+    - Run all steps above, plus:
+    6. `yarn build`
+    7. `yarn build:foss`
+
+**Looping Rule**: If any command fails, fix the underlying issue and **re-run the relevant checks** to ensure your fix didn't break anything else. You must repeat this fix-and-check loop until all relevant commands pass, for up to a maximum of 3 attempts. If issues persist after 3 attempts, stop and ask the user for guidance. Do not report completion if any of these commands are still failing within the 3 attempts.
 
 ## 2. Testing
 
