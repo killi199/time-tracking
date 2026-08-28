@@ -223,10 +223,46 @@ describe('AdaptiveDateTimePicker', () => {
             expect(mockOnConfirm).toHaveBeenCalledWith(newDate)
         })
 
+        it('handles visible prop transitioning from true to false', async () => {
+            const { rerender } = await render(
+                <PaperProvider>
+                    <AdaptiveDateTimePicker
+                        visible={true}
+                        onDismiss={mockOnDismiss}
+                        onConfirm={mockOnConfirm}
+                        value={initialDate}
+                        mode="date"
+                        cancelLabel="Cancel"
+                        confirmLabel="Confirm"
+                    />
+                </PaperProvider>,
+            )
+
+            expect(screen.getByTestId('mock-datetime-picker')).toBeVisible()
+
+            await rerender(
+                <PaperProvider>
+                    <AdaptiveDateTimePicker
+                        visible={false}
+                        onDismiss={mockOnDismiss}
+                        onConfirm={mockOnConfirm}
+                        value={initialDate}
+                        mode="date"
+                        cancelLabel="Cancel"
+                        confirmLabel="Confirm"
+                    />
+                </PaperProvider>,
+            )
+
+            expect(
+                screen.queryByTestId('mock-datetime-picker'),
+            ).not.toBeOnTheScreen()
+        })
+
         it('clamps confirmed date to maximumDate and minimumDate on iOS', async () => {
             const user = userEvent.setup()
             const maxDate = new Date('2023-10-18T00:00:00.000Z')
-            await render(
+            const { unmount } = await render(
                 <PaperProvider>
                     <AdaptiveDateTimePicker
                         visible={true}
@@ -246,6 +282,31 @@ describe('AdaptiveDateTimePicker', () => {
             await user.press(screen.getByText('Confirm'))
 
             expect(mockOnConfirm).toHaveBeenCalledWith(maxDate)
+            mockOnConfirm.mockClear()
+            await unmount()
+
+            // Test minimumDate clamp
+            const minDate = new Date('2023-10-25T00:00:00.000Z')
+            await render(
+                <PaperProvider>
+                    <AdaptiveDateTimePicker
+                        visible={true}
+                        onDismiss={mockOnDismiss}
+                        onConfirm={mockOnConfirm}
+                        value={initialDate}
+                        minimumDate={minDate}
+                        mode="date"
+                        cancelLabel="Cancel"
+                        confirmLabel="Confirm"
+                    />
+                </PaperProvider>,
+            )
+
+            // Mock trigger-change emits 2023-10-20, which is below minDate 2023-10-25
+            await user.press(screen.getByTestId('trigger-change'))
+            await user.press(screen.getByText('Confirm'))
+
+            expect(mockOnConfirm).toHaveBeenCalledWith(minDate)
         })
     })
 
@@ -308,6 +369,8 @@ describe('AdaptiveDateTimePicker', () => {
 
         it('passes value directly and confirms without shifting in time mode', async () => {
             const user = userEvent.setup()
+            const maxDate = new Date('2023-10-25T18:00:00.000Z')
+            const minDate = new Date('2023-10-25T08:00:00.000Z')
             await render(
                 <PaperProvider>
                     <AdaptiveDateTimePicker
@@ -315,6 +378,8 @@ describe('AdaptiveDateTimePicker', () => {
                         onDismiss={mockOnDismiss}
                         onConfirm={mockOnConfirm}
                         value={initialDate}
+                        maximumDate={maxDate}
+                        minimumDate={minDate}
                         mode="time"
                         cancelLabel="Cancel"
                         confirmLabel="Confirm"
@@ -323,6 +388,8 @@ describe('AdaptiveDateTimePicker', () => {
             )
 
             expect(shiftToUTC).not.toHaveBeenCalled()
+            expect(screen.getByTestId('picker-max-date')).toBeVisible()
+            expect(screen.getByTestId('picker-min-date')).toBeVisible()
             await user.press(screen.getByTestId('trigger-change'))
 
             expect(shiftToLocal).not.toHaveBeenCalled()
