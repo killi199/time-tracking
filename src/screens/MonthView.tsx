@@ -3,6 +3,7 @@ import { View, FlatList, StyleSheet } from 'react-native'
 import { Text, Card, List, useTheme } from 'react-native-paper'
 import { EventListItem } from '../components/EventListItem'
 import { TimeSeparator } from '../components/TimeSeparator'
+import { EmptyState } from '../components/EmptyState'
 import {
     getMonthEvents,
     getOverallStats,
@@ -281,6 +282,19 @@ export default function MonthView({
                     ItemSeparatorComponent={(props) => (
                         <TimeSeparator {...props} />
                     )}
+                    contentContainerStyle={
+                        events.length === 0
+                            ? styles.emptyListContent
+                            : undefined
+                    }
+                    ListEmptyComponent={
+                        <EmptyState
+                            icon="calendar-month-outline"
+                            title={t('emptyState.monthTitle')}
+                            description={t('emptyState.monthDescription')}
+                            testID="month-empty-state"
+                        />
+                    }
                 />
             </View>
         </View>
@@ -306,5 +320,9 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         flex: 1,
+    },
+    emptyListContent: {
+        flexGrow: 1,
+        justifyContent: 'center',
     },
 })

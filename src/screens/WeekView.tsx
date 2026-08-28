@@ -3,6 +3,7 @@ import { View, FlatList, StyleSheet } from 'react-native'
 import { Text, Card, List, useTheme } from 'react-native-paper'
 import { EventListItem } from '../components/EventListItem'
 import { TimeSeparator } from '../components/TimeSeparator'
+import { EmptyState } from '../components/EmptyState'
 import {
     getEventsRange,
     getOverallStats,
@@ -299,6 +300,19 @@ export default function WeekView({
                     ItemSeparatorComponent={(props) => (
                         <TimeSeparator {...props} />
                     )}
+                    contentContainerStyle={
+                        events.length === 0
+                            ? styles.emptyListContent
+                            : undefined
+                    }
+                    ListEmptyComponent={
+                        <EmptyState
+                            icon="calendar-week-outline"
+                            title={t('emptyState.weekTitle')}
+                            description={t('emptyState.weekDescription')}
+                            testID="week-empty-state"
+                        />
+                    }
                 />
             </View>
         </View>
@@ -324,5 +338,9 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         flex: 1,
+    },
+    emptyListContent: {
+        flexGrow: 1,
+        justifyContent: 'center',
     },
 })

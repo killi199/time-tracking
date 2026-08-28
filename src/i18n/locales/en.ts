@@ -56,6 +56,21 @@ export default {
             title: 'History',
             noHistory: 'No history yet',
         },
+        emptyState: {
+            dayTitle: 'No time entries today',
+            dayDescription:
+                'Tap Check In or the plus button to start tracking your work session.',
+            dayTitleOther: 'No time entries for this day',
+            dayDescriptionOther:
+                'No working hours were recorded for this date.',
+            weekTitle: 'No time entries this week',
+            weekDescription:
+                'Track your daily work hours to view your weekly progress and balance.',
+            monthTitle: 'No time entries this month',
+            monthDescription:
+                'Track your daily work hours to view your monthly progress and balance.',
+            checkInAction: 'Check In',
+        },
         menu: {
             title: 'Menu',
             headline: 'Time Tracking',

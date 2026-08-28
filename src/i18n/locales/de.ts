@@ -58,6 +58,21 @@ export default {
             title: 'Verlauf',
             noHistory: 'Noch kein Verlauf',
         },
+        emptyState: {
+            dayTitle: 'Keine Zeiteinträge heute',
+            dayDescription:
+                'Tippe auf Einchecken oder das Plus-Symbol, um deine Arbeitszeit zu erfassen.',
+            dayTitleOther: 'Keine Zeiteinträge für diesen Tag',
+            dayDescriptionOther:
+                'Für dieses Datum wurden keine Arbeitszeiten aufgezeichnet.',
+            weekTitle: 'Keine Zeiteinträge diese Woche',
+            weekDescription:
+                'Erfasse deine täglichen Arbeitszeiten, um deinen wöchentlichen Fortschritt und deine Bilanz zu sehen.',
+            monthTitle: 'Keine Zeiteinträge diesen Monat',
+            monthDescription:
+                'Erfasse deine täglichen Arbeitszeiten, um deinen monatlichen Fortschritt und deine Bilanz zu sehen.',
+            checkInAction: 'Einchecken',
+        },
         menu: {
             title: 'Menü',
             headline: 'Zeiterfassung',
