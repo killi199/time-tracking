@@ -16,6 +16,7 @@ import { useRouter } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import MaterialCommunityIcons from '@react-native-vector-icons/material-design-icons/static'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { exportToCSV, importFromCSV } from '../utils/csv'
 
 export default function MenuDrawerContent(
     props: Readonly<DrawerContentComponentProps>,
@@ -135,8 +136,6 @@ export default function MenuDrawerContent(
                         onPress={() => {
                             void (async () => {
                                 props.navigation.closeDrawer()
-                                const { exportToCSV } =
-                                    await import('../utils/csv')
                                 const result = await exportToCSV()
                                 if (!result.success && result.message) {
                                     showDialog(
@@ -172,8 +171,6 @@ export default function MenuDrawerContent(
                         onPress={() => {
                             void (async () => {
                                 props.navigation.closeDrawer()
-                                const { importFromCSV } =
-                                    await import('../utils/csv')
                                 const result = await importFromCSV()
                                 if (result.success) {
                                     const events = result.count ?? 0
