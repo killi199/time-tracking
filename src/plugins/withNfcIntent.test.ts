@@ -1,13 +1,15 @@
 import { describe, it, expect, jest } from '@jest/globals'
 import withNfcIntent from './withNfcIntent'
 
-// Execute the manifest modifier directly instead of running expo's
+// Execute the modifier functions directly instead of running expo's
 // build-time plugin machinery.
 jest.mock('@expo/config-plugins', () => ({
     withAndroidManifest: (
         config: unknown,
         action: (config: unknown) => unknown,
     ) => action(config),
+    withMainActivity: (config: unknown, action: (config: unknown) => unknown) =>
+        action(config),
 }))
 
 interface ManifestActivity {
@@ -19,14 +21,14 @@ interface TestManifest {
     application?: { activity?: ManifestActivity[] }[]
 }
 
-const runPlugin = (manifest: TestManifest) => {
+const runPlugin = (manifest: TestManifest, contents?: string) => {
     const config = {
         name: 'time-tracking',
         slug: 'time-tracking',
-        modResults: { manifest },
+        modResults: { manifest, contents: contents ?? '' },
     }
     withNfcIntent(config)
-    return manifest
+    return config.modResults
 }
 
 const mainActivity = (): ManifestActivity => ({
@@ -87,5 +89,34 @@ describe('withNfcIntent', () => {
 
     it('does nothing without an application entry', () => {
         expect(() => runPlugin({})).not.toThrow()
+    })
+
+    it('injects intent clearing logic into MainActivity.kt', () => {
+        const initialContents = `
+class MainActivity : ReactActivity() {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    setTheme(R.style.AppTheme)
+    super.onCreate(null)
+  }
+}`
+        const modResults = runPlugin({}, initialContents)
+        expect(modResults.contents).toContain(
+            'FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY',
+        )
+        expect(modResults.contents).toContain('ACTION_NDEF_DISCOVERED')
+        expect(modResults.contents).toContain('super.onCreate(null)')
+    })
+
+    it('does not re-inject if already present in MainActivity.kt', () => {
+        const initialContents = `
+class MainActivity : ReactActivity() {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    setTheme(R.style.AppTheme)
+    val isFromHistory = (intent.flags and android.content.Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) != 0
+    super.onCreate(null)
+  }
+}`
+        const modResults = runPlugin({}, initialContents)
+        expect(modResults.contents).toBe(initialContents)
     })
 })
