@@ -126,6 +126,8 @@ export default {
             stopFailed: 'Failed to stop geofencing.',
             updateInstruction: 'Disable and re-enable to apply new location.',
             active: 'Geofence Active',
+            fossUnavailable:
+                'This feature is not available in the FOSS version of the app due to reliance on proprietary mapping and location services.',
         },
         nfc: {
             title: 'NFC Setup',

@@ -130,6 +130,8 @@ export default {
             updateInstruction:
                 'Deaktivieren und reaktivieren, um den neuen Standort anzuwenden.',
             active: 'Geofence Aktiv',
+            fossUnavailable:
+                'Diese Funktion ist in der FOSS-Version der App nicht verfügbar, da sie auf proprietäre Karten- und Standortdienste angewiesen ist.',
         },
         nfc: {
             title: 'NFC Einrichtung',

@@ -17,8 +17,7 @@ export default function GeofenceSetupScreen() {
                 variant="bodyLarge"
                 style={{ textAlign: 'center', marginHorizontal: 20 }}
             >
-                This feature is not available in the FOSS version of the app due
-                to reliance on proprietary mapping and location services.
+                {t('geofence.fossUnavailable')}
             </Text>
         </View>
     )
