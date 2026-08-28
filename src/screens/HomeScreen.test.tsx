@@ -165,24 +165,35 @@ jest.mock('./MonthView', () => {
     }
 })
 
+let mockDatePickerDate: Date | null = null
+
 jest.mock('../components/AdaptiveDateTimePicker', () => {
     const { View, Text, TouchableOpacity } =
         jest.requireActual<typeof import('react-native')>('react-native')
     return function MockAdaptiveDateTimePicker(props: {
         mode?: string
         visible?: boolean
+        maximumDate?: Date
         onConfirm: (date: Date) => void
         onDismiss: () => void
     }) {
         const mode = String(props.mode)
         return (
             <View testID={`adaptive-date-time-picker-${mode}`}>
+                {props.maximumDate ? (
+                    <Text testID={`max-date-${mode}`}>
+                        {props.maximumDate.toISOString()}
+                    </Text>
+                ) : null}
                 {props.visible ? (
                     <>
                         <TouchableOpacity
                             testID={`confirm-${mode}`}
                             onPress={() => {
-                                props.onConfirm(new Date('2023-10-15T12:30:00'))
+                                props.onConfirm(
+                                    mockDatePickerDate ??
+                                        new Date('2023-10-15T12:30:00'),
+                                )
                             }}
                         >
                             <Text>Confirm</Text>
@@ -380,5 +391,58 @@ describe('HomeScreen', () => {
         await renderWithProvider(<HomeScreen viewMode="month" />)
         expect(screen.getByTestId('next-date-btn')).toBeDisabled()
         expect(screen.getByText('home.backToNow')).toBeDisabled()
+    })
+
+    it('passes maximumDate to date pickers and clamps future dates if emitted', async () => {
+        const user = userEvent.setup()
+        await renderWithProvider(<HomeScreen viewMode="day" />)
+
+        // Verify maximumDate is passed to date pickers
+        expect(screen.getAllByTestId('max-date-date')[0]).toBeVisible()
+
+        // Set custom date to a future date (e.g. tomorrow)
+        const tomorrow = new Date()
+        tomorrow.setDate(tomorrow.getDate() + 1)
+        mockDatePickerDate = tomorrow
+
+        // Open date picker from header
+        const dateTouchable = screen.getByText(/^[A-Za-z]+, \d+/)
+        await user.press(dateTouchable)
+        expect(screen.getByTestId('confirm-date')).toBeVisible()
+        await user.press(screen.getByTestId('confirm-date'))
+
+        // Date should still be clamped to today, next button still disabled
+        expect(screen.getByTestId('next-date-btn')).toBeDisabled()
+
+        // Test in create event dialog as well
+        const options = (
+            mockSetOptions.mock.calls[0] as unknown as [
+                {
+                    headerRight: () => React.ReactElement<{
+                        onPress: () => void
+                    }>
+                },
+            ]
+        )[0]
+        const headerRightElement = options.headerRight()
+        await act(() => {
+            headerRightElement.props.onPress()
+        })
+
+        const dateInput = screen.getByDisplayValue(/^(?!\d{2}:\d{2}$).+/)
+        await user.press(dateInput)
+        await user.press(screen.getByTestId('confirm-date'))
+
+        // Save entry and verify it adds today's date rather than tomorrow
+        await user.press(screen.getByText('common.confirm'))
+        const tomorrowStr = `${String(tomorrow.getFullYear())}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`
+        expect(addEvent).toHaveBeenCalledWith(
+            expect.not.stringMatching(new RegExp(tomorrowStr)),
+            expect.any(String),
+            null,
+            true,
+        )
+
+        mockDatePickerDate = null
     })
 })

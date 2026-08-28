@@ -315,7 +315,7 @@ describe('AdaptiveDateTimePicker', () => {
             Platform.OS = 'android'
         })
 
-        it('shifts maximumDate and minimumDate to UTC in date mode on Android', async () => {
+        it('passes maximumDate and minimumDate directly without UTC shifting on Android', async () => {
             const maxDate = new Date('2023-10-25T00:00:00.000Z')
             const minDate = new Date('2023-10-01T00:00:00.000Z')
             await render(
@@ -334,10 +334,37 @@ describe('AdaptiveDateTimePicker', () => {
                 </PaperProvider>,
             )
 
-            expect(shiftToUTC).toHaveBeenCalledWith(maxDate)
-            expect(shiftToUTC).toHaveBeenCalledWith(minDate)
-            expect(screen.getByTestId('picker-max-date')).toBeVisible()
-            expect(screen.getByTestId('picker-min-date')).toBeVisible()
+            expect(shiftToUTC).not.toHaveBeenCalledWith(maxDate)
+            expect(shiftToUTC).not.toHaveBeenCalledWith(minDate)
+            expect(screen.getByTestId('picker-max-date')).toHaveTextContent(
+                maxDate.toISOString(),
+            )
+            expect(screen.getByTestId('picker-min-date')).toHaveTextContent(
+                minDate.toISOString(),
+            )
+        })
+
+        it('preserves late-evening maximumDate without shifting into next day on Android', async () => {
+            const lateEveningDate = new Date(2026, 7, 28, 22, 56, 55)
+            await render(
+                <PaperProvider>
+                    <AdaptiveDateTimePicker
+                        visible={true}
+                        onDismiss={mockOnDismiss}
+                        onConfirm={mockOnConfirm}
+                        value={initialDate}
+                        maximumDate={lateEveningDate}
+                        mode="date"
+                        cancelLabel="Cancel"
+                        confirmLabel="Confirm"
+                    />
+                </PaperProvider>,
+            )
+
+            expect(shiftToUTC).not.toHaveBeenCalledWith(lateEveningDate)
+            expect(screen.getByTestId('picker-max-date')).toHaveTextContent(
+                lateEveningDate.toISOString(),
+            )
         })
 
         it('shifts date to UTC and shifts back to local on confirm in date mode', async () => {
