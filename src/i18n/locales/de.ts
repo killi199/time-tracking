@@ -114,6 +114,8 @@ export default {
             timeLabel: 'Zeit',
             noteLabel: 'Notiz (Optional)',
             invalidTime: 'Ungültiges Zeitformat. Bitte HH:MM verwenden',
+            futureEntryError:
+                'Einträge in der Zukunft können nicht erstellt oder bearbeitet werden.',
         },
         geofence: {
             title: 'Arbeitsort',

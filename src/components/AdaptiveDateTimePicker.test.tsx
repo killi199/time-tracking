@@ -15,6 +15,8 @@ jest.mock('@expo/ui/community/datetime-picker', () => {
         display?: string
         locale?: string
         presentation?: string
+        maximumDate?: Date
+        minimumDate?: Date
         onValueChange?: (event: unknown, date: Date) => void
         onDismiss?: () => void
     }) {
@@ -22,6 +24,16 @@ jest.mock('@expo/ui/community/datetime-picker', () => {
             <View testID={props.testID ?? 'mock-datetime-picker'}>
                 <Text testID="picker-value">{props.value.toISOString()}</Text>
                 <Text testID="picker-mode">{props.mode}</Text>
+                {props.maximumDate ? (
+                    <Text testID="picker-max-date">
+                        {props.maximumDate.toISOString()}
+                    </Text>
+                ) : null}
+                {props.minimumDate ? (
+                    <Text testID="picker-min-date">
+                        {props.minimumDate.toISOString()}
+                    </Text>
+                ) : null}
                 <TouchableOpacity
                     testID="trigger-change"
                     onPress={() => {
@@ -210,11 +222,61 @@ describe('AdaptiveDateTimePicker', () => {
             await user.press(screen.getByText('Confirm'))
             expect(mockOnConfirm).toHaveBeenCalledWith(newDate)
         })
+
+        it('clamps confirmed date to maximumDate and minimumDate on iOS', async () => {
+            const user = userEvent.setup()
+            const maxDate = new Date('2023-10-18T00:00:00.000Z')
+            await render(
+                <PaperProvider>
+                    <AdaptiveDateTimePicker
+                        visible={true}
+                        onDismiss={mockOnDismiss}
+                        onConfirm={mockOnConfirm}
+                        value={initialDate}
+                        maximumDate={maxDate}
+                        mode="date"
+                        cancelLabel="Cancel"
+                        confirmLabel="Confirm"
+                    />
+                </PaperProvider>,
+            )
+
+            // Mock trigger-change emits 2023-10-20, which exceeds maxDate 2023-10-18
+            await user.press(screen.getByTestId('trigger-change'))
+            await user.press(screen.getByText('Confirm'))
+
+            expect(mockOnConfirm).toHaveBeenCalledWith(maxDate)
+        })
     })
 
     describe('Android platform', () => {
         beforeEach(() => {
             Platform.OS = 'android'
+        })
+
+        it('shifts maximumDate and minimumDate to UTC in date mode on Android', async () => {
+            const maxDate = new Date('2023-10-25T00:00:00.000Z')
+            const minDate = new Date('2023-10-01T00:00:00.000Z')
+            await render(
+                <PaperProvider>
+                    <AdaptiveDateTimePicker
+                        visible={true}
+                        onDismiss={mockOnDismiss}
+                        onConfirm={mockOnConfirm}
+                        value={initialDate}
+                        maximumDate={maxDate}
+                        minimumDate={minDate}
+                        mode="date"
+                        cancelLabel="Cancel"
+                        confirmLabel="Confirm"
+                    />
+                </PaperProvider>,
+            )
+
+            expect(shiftToUTC).toHaveBeenCalledWith(maxDate)
+            expect(shiftToUTC).toHaveBeenCalledWith(minDate)
+            expect(screen.getByTestId('picker-max-date')).toBeVisible()
+            expect(screen.getByTestId('picker-min-date')).toBeVisible()
         })
 
         it('shifts date to UTC and shifts back to local on confirm in date mode', async () => {

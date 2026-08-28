@@ -111,6 +111,7 @@ export default {
             timeLabel: 'Time',
             noteLabel: 'Note (Optional)',
             invalidTime: 'Invalid time format. Use HH:MM',
+            futureEntryError: 'Cannot create or update events in the future.',
         },
         geofence: {
             title: 'Working Location',
