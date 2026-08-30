@@ -1,5 +1,8 @@
 # Time Tracking App
 
+[![CI](https://github.com/killi199/time-tracking/actions/workflows/ci.yml/badge.svg)](https://github.com/killi199/time-tracking/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/killi199/time-tracking/graph/badge.svg?token=P0IDOZCLHW)](https://codecov.io/gh/killi199/time-tracking)
+
 <p align="center">
   <a href="https://github.com/killi199/time-tracking/releases">
     <img src="https://raw.githubusercontent.com/Kunzisoft/Github-badge/master/get-it-on-github.svg" alt="Get it on GitHub" height="80">
