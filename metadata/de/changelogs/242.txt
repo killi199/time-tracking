@@ -1,0 +1,6 @@
+- New: Disable selection of future dates and future event creation (#409)
+- New: Add appealing empty states for Day, Week, and Month views (#408)
+- New: Add swipe animation (#385)
+- Fix: Prevent Android date picker maxDate timezone shift and add regression tests (#411)
+- Fix: Prevent NFC intent re-triggering on warm boot (#410)
+- General improvements to app stability, dependencies, and code maintenance.
