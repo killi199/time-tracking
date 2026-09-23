@@ -5114,9 +5114,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:29.16.5":
-  version: 29.16.5
-  resolution: "eslint-plugin-jest@npm:29.16.5"
+"eslint-plugin-jest@npm:29.16.6":
+  version: 29.16.6
+  resolution: "eslint-plugin-jest@npm:29.16.6"
   dependencies:
     "@typescript-eslint/utils": "npm:^8.0.0"
   peerDependencies:
@@ -5131,7 +5131,7 @@ __metadata:
       optional: true
     typescript:
       optional: true
-  checksum: 10c0/ef9736cf77a5d48349d143441662ddbae77d810529dbd7a3bfe0314cf5866adbcc87c437d91c3b147a00e7d1473290bae1ce2d528be784a984f6282d469fb5ca
+  checksum: 10c0/c483057f6b7c6500c6208eb965b61fe3a81dbd86123dd1a129584ed8c490336275a8815196922c20bd4895761a7d5b993f7b37869c69d57594b522fe318def8d
   languageName: node
   linkType: hard
 
@@ -10753,7 +10753,7 @@ __metadata:
     cross-env: "npm:10.1.0"
     eslint: "npm:9.39.2"
     eslint-config-prettier: "npm:10.1.8"
-    eslint-plugin-jest: "npm:29.16.5"
+    eslint-plugin-jest: "npm:29.16.6"
     eslint-plugin-react: "npm:7.37.5"
     eslint-plugin-react-hooks: "npm:7.1.1"
     eslint-plugin-sonarjs: "npm:4.2.0"
