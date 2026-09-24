@@ -3130,13 +3130,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-native-web@npm:0.19.2":
-  version: 0.19.2
-  resolution: "@types/react-native-web@npm:0.19.2"
+"@types/react-native-web@npm:0.19.3":
+  version: 0.19.3
+  resolution: "@types/react-native-web@npm:0.19.3"
   dependencies:
     "@types/react": "npm:*"
     react-native: "npm:*"
-  checksum: 10c0/df5a0cc071251a9626fef9aeb3e9e1e2e44a4465138cbdea01e80a7315a4a48c9da89e0d25672fda7a1c44decea9c9928f237d5367e33e7fb057f5c6402ca71d
+  checksum: 10c0/9fad06809257c5dcec722c30bfa635ae58096b444046faa045ad70315916bfc94fbeb478dfa78cb2ea3d1179d4e60de79cd7146c8effdacf11127546926fd68e
   languageName: node
   linkType: hard
 
@@ -10759,7 +10759,7 @@ __metadata:
     "@types/papaparse": "npm:5.5.2"
     "@types/react": "npm:~19.2.14"
     "@types/react-dom": "npm:~19.2.0"
-    "@types/react-native-web": "npm:0.19.2"
+    "@types/react-native-web": "npm:0.19.3"
     cross-env: "npm:10.1.0"
     eslint: "npm:9.39.2"
     eslint-config-prettier: "npm:10.1.8"
