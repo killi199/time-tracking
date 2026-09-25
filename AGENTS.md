@@ -41,4 +41,5 @@ Before presenting your work to the user or declaring a task complete, run the va
 
 ## 6. Version Control
 
+- **Branch Protection**: NEVER commit directly to the `main` branch. All commits MUST be made on a separate feature/bugfix branch or worktree, never directly on `main`.
 - **Commit Standards**: Write clear, imperative commit messages describing the change (e.g., "Add xyz", "Remove xyz", "Refactor xyz", "Fix xyz").
