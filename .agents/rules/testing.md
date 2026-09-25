@@ -9,6 +9,7 @@ Guidelines for writing and maintaining tests in the `time-tracking` project.
 ## Core Testing Rules
 
 - **Zero Console Errors & Warnings**: Test suites must run completely clean with 0 console warnings or errors (such as `act(...)` warnings, unhandled rejections, or unmocked native warnings).
+- **No Configuration File Tests**: Do NOT write unit tests for configuration files (such as `app.config.ts`, `package.json`, `metro.config.js`). Configuration is validated through prebuild and build checks, not unit tests.
 - **Prefer Real Components**: Default to using real `react-native-paper` UI components (`Button`, `IconButton`, `Text`, `TextInput`, `Checkbox`, `Dialog`, etc.) wrapped in `<PaperProvider>`.
 - **Selective Mocking**: It is acceptable to mock specific complex UI elements, subcomponents, or child views when setting up their cascading dependencies/bridges would require disproportionate effort or when isolating a screen hierarchy.
 - **Generic `jestSetup.ts`**: Keep `src/test/jestSetup.ts` strictly generic and minimal for app-wide cross-cutting concerns (e.g., global `i18next` / `react-i18next` translation mocks and `@testing-library/react-native/matchers`). Do NOT add mocks into `jestSetup.ts` that only serve specific test files or screens; keep those mocks local to their respective test files.
@@ -33,3 +34,5 @@ Guidelines for writing and maintaining tests in the `time-tracking` project.
 - [ ] Tests use real `react-native-paper` components with `<PaperProvider>` rather than artificial UI mocks?
 - [ ] Tests execute cleanly with zero console warnings and zero `act(...)` errors?
 - [ ] Dialog/Modal dismissals in tests are awaited with `waitFor` for clean animation teardown?
+- [ ] No tests written for configuration files (e.g., `app.config.ts`)?
+

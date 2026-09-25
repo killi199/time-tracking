@@ -23,7 +23,7 @@ Before presenting your work to the user or declaring a task complete, run the va
 
 ## 2. Testing
 
-- **Test Every Change**: Every bug fix, new feature, or code modification MUST include corresponding tests. Do not leave new code untested.
+- **Test Every Change**: Every bug fix, new feature, or code modification MUST include corresponding tests. Do not leave new code untested (configuration files such as `app.config.ts`, `metro.config.js`, or native build configs do not require unit tests).
 
 ## 3. Specific Rules
 

@@ -55,6 +55,7 @@
         "expo-quick-actions": "6.0.1",
         "expo-router": "~57.0.23",
         "expo-sharing": "~57.0.22",
+        "expo-splash-screen": "~57.0.9",
         "expo-sqlite": "~57.0.3",
         "expo-status-bar": "~57.0.1",
         "expo-system-ui": "~57.0.4",
