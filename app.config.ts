@@ -6,11 +6,6 @@ interface CustomExpoConfig extends Omit<BaseExpoConfig, 'plugins' | 'ios'> {
     ios?: BaseExpoConfig['ios'] & {
         jsEngine?: 'hermes' | 'jsc'
     }
-    splash?: {
-        image?: string
-        resizeMode?: 'contain' | 'cover'
-        backgroundColor?: string
-    }
     plugins?: (string | [string, object])[]
 }
 
@@ -21,6 +16,18 @@ export default ({ config }: ConfigContext): CustomExpoConfig => {
         './src/plugins/withNfcIntent',
         './src/plugins/withDisableDependencyMetadata',
         './src/plugins/withRemovePermissions',
+        [
+            'expo-splash-screen',
+            {
+                backgroundColor: '#ffffff',
+                image: './assets/splash-icon.png',
+                dark: {
+                    backgroundColor: '#000000',
+                    image: './assets/splash-icon-dark.png',
+                },
+                imageWidth: 200,
+            },
+        ],
         'expo-sqlite',
         'expo-sharing',
         'expo-localization',
@@ -67,11 +74,6 @@ export default ({ config }: ConfigContext): CustomExpoConfig => {
         jsEngine: 'hermes',
         experiments: {
             reactCompiler: true,
-        },
-        splash: {
-            image: './assets/splash-icon.png',
-            resizeMode: 'contain',
-            backgroundColor: '#000000',
         },
         ios: {
             supportsTablet: true,
