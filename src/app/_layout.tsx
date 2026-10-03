@@ -7,6 +7,7 @@ import { useTheme } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
 import * as Localization from 'expo-localization'
 import RNRestart from 'react-native-restart'
+import * as SystemUI from 'expo-system-ui'
 
 import { ThemeProvider } from '../context/ThemeProvider'
 import { initDatabase } from '../db/database'
@@ -45,6 +46,10 @@ function ThemedStack() {
             heavy: { fontFamily: 'System', fontWeight: '900' as const },
         },
     }
+
+    useEffect(() => {
+        void SystemUI.setBackgroundColorAsync(colors.background)
+    }, [colors.background])
 
     return (
         <NavThemeProvider value={navTheme}>
