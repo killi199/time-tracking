@@ -339,6 +339,7 @@ export default function GeofenceSetupScreen() {
             <Map
                 ref={mapRef}
                 style={[styles.map, { opacity: mapLoaded ? 1 : 0 }]}
+                androidView="texture"
                 mapStyle={
                     theme.dark
                         ? 'https://tiles.openfreemap.org/styles/dark'
