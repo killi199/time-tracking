@@ -1,6 +1,7 @@
 import type React from 'react'
 import { describe, it, expect, jest, beforeEach } from '@jest/globals'
 import { render, screen, waitFor } from '@testing-library/react-native'
+import { AppState } from 'react-native'
 import RootLayout from './_layout'
 import { initDatabase } from '../db/database'
 import initI18n from '../i18n/i18n'
@@ -70,9 +71,27 @@ jest.mock('expo-router', () => {
     }
 })
 
+jest.mock('expo-system-ui', () => ({
+    setBackgroundColorAsync: jest.fn().mockResolvedValue(undefined),
+}))
+
+jest.mock('expo-localization', () => ({
+    getCalendars: jest.fn(() => [{ timeZone: 'Europe/Berlin' }]),
+}))
+
+jest.mock('react-native-restart', () => ({
+    __esModule: true,
+    default: {
+        restart: jest.fn(),
+    },
+}))
+
 describe('RootLayout', () => {
     beforeEach(() => {
         jest.clearAllMocks()
+        jest.spyOn(AppState, 'addEventListener').mockImplementation(
+            () => ({ remove: jest.fn() }) as any,
+        )
         jest.mocked(initDatabase).mockReturnValue(undefined)
         jest.mocked(initI18n).mockResolvedValue(undefined)
         jest.mocked(initNfcService).mockImplementation(() => mockCleanupNfc)
@@ -132,5 +151,76 @@ describe('RootLayout', () => {
 
         expect(screen.getByTestId('mock-stack')).toBeVisible()
         consoleErrorSpy.mockRestore()
+    })
+
+    it('sets SystemUI background color to theme background', async () => {
+        const SystemUI = require('expo-system-ui')
+        await render(<RootLayout />)
+        expect(SystemUI.setBackgroundColorAsync).toHaveBeenCalledWith(
+            'rgba(255, 251, 254, 1)',
+        )
+    })
+
+    it('restarts the app when timezone changes on app active', async () => {
+        const { AppState } = require('react-native')
+        const RNRestart = require('react-native-restart').default
+        const Localization = require('expo-localization')
+
+        // Mock initial timezone
+        Localization.getCalendars.mockReturnValue([
+            { timeZone: 'Europe/Berlin' },
+        ])
+
+        let appStateCallback: (state: string) => void = () => {}
+        jest.spyOn(AppState, 'addEventListener').mockImplementation(
+            (event, callback) => {
+                if (event === 'change') {
+                    appStateCallback = callback as (state: string) => void
+                }
+                return { remove: jest.fn() } as any
+            },
+        )
+
+        await render(<RootLayout />)
+
+        // Simulate app coming to foreground with DIFFERENT timezone
+        Localization.getCalendars.mockReturnValue([
+            { timeZone: 'America/New_York' },
+        ])
+        appStateCallback('active')
+
+        expect(RNRestart.restart).toHaveBeenCalled()
+    })
+
+    it('does not restart the app when timezone is same on app active', async () => {
+        const { AppState } = require('react-native')
+        const RNRestart = require('react-native-restart').default
+        const Localization = require('expo-localization')
+
+        // Mock initial timezone
+        Localization.getCalendars.mockReturnValue([
+            { timeZone: 'Europe/Berlin' },
+        ])
+        jest.mocked(RNRestart.restart).mockClear()
+
+        let appStateCallback: (state: string) => void = () => {}
+        jest.spyOn(AppState, 'addEventListener').mockImplementation(
+            (event, callback) => {
+                if (event === 'change') {
+                    appStateCallback = callback as (state: string) => void
+                }
+                return { remove: jest.fn() } as any
+            },
+        )
+
+        await render(<RootLayout />)
+
+        // Simulate app coming to foreground with SAME timezone
+        Localization.getCalendars.mockReturnValue([
+            { timeZone: 'Europe/Berlin' },
+        ])
+        appStateCallback('active')
+
+        expect(RNRestart.restart).not.toHaveBeenCalled()
     })
 })
