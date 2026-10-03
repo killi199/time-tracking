@@ -72,7 +72,7 @@ jest.mock('expo-router', () => {
 })
 
 jest.mock('expo-system-ui', () => ({
-    setBackgroundColorAsync: jest.fn().mockResolvedValue(undefined),
+    setBackgroundColorAsync: jest.fn(() => Promise.resolve()),
 }))
 
 jest.mock('expo-localization', () => ({
