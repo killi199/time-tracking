@@ -17,10 +17,7 @@ import {
     Checkbox,
 } from 'react-native-paper'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
-import Animated, {
-    SlideInLeft,
-    SlideInRight,
-} from 'react-native-reanimated'
+import Animated, { SlideInLeft, SlideInRight } from 'react-native-reanimated'
 import { scheduleOnRN } from 'react-native-worklets'
 import AdaptiveDateTimePicker from '../components/AdaptiveDateTimePicker'
 import { useFocusEffect, useNavigation } from 'expo-router'
