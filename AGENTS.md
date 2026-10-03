@@ -8,22 +8,23 @@ Before presenting your work to the user or declaring a task complete, run the va
     - No automated checks required (run `yarn format` if markdown files were modified).
 
 - **Source Code & Test Changes** (`src/**/*.{ts,tsx,js}`):
-    1. `yarn format`
+    1. `yarn format` (Always run this command to fix Prettier formatting issues automatically. Zero formatting diffs are tolerated).
     2. `yarn typecheck`
     3. `yarn typecheck:foss`
-    4. `yarn lint`
-    5. `yarn test`
+    4. `yarn lint` (Zero warnings/errors tolerated. Always run `--fix` or fix manually).
+    5. `yarn test --coverage` (Ensure that all tests pass AND that code coverage does not drop. Ensure that your new code is fully covered).
 
 - **Build / Dependency / Configuration Changes** (`package.json`, `app.json`, `metro.config.*`, `tsconfig*.json`, native build files, or when explicitly requested):
     - Run all steps above, plus:
     6. `yarn build`
     7. `yarn build:foss`
 
-**Looping Rule**: If any command fails, fix the underlying issue and **re-run the relevant checks** to ensure your fix didn't break anything else. You must repeat this fix-and-check loop until all relevant commands pass, for up to a maximum of 3 attempts. If issues persist after 3 attempts, stop and ask the user for guidance. Do not report completion if any of these commands are still failing within the 3 attempts.
+**Looping Rule**: If any command fails, fix the underlying issue and **re-run the full suite of relevant checks** to ensure your fix didn't break anything else. You must repeat this fix-and-check loop until all relevant commands pass, for up to a maximum of 3 attempts. Do not assume a fix works without running the checks. Do not report completion if any of these commands are still failing within the 3 attempts.
 
-## 2. Testing
+## 2. Testing & Linting
 
-- **Test Every Change**: Every bug fix, new feature, or code modification MUST include corresponding tests. Do not leave new code untested (configuration files such as `app.config.ts`, `metro.config.js`, or native build configs do not require unit tests).
+- **Test Every Change**: Every bug fix, new feature, or code modification MUST include corresponding tests. Do not leave new code uncovered (configuration files such as `app.config.ts`, `metro.config.js`, or native build configs do not require unit tests).
+- **Rigorous Verification Before Committing**: Before committing or pushing code, you MUST run `yarn format`, `yarn lint`, `yarn test --coverage`, and `yarn typecheck` globally to ensure that your test mocks are properly typed, no strict ESLint rules are violated (e.g. `any` casts or rogue `require()` calls), no Prettier formatting issues remain, and that branch/line coverage remains at 100% for the modified files. Never rely on partial checks for your final check.
 
 ## 3. Specific Rules
 

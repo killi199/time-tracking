@@ -9460,6 +9460,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-restart@npm:0.0.29":
+  version: 0.0.29
+  resolution: "react-native-restart@npm:0.0.29"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+    react-native-windows: "*"
+  peerDependenciesMeta:
+    react-native-windows:
+      optional: true
+  checksum: 10c0/6c12be14d45563e824fbb62c3ec55e23958cb761606fe4ad460005f5e65a2f3655f540f10e18fe323c67e880325ddf3647f61eee492a3c741630493f5e7cadf8
+  languageName: node
+  linkType: hard
+
 "react-native-safe-area-context@npm:~5.7.0":
   version: 5.7.0
   resolution: "react-native-safe-area-context@npm:5.7.0"
@@ -10820,6 +10834,7 @@ __metadata:
     react-native-nfc-manager: "npm:3.17.2"
     react-native-paper: "npm:5.15.3"
     react-native-reanimated: "npm:4.5.1"
+    react-native-restart: "npm:0.0.29"
     react-native-safe-area-context: "npm:~5.7.0"
     react-native-screens: "npm:~4.26.0"
     react-native-web: "npm:0.21.3"

@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react'
+import { AppState } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { Stack, ThemeProvider as NavThemeProvider } from 'expo-router'
 import { useTheme } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
+import * as Localization from 'expo-localization'
+import RNRestart from 'react-native-restart'
+import * as SystemUI from 'expo-system-ui'
 
 import { ThemeProvider } from '../context/ThemeProvider'
 import { initDatabase } from '../db/database'
@@ -42,6 +46,10 @@ function ThemedStack() {
             heavy: { fontFamily: 'System', fontWeight: '900' as const },
         },
     }
+
+    useEffect(() => {
+        void SystemUI.setBackgroundColorAsync(colors.background)
+    }, [colors.background])
 
     return (
         <NavThemeProvider value={navTheme}>
@@ -113,6 +121,29 @@ export default function RootLayout() {
             cleanupQuickActions()
         }
     }, [isReady])
+
+    useEffect(() => {
+        const initialTimezone = Localization.getCalendars()[0].timeZone
+        const subscription = AppState.addEventListener(
+            'change',
+            (nextAppState) => {
+                if (nextAppState === 'active') {
+                    const currentTimezone =
+                        Localization.getCalendars()[0].timeZone
+                    if (
+                        initialTimezone &&
+                        currentTimezone &&
+                        initialTimezone !== currentTimezone
+                    ) {
+                        RNRestart.restart()
+                    }
+                }
+            },
+        )
+        return () => {
+            subscription.remove()
+        }
+    }, [])
 
     if (!isReady) return null
 
