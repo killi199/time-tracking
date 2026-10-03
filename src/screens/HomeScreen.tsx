@@ -20,7 +20,6 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, {
     SlideInLeft,
     SlideInRight,
-    FadeIn,
 } from 'react-native-reanimated'
 import { scheduleOnRN } from 'react-native-worklets'
 import AdaptiveDateTimePicker from '../components/AdaptiveDateTimePicker'
@@ -63,7 +62,7 @@ const getEnteringAnimation = (direction: SlideDirection) => {
     if (direction === 'left') {
         return SlideInLeft.duration(220)
     }
-    return FadeIn.duration(150)
+    return undefined
 }
 
 interface HomeScreenProps {
