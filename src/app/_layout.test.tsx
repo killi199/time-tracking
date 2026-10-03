@@ -92,12 +92,9 @@ jest.mock('react-native-restart', () => ({
 describe('RootLayout', () => {
     beforeEach(() => {
         jest.clearAllMocks()
-        jest.spyOn(AppState, 'addEventListener').mockImplementation(
-            () =>
-                ({
-                    remove: jest.fn(),
-                }),
-        )
+        jest.spyOn(AppState, 'addEventListener').mockImplementation(() => ({
+            remove: jest.fn(),
+        }))
         jest.mocked(initDatabase).mockReturnValue(undefined)
         jest.mocked(initI18n).mockResolvedValue(undefined)
         jest.mocked(initNfcService).mockImplementation(() => mockCleanupNfc)
