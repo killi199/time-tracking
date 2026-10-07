@@ -9418,15 +9418,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-nfc-manager@npm:3.17.2":
-  version: 3.17.2
-  resolution: "react-native-nfc-manager@npm:3.17.2"
+"react-native-nfc-manager@npm:3.17.5":
+  version: 3.17.5
+  resolution: "react-native-nfc-manager@npm:3.17.5"
   peerDependencies:
     "@expo/config-plugins": "*"
   peerDependenciesMeta:
     "@expo/config-plugins":
       optional: true
-  checksum: 10c0/71ae53d8526a4f64f31327d52a196e51b6fb9845bb9ab4eccdc095e45a229b3a64bd9b4b873be3fa9d95996cb3c35ed5b9d37d42f0c8741c187376f6ee53cead
+  checksum: 10c0/604b306e1d7df1cfdc68ce6b2d7aa71f92888e4ec31830619d89fca91b427f40081459307567c1b06061b0fa16dd1c2198336513821e89eaa4571416752425be
   languageName: node
   linkType: hard
 
@@ -10830,7 +10830,7 @@ __metadata:
     react-i18next: "npm:17.0.15"
     react-native: "npm:0.86.3"
     react-native-gesture-handler: "npm:~2.32.0"
-    react-native-nfc-manager: "npm:3.17.2"
+    react-native-nfc-manager: "npm:3.17.5"
     react-native-paper: "npm:5.15.3"
     react-native-reanimated: "npm:4.5.1"
     react-native-restart: "npm:0.0.29"
