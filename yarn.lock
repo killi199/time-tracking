@@ -2107,9 +2107,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@maplibre/maplibre-react-native@npm:11.4.1":
-  version: 11.4.1
-  resolution: "@maplibre/maplibre-react-native@npm:11.4.1"
+"@maplibre/maplibre-react-native@npm:11.5.0":
+  version: 11.5.0
+  resolution: "@maplibre/maplibre-react-native@npm:11.5.0"
   dependencies:
     "@maplibre/maplibre-gl-style-spec": "npm:26.2.1"
     "@turf/distance": "npm:^7.4.0"
@@ -2129,7 +2129,7 @@ __metadata:
       optional: true
     expo:
       optional: true
-  checksum: 10c0/c181598e74675074305f8724c7132ed29725eaed6af003f58e4c8ddbbd963a334d3b590dc7c9be040d5be473256ae95d303e878f531de55ec008cba39a196fbb
+  checksum: 10c0/5423ede531ce7b736df3c3649416dd9b7becaed532a72aeda2bd104a8936a76458437ba39fcb93d03bbcfbefe05aa5afa8df0db917541344455e91c741fdb229
   languageName: node
   linkType: hard
 
@@ -10785,7 +10785,7 @@ __metadata:
     "@eslint/js": "npm:9.39.2"
     "@expo/ui": "npm:~57.0.22"
     "@jest/globals": "npm:^29.7.0"
-    "@maplibre/maplibre-react-native": "npm:11.4.1"
+    "@maplibre/maplibre-react-native": "npm:11.5.0"
     "@react-native-community/slider": "npm:5.2.0"
     "@react-native-vector-icons/material-design-icons": "npm:^13.1.4"
     "@react-native/jest-preset": "npm:0.86.3"
