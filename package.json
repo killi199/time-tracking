@@ -122,6 +122,6 @@
         "prettier": "3.9.9",
         "test-renderer": "1.2.0",
         "typescript": "~6.0.3",
-        "typescript-eslint": "8.71.0"
+        "typescript-eslint": "8.71.1"
     }
 }
