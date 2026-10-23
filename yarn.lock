@@ -2558,15 +2558,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-vector-icons/common@npm:^13.0.3":
-  version: 13.0.3
-  resolution: "@react-native-vector-icons/common@npm:13.0.3"
+"@react-native-vector-icons/common@npm:^14.0.0":
+  version: 14.0.0
+  resolution: "@react-native-vector-icons/common@npm:14.0.0"
   dependencies:
     find-up: "npm:^8.0.0"
     picocolors: "npm:^1.1.1"
     plist: "npm:^3.1.0"
   peerDependencies:
-    "@react-native-vector-icons/get-image": ^13.0.1
+    "@react-native-vector-icons/get-image": ^14.0.0
     "@react-native/assets-registry": "*"
     expo-font: "*"
     react: "*"
@@ -2580,23 +2580,23 @@ __metadata:
       optional: true
   bin:
     rnvi-update-plist: lib/commonjs/scripts/updatePlist.js
-  checksum: 10c0/fd25f59a64c6b6e294e94b3e5b739a388b014853a29b39bb027570d3cfe944f8eda60304b102697909355351163bb6b8a84a6b3c10c45951c1bd1fdcb90932c4
+  checksum: 10c0/ac5fbf875a4636079767278fe7dfb01b4d024198ef909dd964b85f7dd411fb4b37bd4747eeeeb09be99579a920557775903a111f43b51c8ad51f216948db4742
   languageName: node
   linkType: hard
 
-"@react-native-vector-icons/material-design-icons@npm:^13.1.4":
-  version: 13.1.4
-  resolution: "@react-native-vector-icons/material-design-icons@npm:13.1.4"
+"@react-native-vector-icons/material-design-icons@npm:^14.0.0":
+  version: 14.0.0
+  resolution: "@react-native-vector-icons/material-design-icons@npm:14.0.0"
   dependencies:
-    "@react-native-vector-icons/common": "npm:^13.0.3"
+    "@react-native-vector-icons/common": "npm:^14.0.0"
   peerDependencies:
-    "@expo/config-plugins": ">=10.0.0"
+    expo: "*"
     react: "*"
     react-native: "*"
   peerDependenciesMeta:
-    "@expo/config-plugins":
+    expo:
       optional: true
-  checksum: 10c0/4a6bd1ea9381e53e91314c08dbcfeb05f0ba8c0682bb4d02f29b8714955249b658dedbc548a58d7cdf11f1a45ee332b55b65b57f49bb3d4e4eb59863b9093cf0
+  checksum: 10c0/7a010467dafee93b044e7a8ab545369cb023751154b40ab31185a7706cfe8690bd0cd3d8024cf2c6a2b2bcd7a44113f88c532da11c2ec5b445c1d26224255764
   languageName: node
   linkType: hard
 
@@ -10787,7 +10787,7 @@ __metadata:
     "@jest/globals": "npm:^29.7.0"
     "@maplibre/maplibre-react-native": "npm:11.5.0"
     "@react-native-community/slider": "npm:5.2.0"
-    "@react-native-vector-icons/material-design-icons": "npm:^13.1.4"
+    "@react-native-vector-icons/material-design-icons": "npm:^14.0.0"
     "@react-native/jest-preset": "npm:0.86.3"
     "@react-native/metro-config": "npm:0.86.2"
     "@testing-library/react-native": "npm:14.1.0"
