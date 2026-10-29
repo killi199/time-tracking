@@ -9329,9 +9329,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-i18next@npm:17.1.3":
-  version: 17.1.3
-  resolution: "react-i18next@npm:17.1.3"
+"react-i18next@npm:17.1.9":
+  version: 17.1.9
+  resolution: "react-i18next@npm:17.1.9"
   dependencies:
     "@babel/runtime": "npm:^7.29.7"
     html-parse-stringify: "npm:^4.0.1"
@@ -9347,7 +9347,7 @@ __metadata:
       optional: true
     typescript:
       optional: true
-  checksum: 10c0/e140fcbbabb0094813c8341ba721156811a4dc27b1926d6c046c85222daa8aae8a9205adb2b3a9119b6c2b594b84c82d7f16ee5faa2af6aeef8dd41d0059c316
+  checksum: 10c0/f3c263df1d152a6a757cd47895c86568fa36cd583ac659276afa9c5a97e6babd72e3197f22587862f7382de628428e39f757b6d67ad03ebbfd333296237d44d7
   languageName: node
   linkType: hard
 
@@ -10828,7 +10828,7 @@ __metadata:
     prettier: "npm:3.9.10"
     react: "npm:19.2.3"
     react-dom: "npm:19.2.3"
-    react-i18next: "npm:17.1.3"
+    react-i18next: "npm:17.1.9"
     react-native: "npm:0.86.3"
     react-native-gesture-handler: "npm:~2.32.0"
     react-native-nfc-manager: "npm:3.17.5"
