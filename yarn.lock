@@ -2089,9 +2089,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@maplibre/maplibre-gl-style-spec@npm:26.2.1":
-  version: 26.2.1
-  resolution: "@maplibre/maplibre-gl-style-spec@npm:26.2.1"
+"@maplibre/maplibre-gl-style-spec@npm:26.4.4":
+  version: 26.4.4
+  resolution: "@maplibre/maplibre-gl-style-spec@npm:26.4.4"
   dependencies:
     "@mapbox/jsonlint-lines-primitives": "npm:^2.0.3"
     "@mapbox/unitbezier": "npm:^1.0.0"
@@ -2103,15 +2103,15 @@ __metadata:
     gl-style-format: dist/gl-style-format.mjs
     gl-style-migrate: dist/gl-style-migrate.mjs
     gl-style-validate: dist/gl-style-validate.mjs
-  checksum: 10c0/73a019f8bbdd64fd9da014baf68a38c80821de4339203000e0b417ff3350b95da80c5de21d48bcee34f44b1f5950c2c31a913b968f0ad765331f3fecb075cedf
+  checksum: 10c0/a5af3e5c7e7b3ab5c427d9e51a9b5ba54981faeee9c46085fa765a043947cf327514e39e28ff488b5812620961ad315f0080acb1cdb940e626c7ba0d72f24651
   languageName: node
   linkType: hard
 
-"@maplibre/maplibre-react-native@npm:11.5.0":
-  version: 11.5.0
-  resolution: "@maplibre/maplibre-react-native@npm:11.5.0"
+"@maplibre/maplibre-react-native@npm:11.5.1":
+  version: 11.5.1
+  resolution: "@maplibre/maplibre-react-native@npm:11.5.1"
   dependencies:
-    "@maplibre/maplibre-gl-style-spec": "npm:26.2.1"
+    "@maplibre/maplibre-gl-style-spec": "npm:26.4.4"
     "@turf/distance": "npm:^7.4.0"
     "@turf/helpers": "npm:^7.4.0"
     "@turf/length": "npm:^7.4.0"
@@ -2129,7 +2129,7 @@ __metadata:
       optional: true
     expo:
       optional: true
-  checksum: 10c0/5423ede531ce7b736df3c3649416dd9b7becaed532a72aeda2bd104a8936a76458437ba39fcb93d03bbcfbefe05aa5afa8df0db917541344455e91c741fdb229
+  checksum: 10c0/cee69c2f067469bbed8fd59b62c784256b6743db2a301d9709412e06492445188c770219c6dd7b4403e19eb6dcf75c6c05f50fea3b64cd1e8e3bdcbd2c926d0f
   languageName: node
   linkType: hard
 
@@ -10785,7 +10785,7 @@ __metadata:
     "@eslint/js": "npm:9.39.2"
     "@expo/ui": "npm:~57.0.26"
     "@jest/globals": "npm:^29.7.0"
-    "@maplibre/maplibre-react-native": "npm:11.5.0"
+    "@maplibre/maplibre-react-native": "npm:11.5.1"
     "@react-native-community/slider": "npm:5.2.0"
     "@react-native-vector-icons/material-design-icons": "npm:^14.0.0"
     "@react-native/jest-preset": "npm:0.86.3"
