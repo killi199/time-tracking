@@ -1,0 +1,72 @@
+--- a/src/screens/HomeScreen.tsx
++++ b/src/screens/HomeScreen.tsx
+@@ -85,7 +85,9 @@
+     const [visible, setVisible] = useState(false)
+     const [dialogDate, setDialogDate] = useState('')
+     const [dialogTime, setDialogTime] = useState('')
+-    const [dialogNote, setDialogNote] = useState('')
++    // Avoid re-rendering HomeScreen while the user types a note.
++    const dialogNoteRef = useRef('')
++    const [dialogNoteInputKey, setDialogNoteInputKey] = useState(0)
+     const [dialogIsLateEntry, setDialogIsLateEntry] = useState(true)
+     const [editingEvent, setEditingEvent] = useState<TimeEvent | null>(null)
+     const [timePickerVisible, setTimePickerVisible] = useState(false)
+@@ -95,6 +97,11 @@
+ 
+     const theme = useTheme()
+     const { t, i18n } = useTranslation()
++
++    const resetDialogNote = (note: string) => {
++        dialogNoteRef.current = note
++        setDialogNoteInputKey((prev) => prev + 1)
++    }
+ 
+     // Track app state and date to auto-update on resume
+     const appState = useRef(AppState.currentState)
+@@ -255,7 +262,7 @@
+             setEditingEvent(null)
+             setDialogDate(currentDate)
+             setDialogTime(getFormattedTime(new Date()))
+-            setDialogNote('')
++            resetDialogNote('')
+             setDialogIsLateEntry(true)
+             setVisible(true)
+         }
+@@ -277,7 +284,7 @@
+     const showEditDialog = (item: TimeEvent, close?: () => void) => {
+         setDialogTime(item.time)
+-        setDialogNote(item.note || '')
++        resetDialogNote(item.note || '')
+         setDialogIsLateEntry(item.isManualEntry ?? false)
+         setEditingEvent(item)
+         activeItemCloseCallback.current = close
+@@ -304,14 +311,14 @@
+                 editingEvent.id,
+                 editingEvent.date,
+                 dialogTime,
+-                dialogNote,
++                dialogNoteRef.current,
+                 dialogIsLateEntry,
+             )
+         } else {
+             addEvent(
+                 dialogDate,
+                 dialogTime,
+-                dialogNote || null,
++                dialogNoteRef.current || null,
+                 dialogIsLateEntry,
+             )
+@@ -662,10 +669,13 @@
+                         </TouchableOpacity>
+                         <TextInput
++                            key={dialogNoteInputKey}
+                             label={t('dialog.noteLabel')}
+-                            value={dialogNote}
+-                            onChangeText={setDialogNote}
++                            defaultValue={dialogNoteRef.current}
++                            onChangeText={(note) => {
++                                dialogNoteRef.current = note
++                            }}
+                             mode="outlined"
+                             returnKeyType="done"
+                             onSubmitEditing={() => {
