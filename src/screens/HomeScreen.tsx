@@ -86,13 +86,17 @@ export default function HomeScreen({
     const [dialogDate, setDialogDate] = useState('')
     const [dialogTime, setDialogTime] = useState('')
     const dialogNoteRef = useRef('')
-    const [dialogNoteInitialValue, setDialogNoteInitialValue] = useState('')
-    const [dialogNoteInputKey, setDialogNoteInputKey] = useState(0)
+    const [dialogNoteInput, setDialogNoteInput] = useState({
+        key: 0,
+        defaultValue: '',
+    })
 
     const resetDialogNote = (note: string) => {
         dialogNoteRef.current = note
-        setDialogNoteInitialValue(note)
-        setDialogNoteInputKey((prev) => prev + 1)
+        setDialogNoteInput((prev) => ({
+            key: prev.key + 1,
+            defaultValue: note,
+        }))
     }
     const [dialogIsLateEntry, setDialogIsLateEntry] = useState(true)
     const [editingEvent, setEditingEvent] = useState<TimeEvent | null>(null)
@@ -670,8 +674,8 @@ export default function HomeScreen({
                         </TouchableOpacity>
                         <TextInput
                             label={t('dialog.noteLabel')}
-                            key={dialogNoteInputKey}
-                            defaultValue={dialogNoteInitialValue}
+                            key={dialogNoteInput.key}
+                            defaultValue={dialogNoteInput.defaultValue}
                             onChangeText={(note) => {
                                 dialogNoteRef.current = note
                             }}
