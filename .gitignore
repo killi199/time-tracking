@@ -46,3 +46,5 @@ test-report.junit.xml
 
 # Android Studio
 .idea/
+
+!src/licenses.json

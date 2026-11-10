@@ -1,3 +1,4 @@
+import "tsx/cjs";
 import { ExpoConfig as BaseExpoConfig, ConfigContext } from 'expo/config'
 import { version, versionCode } from './package.json'
 
@@ -88,6 +89,12 @@ export default ({ config }: ConfigContext): CustomExpoConfig => {
             predictiveBackGestureEnabled: false,
             package: 'de.killi199.timetracking',
             permissions: ['android.permission.NFC'],
+        },
+        extra: {
+            ...config.extra,
+            eas: {
+                projectId: "13701fe2-2267-4787-ac2c-d9524fa28812",
+            },
         },
         plugins: plugins,
     }
