@@ -85,7 +85,15 @@ export default function HomeScreen({
     const [visible, setVisible] = useState(false)
     const [dialogDate, setDialogDate] = useState('')
     const [dialogTime, setDialogTime] = useState('')
-    const [dialogNote, setDialogNote] = useState('')
+    const dialogNoteRef = useRef('')
+    const [dialogNoteInitialValue, setDialogNoteInitialValue] = useState('')
+    const [dialogNoteInputKey, setDialogNoteInputKey] = useState(0)
+
+    const resetDialogNote = (note: string) => {
+        dialogNoteRef.current = note
+        setDialogNoteInitialValue(note)
+        setDialogNoteInputKey((prev) => prev + 1)
+    }
     const [dialogIsLateEntry, setDialogIsLateEntry] = useState(true)
     const [editingEvent, setEditingEvent] = useState<TimeEvent | null>(null)
     const [timePickerVisible, setTimePickerVisible] = useState(false)
@@ -255,7 +263,7 @@ export default function HomeScreen({
             setEditingEvent(null)
             setDialogDate(currentDate)
             setDialogTime(getFormattedTime(new Date()))
-            setDialogNote('')
+            resetDialogNote('')
             setDialogIsLateEntry(true)
             setVisible(true)
         }
@@ -276,7 +284,7 @@ export default function HomeScreen({
 
     const showEditDialog = (item: TimeEvent, close?: () => void) => {
         setDialogTime(item.time)
-        setDialogNote(item.note || '')
+        resetDialogNote(item.note || '')
         setDialogIsLateEntry(item.isManualEntry ?? false)
         setEditingEvent(item)
         activeItemCloseCallback.current = close
@@ -304,14 +312,14 @@ export default function HomeScreen({
                 editingEvent.id,
                 editingEvent.date,
                 dialogTime,
-                dialogNote,
+                dialogNoteRef.current,
                 dialogIsLateEntry,
             )
         } else {
             addEvent(
                 dialogDate,
                 dialogTime,
-                dialogNote || null,
+                dialogNoteRef.current || null,
                 dialogIsLateEntry,
             )
         }
@@ -662,8 +670,11 @@ export default function HomeScreen({
                         </TouchableOpacity>
                         <TextInput
                             label={t('dialog.noteLabel')}
-                            value={dialogNote}
-                            onChangeText={setDialogNote}
+                            key={dialogNoteInputKey}
+                            defaultValue={dialogNoteInitialValue}
+                            onChangeText={(note) => {
+                                dialogNoteRef.current = note
+                            }}
                             mode="outlined"
                             returnKeyType="done"
                             onSubmitEditing={() => {
