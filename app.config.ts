@@ -64,7 +64,7 @@ export default ({ config }: ConfigContext): CustomExpoConfig => {
 
     const finalConfig: CustomExpoConfig = {
         ...config,
-        name: 'time-tracking',
+        name: 'Timetracking',
         slug: 'time-tracking',
         scheme: 'de.killi199.timetracking',
         version,
