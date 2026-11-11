@@ -13,10 +13,10 @@ const isFOSS = process.env.EXPO_PUBLIC_FOSS_BUILD !== 'false'
 
 export default ({ config }: ConfigContext): CustomExpoConfig => {
     const plugins: (string | [string, object])[] = [
-        'react-native-nfc-manager',
         './src/plugins/withNfcIntent',
         './src/plugins/withDisableDependencyMetadata',
         './src/plugins/withRemovePermissions',
+        'react-native-nfc-manager',
         [
             'expo-splash-screen',
             {
