@@ -272,6 +272,11 @@ describe('HomeScreen', () => {
             'new note updated',
             false,
         )
+
+        // Reopening the edit dialog must restore the event's original note.
+        await user.press(screen.getByTestId('edit-day'))
+        expect(screen.getByDisplayValue('test day')).toBeOnTheScreen()
+        await user.press(screen.getByText('common.cancel'))
     })
 
     it('handles header right button to open Add Dialog and use date/time pickers', async () => {
