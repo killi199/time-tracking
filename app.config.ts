@@ -16,6 +16,7 @@ export default ({ config }: ConfigContext): CustomExpoConfig => {
         './src/plugins/withNfcIntent',
         './src/plugins/withDisableDependencyMetadata',
         './src/plugins/withRemovePermissions',
+        'react-native-nfc-manager',
         [
             'expo-splash-screen',
             {
@@ -87,7 +88,6 @@ export default ({ config }: ConfigContext): CustomExpoConfig => {
             },
             predictiveBackGestureEnabled: false,
             package: 'de.killi199.timetracking',
-            permissions: ['android.permission.NFC'],
         },
         plugins: plugins,
     }
