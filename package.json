@@ -29,13 +29,6 @@
                     ".*"
                 ]
             }
-        },
-        "doctor": {
-            "reactNativeDirectoryCheck": {
-                "exclude": [
-                    "react-native-nfc-manager"
-                ]
-            }
         }
     },
     "dependencies": {

@@ -13,6 +13,7 @@ const isFOSS = process.env.EXPO_PUBLIC_FOSS_BUILD !== 'false'
 
 export default ({ config }: ConfigContext): CustomExpoConfig => {
     const plugins: (string | [string, object])[] = [
+        'react-native-nfc-manager',
         './src/plugins/withNfcIntent',
         './src/plugins/withDisableDependencyMetadata',
         './src/plugins/withRemovePermissions',
@@ -87,7 +88,6 @@ export default ({ config }: ConfigContext): CustomExpoConfig => {
             },
             predictiveBackGestureEnabled: false,
             package: 'de.killi199.timetracking',
-            permissions: ['android.permission.NFC'],
         },
         plugins: plugins,
     }
