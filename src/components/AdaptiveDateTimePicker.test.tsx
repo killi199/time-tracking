@@ -445,4 +445,30 @@ describe('AdaptiveDateTimePicker', () => {
             expect(mockOnDismiss).toHaveBeenCalledTimes(1)
         })
     })
+
+    describe('Jalali calendar mode', () => {
+        it('renders JalaliDatePickerDialog when calendar is jalali and mode is date', async () => {
+            const user = userEvent.setup()
+            await render(
+                <PaperProvider>
+                    <AdaptiveDateTimePicker
+                        visible={true}
+                        onDismiss={mockOnDismiss}
+                        onConfirm={mockOnConfirm}
+                        value={new Date(2026, 10, 11)}
+                        mode="date"
+                        calendar="jalali"
+                        cancelLabel="Cancel"
+                        confirmLabel="Confirm"
+                        locale="en"
+                    />
+                </PaperProvider>,
+            )
+
+            expect(screen.getAllByText(/Aban 1405/).length).toBeGreaterThan(0)
+            const confirmBtn = screen.getByText('Confirm')
+            await user.press(confirmBtn)
+            expect(mockOnConfirm).toHaveBeenCalledTimes(1)
+        })
+    })
 })

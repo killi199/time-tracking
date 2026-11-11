@@ -74,6 +74,14 @@ function ThemedStack() {
                     options={{ title: t('settings.languageTitle') }}
                 />
                 <Stack.Screen
+                    name="calendar-settings"
+                    options={{ title: t('settings.calendarTitle') }}
+                />
+                <Stack.Screen
+                    name="week-start-settings"
+                    options={{ title: t('settings.firstDayOfWeekTitle') }}
+                />
+                <Stack.Screen
                     name="geofence-setup"
                     options={{ title: t('menu.workingLocations') }}
                 />
