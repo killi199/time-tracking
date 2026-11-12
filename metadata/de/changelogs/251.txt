@@ -1,0 +1,7 @@
+- New: App name Time Tracking (#527)
+- New: Android loading flash screen matches dark theme now (#443)
+- Fix: Fix note cursor position (#523)
+- Fix: App opening flashes (#456)
+- Fix: MapLibre Android black flash (#455)
+- Fix: Resolve timezone caching issue (#454)
+- General improvements to app stability, dependencies, and code maintenance.
