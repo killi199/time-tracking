@@ -53,7 +53,7 @@
         "expo-status-bar": "~57.0.1",
         "expo-system-ui": "~57.0.4",
         "expo-task-manager": "~57.0.23",
-        "i18next": "27.0.1",
+        "i18next": "27.1.0",
         "papaparse": "5.7.0",
         "react": "19.2.3",
         "react-dom": "19.2.3",
