@@ -120,6 +120,16 @@ export default {
             workHoursInvalid: 'Die Arbeitszeit pro Tag muss größer als 0 sein.',
             workHoursEffectiveNote:
                 'Änderungen gelten ab heute. Frühere Tage behalten ihr bisheriges Ziel.',
+            calendar: 'Kalender',
+            calendarTitle: 'Kalendersystem',
+            calendarGregorian: 'Gregorianisch',
+            calendarJalali: 'Dschalālī (Persischer Kalender)',
+            firstDayOfWeek: 'Erster Wochentag',
+            firstDayOfWeekTitle: 'Erster Wochentag',
+            autoFirstDay: 'Automatisch (nach Kalender)',
+            saturday: 'Samstag',
+            sunday: 'Sonntag',
+            monday: 'Montag',
         },
         dialog: {
             checkInTitle: 'Einchecken',

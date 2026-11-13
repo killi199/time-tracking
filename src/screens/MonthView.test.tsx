@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react-native'
 import { describe, it, expect, beforeEach, jest } from '@jest/globals'
 import MonthView from './MonthView'
 import {
-    getMonthEvents,
+    getEventsRange,
     getOverallStats,
     getWorkHoursHistory,
 } from '../db/database'
@@ -30,9 +30,10 @@ jest.mock('react-native-gesture-handler/ReanimatedSwipeable', () => {
 })
 
 jest.mock('../db/database', () => ({
-    getMonthEvents: jest.fn(),
+    getEventsRange: jest.fn(),
     getOverallStats: jest.fn(),
     getWorkHoursHistory: jest.fn(),
+    getSetting: jest.fn(),
 }))
 
 const renderWithProvider = (ui: React.ReactElement) =>
@@ -43,7 +44,7 @@ describe('MonthView', () => {
 
     beforeEach(() => {
         jest.clearAllMocks()
-        jest.mocked(getMonthEvents).mockReturnValue([])
+        jest.mocked(getEventsRange).mockReturnValue([])
         jest.mocked(getOverallStats).mockReturnValue({
             overallBalanceMinutes: -60, // -1 hour
             totalMinutesWorked: 0,
@@ -77,7 +78,7 @@ describe('MonthView', () => {
 
     it('calculates statistics correctly with multiple events', async () => {
         // Mock events for Oct 1st: 08:00 to 12:00 (4 hours)
-        jest.mocked(getMonthEvents).mockReturnValue([
+        jest.mocked(getEventsRange).mockReturnValue([
             {
                 id: 1,
                 date: '2023-10-01',
@@ -114,7 +115,7 @@ describe('MonthView', () => {
     })
 
     it('renders event list items correctly', async () => {
-        jest.mocked(getMonthEvents).mockReturnValue([
+        jest.mocked(getEventsRange).mockReturnValue([
             {
                 id: 1,
                 date: '2023-10-01',

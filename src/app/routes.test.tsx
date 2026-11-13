@@ -5,6 +5,8 @@ import WeekScreen from './(drawer)/(tabs)/week'
 import MonthScreen from './(drawer)/(tabs)/month'
 import GeofenceSetupRoute from './geofence-setup'
 import LanguageSettingsRoute from './language-settings'
+import CalendarSettingsRoute from './calendar-settings'
+import WeekStartSettingsRoute from './week-start-settings'
 import LicensesRoute from './licenses'
 import NFCSetupRoute from './nfc-setup'
 import NFCRoute from './nfc'
@@ -36,6 +38,22 @@ jest.mock('../screens/settings/LanguageSettingsScreen', () => {
         const { Text } =
             jest.requireActual<typeof import('react-native')>('react-native')
         return <Text testID="mock-language-screen">Language</Text>
+    }
+})
+
+jest.mock('../screens/settings/CalendarSettingsScreen', () => {
+    return function MockCalendarSettingsScreen() {
+        const { Text } =
+            jest.requireActual<typeof import('react-native')>('react-native')
+        return <Text testID="mock-calendar-screen">Calendar</Text>
+    }
+})
+
+jest.mock('../screens/settings/WeekStartSettingsScreen', () => {
+    return function MockWeekStartSettingsScreen() {
+        const { Text } =
+            jest.requireActual<typeof import('react-native')>('react-native')
+        return <Text testID="mock-week-start-screen">Week Start</Text>
     }
 })
 
@@ -107,6 +125,16 @@ describe('App Route Forwarders', () => {
     it('renders LanguageSettingsRoute', async () => {
         await render(<LanguageSettingsRoute />)
         expect(screen.getByTestId('mock-language-screen')).toBeVisible()
+    })
+
+    it('renders CalendarSettingsRoute', async () => {
+        await render(<CalendarSettingsRoute />)
+        expect(screen.getByTestId('mock-calendar-screen')).toBeVisible()
+    })
+
+    it('renders WeekStartSettingsRoute', async () => {
+        await render(<WeekStartSettingsRoute />)
+        expect(screen.getByTestId('mock-week-start-screen')).toBeVisible()
     })
 
     it('renders LicensesRoute', async () => {

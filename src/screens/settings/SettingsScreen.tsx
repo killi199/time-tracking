@@ -4,7 +4,11 @@ import { List, Snackbar } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'expo-router'
 import AdaptiveDateTimePicker from '../../components/AdaptiveDateTimePicker'
-import { getDailyTargetMinutes, setDailyTargetMinutes } from '../../db/database'
+import {
+    getDailyTargetMinutes,
+    setDailyTargetMinutes,
+    getSetting,
+} from '../../db/database'
 import { getFormattedDate } from '../../utils/time'
 
 export default function SettingsScreen() {
@@ -17,8 +21,25 @@ export default function SettingsScreen() {
     const [workHoursPickerVisible, setWorkHoursPickerVisible] = useState(false)
     const [snackbarText, setSnackbarText] = useState<string | null>(null)
 
+    const calendarSystem = getSetting('calendar_system') || 'gregorian'
+    const firstDayOfWeek = getSetting('first_day_of_week') || 'auto'
+
     const targetHours = Math.floor(dailyTarget / 60)
     const targetMinutes = dailyTarget % 60
+
+    const getCalendarDescription = () => {
+        if (calendarSystem === 'jalali') {
+            return t('settings.calendarJalali')
+        }
+        return t('settings.calendarGregorian')
+    }
+
+    const getFirstDayDescription = () => {
+        if (firstDayOfWeek === 'saturday') return t('settings.saturday')
+        if (firstDayOfWeek === 'sunday') return t('settings.sunday')
+        if (firstDayOfWeek === 'monday') return t('settings.monday')
+        return t('settings.autoFirstDay')
+    }
 
     const handleWorkHoursConfirm = (date: Date) => {
         const minutes = date.getHours() * 60 + date.getMinutes()
@@ -41,6 +62,26 @@ export default function SettingsScreen() {
                     right={() => <List.Icon icon="chevron-right" />}
                     onPress={() => {
                         router.push('/language-settings')
+                    }}
+                    style={styles.listItem}
+                />
+                <List.Item
+                    title={t('settings.calendar')}
+                    description={getCalendarDescription()}
+                    left={() => <List.Icon icon="calendar-month-outline" />}
+                    right={() => <List.Icon icon="chevron-right" />}
+                    onPress={() => {
+                        router.push('/calendar-settings')
+                    }}
+                    style={styles.listItem}
+                />
+                <List.Item
+                    title={t('settings.firstDayOfWeek')}
+                    description={getFirstDayDescription()}
+                    left={() => <List.Icon icon="calendar-week" />}
+                    right={() => <List.Icon icon="chevron-right" />}
+                    onPress={() => {
+                        router.push('/week-start-settings')
                     }}
                     style={styles.listItem}
                 />

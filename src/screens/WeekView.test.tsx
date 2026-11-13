@@ -34,6 +34,7 @@ jest.mock('../db/database', () => ({
     getEventsRange: jest.fn(),
     getOverallStats: jest.fn(),
     getWorkHoursHistory: jest.fn(),
+    getSetting: jest.fn(),
 }))
 
 const renderWithProvider = (ui: React.ReactElement) =>

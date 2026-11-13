@@ -8,7 +8,7 @@ import {
 import { describe, it, expect, beforeEach, jest } from '@jest/globals'
 import HomeScreen from './HomeScreen'
 import { useNavigation } from 'expo-router'
-import { addEvent, updateEvent, deleteEvent } from '../db/database'
+import { addEvent, updateEvent, deleteEvent, getSetting } from '../db/database'
 import { AppState } from 'react-native'
 import { PaperProvider } from 'react-native-paper'
 
@@ -40,6 +40,7 @@ jest.mock('../db/database', () => ({
     addEvent: jest.fn(),
     updateEvent: jest.fn(),
     deleteEvent: jest.fn(),
+    getSetting: jest.fn(),
 }))
 
 let panEndCallback: ((e: { translationX: number }) => void) | undefined
@@ -611,5 +612,40 @@ describe('HomeScreen', () => {
                 screen.queryByText('home.deleteEventTitle'),
             ).not.toBeOnTheScreen()
         })
+    })
+
+    it('renders header in Jalali calendar and navigates months when jalali is active', async () => {
+        jest.mocked(getSetting).mockImplementation((key: string) => {
+            if (key === 'calendar_system') return 'jalali'
+            if (key === 'first_day_of_week') return 'saturday'
+            return null
+        })
+
+        const user = userEvent.setup()
+        await renderWithProvider(<HomeScreen viewMode="month" />)
+
+        // Header should show Jalali month name
+        expect(screen.getByText(/Aban 1405|1405/)).toBeOnTheScreen()
+
+        // Prev month button should step back 1 Jalali month (Mehr 1405)
+        await user.press(screen.getByTestId('prev-date-btn'))
+        expect(screen.getByText(/Mehr 1405|1405/)).toBeOnTheScreen()
+
+        // Back to now
+        await user.press(screen.getByText('home.backToNow'))
+        expect(screen.getByText(/Aban 1405|1405/)).toBeOnTheScreen()
+    })
+
+    it('renders week view with Saturday start when jalali and saturday start are active', async () => {
+        jest.mocked(getSetting).mockImplementation((key: string) => {
+            if (key === 'calendar_system') return 'jalali'
+            if (key === 'first_day_of_week') return 'saturday'
+            return null
+        })
+
+        await renderWithProvider(<HomeScreen viewMode="week" />)
+
+        // Header should show Jalali week range
+        expect(screen.getByText(/1405/)).toBeOnTheScreen()
     })
 })
