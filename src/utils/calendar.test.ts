@@ -152,9 +152,13 @@ describe('calendar utility', () => {
             const gDay = formatHeaderDate(dateStr, 'day', 'gregorian', 'en-US')
             expect(gDay).toContain('2026')
 
-            const jDayFa = formatHeaderDate(dateStr, 'day', 'jalali', 'fa-IR')
-            expect(jDayFa).toContain('چهارشنبه')
-            expect(jDayFa).toContain('آبان 1405')
+            const jDayEn = formatHeaderDate(dateStr, 'day', 'jalali', 'en-US')
+            expect(jDayEn).toContain('Wednesday')
+            expect(jDayEn).toContain('Aban 1405')
+
+            const jDayDe = formatHeaderDate(dateStr, 'day', 'jalali', 'de-DE')
+            expect(jDayDe).toContain('Mittwoch')
+            expect(jDayDe).toContain('Aban 1405')
         })
 
         it('formats week view for gregorian and jalali (same and multi-month)', () => {
@@ -167,16 +171,7 @@ describe('calendar utility', () => {
             )
             expect(gWeek).toContain('Nov')
 
-            // Same Jalali month week in FA and EN
-            const jWeekFa = formatHeaderDate(
-                dateStr,
-                'week',
-                'jalali',
-                'fa',
-                'saturday',
-            )
-            expect(jWeekFa).toContain('آبان 1405')
-
+            // Jalali month week in EN and DE
             const jWeekEn = formatHeaderDate(
                 dateStr,
                 'week',
@@ -185,6 +180,15 @@ describe('calendar utility', () => {
                 'saturday',
             )
             expect(jWeekEn).toContain('Aban 1405')
+
+            const jWeekDe = formatHeaderDate(
+                dateStr,
+                'week',
+                'jalali',
+                'de',
+                'saturday',
+            )
+            expect(jWeekDe).toContain('Aban 1405')
 
             // Multi-month Jalali week (around 2026-10-23, transitioning Mehr to Aban)
             const jWeekMulti = formatHeaderDate(
@@ -197,7 +201,7 @@ describe('calendar utility', () => {
             expect(jWeekMulti).toContain('1405')
         })
 
-        it('formats month view for gregorian and jalali in en and fa', () => {
+        it('formats month view for gregorian and jalali in en and de', () => {
             const dateStr = '2026-11-11'
             const gMonth = formatHeaderDate(
                 dateStr,
@@ -210,8 +214,8 @@ describe('calendar utility', () => {
             const jMonthEn = formatHeaderDate(dateStr, 'month', 'jalali', 'en')
             expect(jMonthEn).toBe('Aban 1405')
 
-            const jMonthFa = formatHeaderDate(dateStr, 'month', 'jalali', 'fa')
-            expect(jMonthFa).toBe('آبان 1405')
+            const jMonthDe = formatHeaderDate(dateStr, 'month', 'jalali', 'de')
+            expect(jMonthDe).toBe('Aban 1405')
         })
     })
 })

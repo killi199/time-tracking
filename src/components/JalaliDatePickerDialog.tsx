@@ -19,7 +19,7 @@ import {
     startOfWeek as startOfWeekJalali,
     subMonths as subMonthsJalali,
 } from 'date-fns-jalali'
-import { enUS, faIR } from 'date-fns-jalali/locale'
+import { enUS } from 'date-fns-jalali/locale'
 import { de } from 'date-fns/locale'
 
 export interface JalaliDatePickerDialogProps {
@@ -35,9 +35,6 @@ export interface JalaliDatePickerDialogProps {
 }
 
 function resolveJalaliLocale(localeStr?: string) {
-    if (localeStr?.startsWith('fa')) {
-        return faIR
-    }
     if (localeStr?.startsWith('de')) {
         return {
             ...enUS,

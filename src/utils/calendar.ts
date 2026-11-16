@@ -12,11 +12,26 @@ import {
     format as formatJalali,
     startOfMonth as startOfMonthJalali,
 } from 'date-fns-jalali'
-import { enUS, faIR } from 'date-fns-jalali/locale'
+import { enUS } from 'date-fns-jalali/locale'
+import { de } from 'date-fns/locale'
 import { getSetting } from '../db/database'
 
 export type CalendarSystem = 'gregorian' | 'jalali'
 export type FirstDayOfWeek = 'auto' | 'saturday' | 'sunday' | 'monday'
+
+function resolveJalaliLocale(localeStr?: string) {
+    if (localeStr?.startsWith('de')) {
+        return {
+            ...enUS,
+            code: 'de',
+            localize: {
+                ...enUS.localize,
+                day: de.localize.day,
+            },
+        }
+    }
+    return enUS
+}
 
 /**
  * Returns the currently active calendar system from database settings.
@@ -161,8 +176,7 @@ function formatWeekHeader(
     )
 
     if (calendar === 'jalali') {
-        const isFa = locale.startsWith('fa')
-        const jalaliLocale = isFa ? faIR : enUS
+        const jalaliLocale = resolveJalaliLocale(locale)
         const sMonth = formatJalali(startDate, 'MMMM', { locale: jalaliLocale })
         const eMonth = formatJalali(endDate, 'MMMM', { locale: jalaliLocale })
         const sDay = formatJalali(startDate, 'd', { locale: jalaliLocale })
@@ -206,8 +220,7 @@ export function formatHeaderDate(
 
     if (viewMode === 'day') {
         if (calendar === 'jalali') {
-            const isFa = locale.startsWith('fa')
-            const jalaliLocale = isFa ? faIR : enUS
+            const jalaliLocale = resolveJalaliLocale(locale)
             return formatJalali(date, 'EEEE d MMMM yyyy', {
                 locale: jalaliLocale,
             })
@@ -226,8 +239,7 @@ export function formatHeaderDate(
 
     // viewMode === 'month'
     if (calendar === 'jalali') {
-        const isFa = locale.startsWith('fa')
-        const jalaliLocale = isFa ? faIR : enUS
+        const jalaliLocale = resolveJalaliLocale(locale)
         return formatJalali(date, 'MMMM yyyy', { locale: jalaliLocale })
     }
 
