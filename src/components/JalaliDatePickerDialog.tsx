@@ -9,13 +9,17 @@ import {
     useTheme,
 } from 'react-native-paper'
 import {
-    toJalaali,
-    toGregorian,
-    getJalaliMonthDays,
-    JALALI_MONTH_NAMES_FA,
-    JALALI_MONTH_NAMES_EN,
-    JALALI_WEEKDAY_SHORT_FA,
-} from '../utils/jalali'
+    addDays as addDaysJalali,
+    addMonths as addMonthsJalali,
+    format as formatJalali,
+    getDay as getDayJalali,
+    getDaysInMonth as getDaysInMonthJalali,
+    setDate as setDateJalali,
+    startOfMonth as startOfMonthJalali,
+    startOfWeek as startOfWeekJalali,
+    subMonths as subMonthsJalali,
+} from 'date-fns-jalali'
+import { enUS, faIR } from 'date-fns-jalali/locale'
 
 export interface JalaliDatePickerDialogProps {
     readonly visible: boolean
@@ -28,8 +32,6 @@ export interface JalaliDatePickerDialogProps {
     readonly confirmLabel: string
     readonly locale?: string
 }
-
-const WEEKDAYS_EN = ['Sa', 'Su', 'Mo', 'Tu', 'We', 'Th', 'Fr']
 
 export default function JalaliDatePickerDialog({
     visible,
@@ -44,93 +46,64 @@ export default function JalaliDatePickerDialog({
 }: JalaliDatePickerDialogProps) {
     const theme = useTheme()
     const isFa = locale?.startsWith('fa') ?? false
-    const monthNames = isFa ? JALALI_MONTH_NAMES_FA : JALALI_MONTH_NAMES_EN
-    const weekdayLabels = isFa ? JALALI_WEEKDAY_SHORT_FA : WEEKDAYS_EN
+    const jalaliLocale = isFa ? faIR : enUS
 
-    const initialJalali = toJalaali(
-        value.getFullYear(),
-        value.getMonth() + 1,
-        value.getDate(),
+    const [currentMonthDate, setCurrentMonthDate] = useState(() =>
+        startOfMonthJalali(value),
     )
-
-    const [currentYear, setCurrentYear] = useState(initialJalali.jy)
-    const [currentMonth, setCurrentMonth] = useState(initialJalali.jm)
-    const [selectedDay, setSelectedDay] = useState(initialJalali.jd)
+    const [selectedDate, setSelectedDate] = useState(value)
     const [prevVisible, setPrevVisible] = useState(visible)
 
     if (visible !== prevVisible) {
         setPrevVisible(visible)
         if (visible) {
-            const j = toJalaali(
-                value.getFullYear(),
-                value.getMonth() + 1,
-                value.getDate(),
-            )
-            setCurrentYear(j.jy)
-            setCurrentMonth(j.jm)
-            setSelectedDay(j.jd)
+            setCurrentMonthDate(startOfMonthJalali(value))
+            setSelectedDate(value)
         }
     }
 
     if (!visible) return null
 
-    const daysInMonth = getJalaliMonthDays(currentYear, currentMonth)
+    const daysInMonth = getDaysInMonthJalali(currentMonthDate)
+    const monthStart = startOfMonthJalali(currentMonthDate)
+    // Jalali week starts on Saturday (weekStartsOn: 6). getDay: 0=Sun .. 6=Sat
+    // Offset for Saturday start: (getDay + 1) % 7
+    const leadingEmptyDays = (getDayJalali(monthStart) + 1) % 7
 
-    // Calculate column offset for day 1 (0 = Saturday .. 6 = Friday)
-    const firstDayGregorian = toGregorian(currentYear, currentMonth, 1)
-    const firstDayDate = new Date(
-        firstDayGregorian.gy,
-        firstDayGregorian.gm - 1,
-        firstDayGregorian.gd,
+    // Generate weekday labels starting from Saturday
+    const sampleSat = startOfWeekJalali(new Date(), { weekStartsOn: 6 })
+    const weekdayLabels = Array.from({ length: 7 }, (_, i) =>
+        formatJalali(addDaysJalali(sampleSat, i), 'EEEEEE', {
+            locale: jalaliLocale,
+        }),
     )
-    const firstDayOfWeek = firstDayDate.getDay() // 0 = Sun .. 6 = Sat
-    const leadingEmptyDays = (firstDayOfWeek + 1) % 7
 
     const handlePrevMonth = () => {
-        if (currentMonth === 1) {
-            setCurrentYear((y) => y - 1)
-            setCurrentMonth(12)
-        } else {
-            setCurrentMonth((m) => m - 1)
-        }
+        setCurrentMonthDate((d) => subMonthsJalali(d, 1))
     }
 
     const handleNextMonth = () => {
-        if (currentMonth === 12) {
-            setCurrentYear((y) => y + 1)
-            setCurrentMonth(1)
-        } else {
-            setCurrentMonth((m) => m + 1)
-        }
+        setCurrentMonthDate((d) => addMonthsJalali(d, 1))
     }
 
     const isDateDisabled = (day: number) => {
-        const g = toGregorian(currentYear, currentMonth, day)
-        const d = new Date(g.gy, g.gm - 1, g.gd, 23, 59, 59, 999)
-        const startOfDay = new Date(g.gy, g.gm - 1, g.gd, 0, 0, 0, 0)
+        const candidate = setDateJalali(currentMonthDate, day)
+        const endOfDay = new Date(candidate)
+        endOfDay.setHours(23, 59, 59, 999)
+        const startOfDay = new Date(candidate)
+        startOfDay.setHours(0, 0, 0, 0)
 
         if (maximumDate && startOfDay > maximumDate) {
             return true
         }
-        if (minimumDate && d < minimumDate) {
+        if (minimumDate && endOfDay < minimumDate) {
             return true
         }
         return false
     }
 
     const handleConfirm = () => {
-        const safeDay = Math.min(selectedDay, daysInMonth)
-        const g = toGregorian(currentYear, currentMonth, safeDay)
-        const resultDate = new Date(
-            g.gy,
-            g.gm - 1,
-            g.gd,
-            value.getHours(),
-            value.getMinutes(),
-            value.getSeconds(),
-        )
-
-        let finalDate = resultDate
+        let finalDate = selectedDate
         if (maximumDate && finalDate > maximumDate) {
             finalDate = maximumDate
         }
@@ -163,6 +136,11 @@ export default function JalaliDatePickerDialog({
         gridRows.push(currentRow)
     }
 
+    const selectedDay = Number(formatJalali(selectedDate, 'd'))
+    const isSameMonthAndYear =
+        formatJalali(selectedDate, 'yyyy-MM') ===
+        formatJalali(currentMonthDate, 'yyyy-MM')
+
     return (
         <Portal>
             <Dialog
@@ -175,8 +153,9 @@ export default function JalaliDatePickerDialog({
                         variant="headlineSmall"
                         style={styles.selectedTitleText}
                     >
-                        {selectedDay} {monthNames[currentMonth - 1]}{' '}
-                        {currentYear}
+                        {formatJalali(selectedDate, 'd MMMM yyyy', {
+                            locale: jalaliLocale,
+                        })}
                     </Text>
                 </Dialog.Title>
 
@@ -191,7 +170,9 @@ export default function JalaliDatePickerDialog({
                             variant="titleMedium"
                             style={styles.monthYearText}
                         >
-                            {monthNames[currentMonth - 1]} {currentYear}
+                            {formatJalali(currentMonthDate, 'MMMM yyyy', {
+                                locale: jalaliLocale,
+                            })}
                         </Text>
                         <IconButton
                             icon="chevron-right"
@@ -235,7 +216,9 @@ export default function JalaliDatePickerDialog({
                                         )
                                     }
 
-                                    const isSelected = day === selectedDay
+                                    const isSelected =
+                                        isSameMonthAndYear &&
+                                        day === selectedDay
                                     const disabled = isDateDisabled(day)
                                     let textColor = theme.colors.onSurface
                                     if (isSelected) {
@@ -257,7 +240,16 @@ export default function JalaliDatePickerDialog({
                                             ]}
                                             disabled={disabled}
                                             onPress={() => {
-                                                setSelectedDay(day)
+                                                const newDate = setDateJalali(
+                                                    currentMonthDate,
+                                                    day,
+                                                )
+                                                newDate.setHours(
+                                                    value.getHours(),
+                                                    value.getMinutes(),
+                                                    value.getSeconds(),
+                                                )
+                                                setSelectedDate(newDate)
                                             }}
                                             testID={`jalali-day-${String(day)}`}
                                         >
@@ -290,46 +282,47 @@ export default function JalaliDatePickerDialog({
 }
 
 const styles = StyleSheet.create({
-    dialog: {
-        maxWidth: 360,
-        alignSelf: 'center',
-        width: '90%',
-    },
-    title: {
-        paddingBottom: 0,
-    },
-    selectedTitleText: {
-        textAlign: 'center',
-    },
     content: {
         paddingHorizontal: 8,
     },
-    monthHeader: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: 8,
-    },
-    monthYearText: {
-        fontWeight: 'bold',
-    },
-    weekdayRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        marginBottom: 4,
-    },
     daysGrid: {
-        flexDirection: 'column',
+        paddingTop: 8,
+    },
+    dialog: {
+        maxHeight: '90%',
+    },
+    gridCell: {
+        alignItems: 'center',
+        height: 36,
+        justifyContent: 'center',
+        width: 36,
     },
     gridRow: {
         flexDirection: 'row',
         justifyContent: 'space-around',
         marginVertical: 2,
     },
-    gridCell: {
-        width: 36,
-        height: 36,
+    monthHeader: {
         alignItems: 'center',
-        justifyContent: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 8,
+    },
+    monthYearText: {
+        fontWeight: 'bold',
+    },
+    selectedTitleText: {
+        fontWeight: 'bold',
+    },
+    title: {
+        paddingBottom: 8,
+        textAlign: 'center',
+    },
+    weekdayRow: {
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderColor: '#ccc',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        paddingBottom: 4,
     },
 })

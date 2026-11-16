@@ -1,12 +1,19 @@
-import { getSetting } from '../db/database'
 import {
-    toJalaali,
-    toGregorian,
-    getJalaliMonthRange,
-    formatJalaliDate,
-    JALALI_MONTH_NAMES_FA,
-    JALALI_MONTH_NAMES_EN,
-} from './jalali'
+    addMonths,
+    endOfMonth,
+    endOfWeek,
+    format,
+    startOfMonth,
+    startOfWeek,
+} from 'date-fns'
+import {
+    addMonths as addMonthsJalali,
+    endOfMonth as endOfMonthJalali,
+    format as formatJalali,
+    startOfMonth as startOfMonthJalali,
+} from 'date-fns-jalali'
+import { enUS, faIR } from 'date-fns-jalali/locale'
+import { getSetting } from '../db/database'
 
 export type CalendarSystem = 'gregorian' | 'jalali'
 export type FirstDayOfWeek = 'auto' | 'saturday' | 'sunday' | 'monday'
@@ -46,7 +53,7 @@ export function getSavedFirstDayOfWeek(): FirstDayOfWeek {
 export function resolveFirstDayOfWeek(
     firstDay: FirstDayOfWeek,
     calendar: CalendarSystem,
-): number {
+): 0 | 1 | 6 {
     if (firstDay === 'saturday') return 6
     if (firstDay === 'sunday') return 0
     if (firstDay === 'monday') return 1
@@ -74,27 +81,14 @@ export function getWeekRange(
 } {
     const [y, m, d] = dateStr.split('-').map(Number)
     const curr = new Date(y, m - 1, d)
-    const day = curr.getDay() // 0 = Sun .. 6 = Sat
-
     const targetStartDay = resolveFirstDayOfWeek(firstDayOfWeek, calendar)
-    const diffToStart = (day - targetStartDay + 7) % 7
 
-    const startDate = new Date(curr)
-    startDate.setDate(curr.getDate() - diffToStart)
-
-    const endDate = new Date(startDate)
-    endDate.setDate(startDate.getDate() + 6)
-
-    const formatISO = (date: Date) => {
-        const year = String(date.getFullYear())
-        const month = String(date.getMonth() + 1).padStart(2, '0')
-        const dayOfMonth = String(date.getDate()).padStart(2, '0')
-        return `${year}-${month}-${dayOfMonth}`
-    }
+    const startDate = startOfWeek(curr, { weekStartsOn: targetStartDay })
+    const endDate = endOfWeek(curr, { weekStartsOn: targetStartDay })
 
     return {
-        start: formatISO(startDate),
-        end: formatISO(endDate),
+        start: format(startDate, 'yyyy-MM-dd'),
+        end: format(endDate, 'yyyy-MM-dd'),
         startDate,
         endDate,
     }
@@ -112,33 +106,30 @@ export function getMonthRange(
     monthIdentifier: string
 } {
     const [y, m, d] = dateStr.split('-').map(Number)
+    const curr = new Date(y, m - 1, d)
 
     if (calendar === 'jalali') {
-        const { jy, jm } = toJalaali(y, m, d)
-        const { startDate, endDate } = getJalaliMonthRange(jy, jm)
-        const monthIdentifier = `${String(jy)}-${String(jm).padStart(2, '0')}`
+        const start = startOfMonthJalali(curr)
+        const end = endOfMonthJalali(curr)
         return {
-            start: startDate,
-            end: endDate,
-            monthIdentifier,
+            start: format(start, 'yyyy-MM-dd'),
+            end: format(end, 'yyyy-MM-dd'),
+            monthIdentifier: formatJalali(curr, 'yyyy-MM'),
         }
     }
 
-    const start = `${String(y)}-${String(m).padStart(2, '0')}-01`
-    const lastDay = new Date(y, m, 0).getDate()
-    const end = `${String(y)}-${String(m).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`
-    const monthIdentifier = `${String(y)}-${String(m).padStart(2, '0')}`
-
+    const start = startOfMonth(curr)
+    const end = endOfMonth(curr)
     return {
-        start,
-        end,
-        monthIdentifier,
+        start: format(start, 'yyyy-MM-dd'),
+        end: format(end, 'yyyy-MM-dd'),
+        monthIdentifier: format(curr, 'yyyy-MM'),
     }
 }
 
 /**
  * Steps one month forward or backward relative to referenceDateStr.
- * Returns a new Gregorian date (YYYY-MM-DD) within that month.
+ * Returns a new Gregorian date (YYYY-MM-DD) representing the first day of that month.
  */
 export function stepMonth(
     referenceDateStr: string,
@@ -146,30 +137,15 @@ export function stepMonth(
     calendar: CalendarSystem = 'gregorian',
 ): string {
     const [y, m, d] = referenceDateStr.split('-').map(Number)
+    const curr = new Date(y, m - 1, d)
 
     if (calendar === 'jalali') {
-        const { jy, jm } = toJalaali(y, m, d)
-        let newJm = jm + step
-        let newJy = jy
-
-        while (newJm > 12) {
-            newJm -= 12
-            newJy += 1
-        }
-        while (newJm < 1) {
-            newJm += 12
-            newJy -= 1
-        }
-
-        const g = toGregorian(newJy, newJm, 1)
-        return `${String(g.gy)}-${String(g.gm).padStart(2, '0')}-${String(g.gd).padStart(2, '0')}`
+        const nextMonthDate = startOfMonthJalali(addMonthsJalali(curr, step))
+        return format(nextMonthDate, 'yyyy-MM-dd')
     }
 
-    const date = new Date(y, m - 1 + step, 1)
-    const year = String(date.getFullYear())
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    return `${year}-${month}-${day}`
+    const nextMonthDate = startOfMonth(addMonths(curr, step))
+    return format(nextMonthDate, 'yyyy-MM-dd')
 }
 
 function formatWeekHeader(
@@ -186,25 +162,17 @@ function formatWeekHeader(
 
     if (calendar === 'jalali') {
         const isFa = locale.startsWith('fa')
-        const monthNames = isFa ? JALALI_MONTH_NAMES_FA : JALALI_MONTH_NAMES_EN
-        const jStart = toJalaali(
-            startDate.getFullYear(),
-            startDate.getMonth() + 1,
-            startDate.getDate(),
-        )
-        const jEnd = toJalaali(
-            endDate.getFullYear(),
-            endDate.getMonth() + 1,
-            endDate.getDate(),
-        )
+        const jalaliLocale = isFa ? faIR : enUS
+        const sMonth = formatJalali(startDate, 'MMMM', { locale: jalaliLocale })
+        const eMonth = formatJalali(endDate, 'MMMM', { locale: jalaliLocale })
+        const sDay = formatJalali(startDate, 'd', { locale: jalaliLocale })
+        const eDay = formatJalali(endDate, 'd', { locale: jalaliLocale })
+        const year = formatJalali(endDate, 'yyyy', { locale: jalaliLocale })
 
-        const startMonthName = monthNames[jStart.jm - 1]
-        const endMonthName = monthNames[jEnd.jm - 1]
-
-        if (jStart.jm === jEnd.jm) {
-            return `${String(jStart.jd)} - ${String(jEnd.jd)} ${startMonthName} ${String(jEnd.jy)}`
+        if (sMonth === eMonth) {
+            return `${sDay} - ${eDay} ${sMonth} ${year}`
         }
-        return `${String(jStart.jd)} ${startMonthName} - ${String(jEnd.jd)} ${endMonthName} ${String(jEnd.jy)}`
+        return `${sDay} ${sMonth} - ${eDay} ${eMonth} ${year}`
     }
 
     const startStr = startDate.toLocaleDateString(locale, {
@@ -238,7 +206,11 @@ export function formatHeaderDate(
 
     if (viewMode === 'day') {
         if (calendar === 'jalali') {
-            return formatJalaliDate(date, { includeWeekday: true }, locale)
+            const isFa = locale.startsWith('fa')
+            const jalaliLocale = isFa ? faIR : enUS
+            return formatJalali(date, 'EEEE d MMMM yyyy', {
+                locale: jalaliLocale,
+            })
         }
         return date.toLocaleDateString(locale, {
             weekday: 'short',
@@ -255,9 +227,8 @@ export function formatHeaderDate(
     // viewMode === 'month'
     if (calendar === 'jalali') {
         const isFa = locale.startsWith('fa')
-        const monthNames = isFa ? JALALI_MONTH_NAMES_FA : JALALI_MONTH_NAMES_EN
-        const { jy, jm } = toJalaali(y, m, d)
-        return `${monthNames[jm - 1]} ${String(jy)}`
+        const jalaliLocale = isFa ? faIR : enUS
+        return formatJalali(date, 'MMMM yyyy', { locale: jalaliLocale })
     }
 
     return date.toLocaleDateString(locale, {

@@ -4658,6 +4658,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"date-fns-jalali@npm:4.4.0-0":
+  version: 4.4.0-0
+  resolution: "date-fns-jalali@npm:4.4.0-0"
+  checksum: 10c0/ae8d74c7ca1679a15876e63af36a79264f222d7f575bf1382359b5a3ab98a7212f69abdc102129c77af25a1f736097832a1537635d275fc7aaaed6a8cae26ba1
+  languageName: node
+  linkType: hard
+
+"date-fns@npm:4.4.0":
+  version: 4.4.0
+  resolution: "date-fns@npm:4.4.0"
+  checksum: 10c0/988f0a13db183f5dfc85c36bbb6847a9c135a9225888bbea4005876ec15539a8613c21a07370a4e7ea543918d5a1cafb423c528b42cdbbde5fdfddb178126b21
+  languageName: node
+  linkType: hard
+
 "debug@npm:2.6.9, debug@npm:^2.6.9":
   version: 2.6.9
   resolution: "debug@npm:2.6.9"
@@ -10842,6 +10856,8 @@ __metadata:
     "@types/react-dom": "npm:~19.2.0"
     "@types/react-native-web": "npm:0.19.3"
     cross-env: "npm:10.1.0"
+    date-fns: "npm:4.4.0"
+    date-fns-jalali: "npm:4.4.0-0"
     eslint: "npm:9.39.2"
     eslint-config-prettier: "npm:10.1.8"
     eslint-plugin-jest: "npm:29.17.0"
