@@ -1,7 +1,7 @@
 {
     "name": "time-tracking",
-    "version": "1.5.0",
-    "versionCode": 24,
+    "version": "1.6.0",
+    "versionCode": 25,
     "main": "expo-router/entry",
     "scripts": {
         "start": "expo start",
@@ -29,13 +29,6 @@
                     ".*"
                 ]
             }
-        },
-        "doctor": {
-            "reactNativeDirectoryCheck": {
-                "exclude": [
-                    "react-native-nfc-manager"
-                ]
-            }
         }
     },
     "dependencies": {
@@ -46,30 +39,30 @@
         "@react-native/metro-config": "0.86.2",
         "date-fns": "4.4.0",
         "date-fns-jalali": "4.4.0-0",
-        "expo": "~57.0.32",
-        "expo-constants": "~57.0.23",
+        "expo": "~57.0.33",
+        "expo-constants": "~57.0.24",
         "expo-document-picker": "~57.0.3",
         "expo-file-system": "~57.0.7",
-        "expo-linking": "~57.0.13",
+        "expo-linking": "~57.0.14",
         "expo-localization": "~57.0.2",
         "expo-location": "~57.0.23",
         "expo-notifications": "~57.0.25",
         "expo-quick-actions": "6.0.1",
-        "expo-router": "~57.0.30",
-        "expo-sharing": "~57.0.25",
+        "expo-router": "~57.0.31",
+        "expo-sharing": "~57.0.26",
         "expo-splash-screen": "~57.0.11",
-        "expo-sqlite": "~57.0.4",
+        "expo-sqlite": "~57.0.5",
         "expo-status-bar": "~57.0.1",
         "expo-system-ui": "~57.0.4",
-        "expo-task-manager": "~57.0.22",
-        "i18next": "26.5.12",
+        "expo-task-manager": "~57.0.23",
+        "i18next": "27.1.0",
         "papaparse": "5.7.0",
         "react": "19.2.3",
         "react-dom": "19.2.3",
-        "react-i18next": "17.1.9",
+        "react-i18next": "18.0.1",
         "react-native": "0.86.3",
         "react-native-gesture-handler": "~2.32.0",
-        "react-native-nfc-manager": "3.17.5",
+        "react-native-nfc-manager": "4.2.0",
         "react-native-paper": "5.15.4",
         "react-native-reanimated": "4.5.1",
         "react-native-restart": "0.0.29",
@@ -124,6 +117,6 @@
         "prettier": "3.9.10",
         "test-renderer": "1.2.0",
         "typescript": "~6.0.3",
-        "typescript-eslint": "8.72.1"
+        "typescript-eslint": "8.72.2"
     }
 }
