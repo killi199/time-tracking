@@ -22,6 +22,7 @@ describe('CalendarSettingsScreen', () => {
             </PaperProvider>,
         )
 
+        expect(screen.getByText('settings.auto')).toBeVisible()
         expect(screen.getByText('settings.calendarGregorian')).toBeVisible()
         expect(screen.getByText('settings.calendarJalali')).toBeVisible()
     })
@@ -38,7 +39,7 @@ describe('CalendarSettingsScreen', () => {
         expect(getSetting).toHaveBeenCalledWith('calendar_system')
     })
 
-    it('defaults to gregorian if setting is not saved', async () => {
+    it('defaults to auto if setting is not saved', async () => {
         ;(getSetting as jest.Mock).mockReturnValue(null)
 
         await render(
@@ -48,6 +49,19 @@ describe('CalendarSettingsScreen', () => {
         )
 
         expect(getSetting).toHaveBeenCalledWith('calendar_system')
+    })
+
+    it('changes calendar system to auto and saves setting', async () => {
+        await render(
+            <PaperProvider>
+                <CalendarSettingsScreen />
+            </PaperProvider>,
+        )
+
+        const user = userEvent.setup()
+        await user.press(screen.getByText('settings.auto'))
+
+        expect(setSetting).toHaveBeenCalledWith('calendar_system', 'auto')
     })
 
     it('changes calendar system to Jalali and saves setting', async () => {

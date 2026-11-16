@@ -22,14 +22,14 @@ export default function SettingsScreen() {
     const [snackbarText, setSnackbarText] = useState<string | null>(null)
 
     const [calendarSystem, setCalendarSystem] = useState<string>(
-        () => getSetting('calendar_system') || 'gregorian',
+        () => getSetting('calendar_system') || 'auto',
     )
     const [firstDayOfWeek, setFirstDayOfWeek] = useState<string>(
         () => getSetting('first_day_of_week') || 'auto',
     )
 
     useFocusEffect(() => {
-        setCalendarSystem(getSetting('calendar_system') || 'gregorian')
+        setCalendarSystem(getSetting('calendar_system') || 'auto')
         setFirstDayOfWeek(getSetting('first_day_of_week') || 'auto')
     })
 
@@ -40,7 +40,10 @@ export default function SettingsScreen() {
         if (calendarSystem === 'jalali') {
             return t('settings.calendarJalali')
         }
-        return t('settings.calendarGregorian')
+        if (calendarSystem === 'gregorian') {
+            return t('settings.calendarGregorian')
+        }
+        return t('settings.auto')
     }
 
     const getFirstDayDescription = () => {

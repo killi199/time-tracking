@@ -14,9 +14,11 @@ import {
 } from 'date-fns-jalali'
 import { enUS } from 'date-fns-jalali/locale'
 import { de } from 'date-fns/locale'
+import * as Localization from 'expo-localization'
 import { getSetting } from '../db/database'
 
 export type CalendarSystem = 'gregorian' | 'jalali'
+export type CalendarPreference = 'auto' | 'gregorian' | 'jalali'
 export type FirstDayOfWeek = 'auto' | 'saturday' | 'sunday' | 'monday'
 
 function resolveJalaliLocale(localeStr?: string) {
@@ -34,15 +36,56 @@ function resolveJalaliLocale(localeStr?: string) {
 }
 
 /**
+ * Resolves the effective calendar system from a setting preference.
+ * If 'auto' or unset, checks the system calendar and device locale.
+ */
+export function resolveCalendarSystem(
+    preference?: string | null,
+): CalendarSystem {
+    if (preference === 'jalali') return 'jalali'
+    if (preference === 'gregorian') return 'gregorian'
+
+    try {
+        const calendars = Localization.getCalendars()
+        const primaryCalendar = calendars[0].calendar?.toLowerCase()
+        if (primaryCalendar === 'persian' || primaryCalendar === 'jalali') {
+            return 'jalali'
+        }
+
+        const locales = Localization.getLocales()
+        const primaryLocale = locales[0]
+        if (
+            primaryLocale.languageCode === 'fa' ||
+            primaryLocale.regionCode === 'IR'
+        ) {
+            return 'jalali'
+        }
+    } catch {
+        // Fallback to gregorian if localization check fails
+    }
+
+    return 'gregorian'
+}
+
+/**
  * Returns the currently active calendar system from database settings.
- * Defaults to 'gregorian'.
+ * Defaults to 'auto', which resolves based on system settings.
  */
 export function getActiveCalendarSystem(): CalendarSystem {
     const saved = getSetting('calendar_system')
-    if (saved === 'jalali') {
-        return 'jalali'
+    return resolveCalendarSystem(saved)
+}
+
+/**
+ * Returns the configured calendar preference from database settings.
+ * Defaults to 'auto'.
+ */
+export function getSavedCalendarSystem(): CalendarPreference {
+    const saved = getSetting('calendar_system')
+    if (saved === 'jalali' || saved === 'gregorian' || saved === 'auto') {
+        return saved
     }
-    return 'gregorian'
+    return 'auto'
 }
 
 /**

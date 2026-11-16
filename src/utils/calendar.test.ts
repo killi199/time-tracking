@@ -1,7 +1,16 @@
-import { describe, it, expect, jest, afterEach } from '@jest/globals'
+import {
+    describe,
+    it,
+    expect,
+    jest,
+    afterEach,
+    beforeEach,
+} from '@jest/globals'
 import {
     getActiveCalendarSystem,
+    getSavedCalendarSystem,
     getSavedFirstDayOfWeek,
+    resolveCalendarSystem,
     resolveFirstDayOfWeek,
     getWeekRange,
     getMonthRange,
@@ -9,18 +18,36 @@ import {
     formatHeaderDate,
 } from './calendar'
 import { getSetting } from '../db/database'
+import * as Localization from 'expo-localization'
 
 jest.mock('../db/database', () => ({
     getSetting: jest.fn(),
 }))
 
+let mockCalendarType: string = 'gregorian'
+let mockLanguageCode: string = 'en'
+let mockRegionCode: string = 'US'
+
+jest.mock('expo-localization', () => ({
+    getCalendars: jest.fn(() => [{ calendar: mockCalendarType }]),
+    getLocales: jest.fn(() => [
+        { languageCode: mockLanguageCode, regionCode: mockRegionCode },
+    ]),
+}))
+
 describe('calendar utility', () => {
+    beforeEach(() => {
+        mockCalendarType = 'gregorian'
+        mockLanguageCode = 'en'
+        mockRegionCode = 'US'
+    })
+
     afterEach(() => {
         jest.clearAllMocks()
     })
 
-    describe('getActiveCalendarSystem', () => {
-        it('returns gregorian by default if setting is not set', () => {
+    describe('getActiveCalendarSystem and resolveCalendarSystem', () => {
+        it('returns gregorian by default if setting is not set and system is gregorian', () => {
             jest.mocked(getSetting).mockReturnValue(null)
             expect(getActiveCalendarSystem()).toBe('gregorian')
         })
@@ -30,9 +57,59 @@ describe('calendar utility', () => {
             expect(getActiveCalendarSystem()).toBe('jalali')
         })
 
-        it('returns gregorian for any other string', () => {
-            jest.mocked(getSetting).mockReturnValue('unknown')
+        it('returns gregorian when setting is gregorian', () => {
+            jest.mocked(getSetting).mockReturnValue('gregorian')
             expect(getActiveCalendarSystem()).toBe('gregorian')
+        })
+
+        it('resolves to jalali when setting is auto and system calendar is persian', () => {
+            jest.mocked(getSetting).mockReturnValue('auto')
+            mockCalendarType = 'persian'
+            expect(getActiveCalendarSystem()).toBe('jalali')
+        })
+
+        it('resolves to jalali when setting is auto and system language is fa', () => {
+            jest.mocked(getSetting).mockReturnValue('auto')
+            mockLanguageCode = 'fa'
+            expect(getActiveCalendarSystem()).toBe('jalali')
+        })
+
+        it('resolves to jalali when setting is auto and system region is IR', () => {
+            jest.mocked(getSetting).mockReturnValue(null)
+            mockRegionCode = 'IR'
+            expect(getActiveCalendarSystem()).toBe('jalali')
+        })
+
+        it('falls back to gregorian if Localization throws an error', () => {
+            jest.mocked(Localization.getCalendars).mockImplementationOnce(
+                () => {
+                    throw new Error('Localization unavailable')
+                },
+            )
+            expect(resolveCalendarSystem('auto')).toBe('gregorian')
+        })
+    })
+
+    describe('getSavedCalendarSystem', () => {
+        it('returns auto by default if not set', () => {
+            jest.mocked(getSetting).mockReturnValue(null)
+            expect(getSavedCalendarSystem()).toBe('auto')
+        })
+
+        it('returns valid values when stored', () => {
+            jest.mocked(getSetting).mockReturnValue('jalali')
+            expect(getSavedCalendarSystem()).toBe('jalali')
+
+            jest.mocked(getSetting).mockReturnValue('gregorian')
+            expect(getSavedCalendarSystem()).toBe('gregorian')
+
+            jest.mocked(getSetting).mockReturnValue('auto')
+            expect(getSavedCalendarSystem()).toBe('auto')
+        })
+
+        it('returns auto for invalid stored string', () => {
+            jest.mocked(getSetting).mockReturnValue('invalid_val')
+            expect(getSavedCalendarSystem()).toBe('auto')
         })
     })
 
@@ -147,6 +224,10 @@ describe('calendar utility', () => {
     })
 
     describe('formatHeaderDate', () => {
+        it('returns empty string if dateStr is empty', () => {
+            expect(formatHeaderDate('', 'day', 'gregorian', 'en-US')).toBe('')
+        })
+
         it('formats day view for gregorian and jalali', () => {
             const dateStr = '2026-11-11'
             const gDay = formatHeaderDate(dateStr, 'day', 'gregorian', 'en-US')

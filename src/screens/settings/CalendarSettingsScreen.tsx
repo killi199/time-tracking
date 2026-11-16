@@ -8,7 +8,7 @@ export default function CalendarSettingsScreen() {
     const { t } = useTranslation()
     const [calendarSystem, setCalendarSystem] = useState(() => {
         const saved = getSetting('calendar_system')
-        return saved || 'gregorian'
+        return saved || 'auto'
     })
 
     const handleCalendarChange = (value: string) => {
@@ -23,6 +23,15 @@ export default function CalendarSettingsScreen() {
                     onValueChange={handleCalendarChange}
                     value={calendarSystem}
                 >
+                    <List.Item
+                        title={t('settings.auto')}
+                        left={() => <List.Icon icon="calendar-sync" />}
+                        right={() => <RadioButton value="auto" />}
+                        onPress={() => {
+                            handleCalendarChange('auto')
+                        }}
+                        style={styles.listItem}
+                    />
                     <List.Item
                         title={t('settings.calendarGregorian')}
                         left={() => <List.Icon icon="calendar" />}
