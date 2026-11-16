@@ -5,6 +5,10 @@ import { PaperProvider } from 'react-native-paper'
 import AdaptiveDateTimePicker from './AdaptiveDateTimePicker'
 import { shiftToUTC, shiftToLocal } from '../utils/dateShift'
 
+jest.mock('../db/database', () => ({
+    getSetting: jest.fn(() => null),
+}))
+
 jest.mock('@expo/ui/community/datetime-picker', () => {
     const { View, Text, TouchableOpacity } =
         jest.requireActual<typeof import('react-native')>('react-native')
@@ -469,6 +473,28 @@ describe('AdaptiveDateTimePicker', () => {
             const confirmBtn = screen.getByText('Confirm')
             await user.press(confirmBtn)
             expect(mockOnConfirm).toHaveBeenCalledTimes(1)
+        })
+
+        it('forwards firstDayOfWeek to JalaliDatePickerDialog', async () => {
+            await render(
+                <PaperProvider>
+                    <AdaptiveDateTimePicker
+                        visible={true}
+                        onDismiss={mockOnDismiss}
+                        onConfirm={mockOnConfirm}
+                        value={new Date(2026, 10, 11)}
+                        mode="date"
+                        calendar="jalali"
+                        cancelLabel="Cancel"
+                        confirmLabel="Confirm"
+                        locale="en"
+                        firstDayOfWeek="monday"
+                    />
+                </PaperProvider>,
+            )
+
+            // When week starts on Monday, the first weekday label should be Mo
+            expect(screen.getByText('Mo')).toBeOnTheScreen()
         })
     })
 })

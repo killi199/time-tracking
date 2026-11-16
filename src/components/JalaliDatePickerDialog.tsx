@@ -21,6 +21,11 @@ import {
 } from 'date-fns-jalali'
 import { enUS } from 'date-fns-jalali/locale'
 import { de } from 'date-fns/locale'
+import {
+    FirstDayOfWeek,
+    getSavedFirstDayOfWeek,
+    resolveFirstDayOfWeek,
+} from '../utils/calendar'
 
 export interface JalaliDatePickerDialogProps {
     readonly visible: boolean
@@ -32,6 +37,7 @@ export interface JalaliDatePickerDialogProps {
     readonly cancelLabel: string
     readonly confirmLabel: string
     readonly locale?: string
+    readonly firstDayOfWeek?: FirstDayOfWeek
 }
 
 function resolveJalaliLocale(localeStr?: string) {
@@ -58,9 +64,15 @@ export default function JalaliDatePickerDialog({
     cancelLabel,
     confirmLabel,
     locale,
+    firstDayOfWeek,
 }: JalaliDatePickerDialogProps) {
     const theme = useTheme()
     const jalaliLocale = resolveJalaliLocale(locale)
+    const effectiveFirstDaySetting = firstDayOfWeek ?? getSavedFirstDayOfWeek()
+    const weekStartsOn = resolveFirstDayOfWeek(
+        effectiveFirstDaySetting,
+        'jalali',
+    )
 
     const [currentMonthDate, setCurrentMonthDate] = useState(() =>
         startOfMonthJalali(value),
@@ -80,14 +92,13 @@ export default function JalaliDatePickerDialog({
 
     const daysInMonth = getDaysInMonthJalali(currentMonthDate)
     const monthStart = startOfMonthJalali(currentMonthDate)
-    // Jalali week starts on Saturday (weekStartsOn: 6). getDay: 0=Sun .. 6=Sat
-    // Offset for Saturday start: (getDay + 1) % 7
-    const leadingEmptyDays = (getDayJalali(monthStart) + 1) % 7
+    // Offset for weekStartsOn: (getDay - weekStartsOn + 7) % 7
+    const leadingEmptyDays = (getDayJalali(monthStart) - weekStartsOn + 7) % 7
 
-    // Generate weekday labels starting from Saturday
-    const sampleSat = startOfWeekJalali(new Date(), { weekStartsOn: 6 })
+    // Generate weekday labels starting from weekStartsOn
+    const sampleStart = startOfWeekJalali(new Date(), { weekStartsOn })
     const weekdayLabels = Array.from({ length: 7 }, (_, i) =>
-        formatJalali(addDaysJalali(sampleSat, i), 'EEEEEE', {
+        formatJalali(addDaysJalali(sampleStart, i), 'EEEEEE', {
             locale: jalaliLocale,
         }),
     )

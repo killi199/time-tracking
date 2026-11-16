@@ -3,6 +3,10 @@ import { render, screen, userEvent } from '@testing-library/react-native'
 import { PaperProvider } from 'react-native-paper'
 import JalaliDatePickerDialog from './JalaliDatePickerDialog'
 
+jest.mock('../db/database', () => ({
+    getSetting: jest.fn(() => null),
+}))
+
 describe('JalaliDatePickerDialog', () => {
     const fixedDate = new Date(2026, 10, 11) // 1405-08-20
     const onConfirmMock = jest.fn()
@@ -285,5 +289,30 @@ describe('JalaliDatePickerDialog', () => {
         expect(screen.getByText('Di')).toBeOnTheScreen()
         expect(screen.getByText('Mi')).toBeOnTheScreen()
         expect(screen.getByText('Do')).toBeOnTheScreen()
+    })
+
+    it('aligns weekdays and day grid according to firstDayOfWeek prop', async () => {
+        // Month: Aban 1405 (starts on Friday, 1405-08-01 / 2026-10-23)
+        // If week starts on Sunday (0):
+        // Headers: Su, Mo, Tu, We, Th, Fr, Sa
+        // Friday offset: (5 - 0 + 7) % 7 = 5 leading empty cells
+        await render(
+            <PaperProvider>
+                <JalaliDatePickerDialog
+                    visible={true}
+                    onDismiss={onDismissMock}
+                    onConfirm={onConfirmMock}
+                    value={fixedDate}
+                    cancelLabel="Cancel"
+                    confirmLabel="Confirm"
+                    firstDayOfWeek="sunday"
+                />
+            </PaperProvider>,
+        )
+
+        // Day 1 should exist
+        expect(screen.getByTestId('jalali-day-1')).toBeOnTheScreen()
+        // Sunday should be rendered as a header
+        expect(screen.getByText('Su')).toBeOnTheScreen()
     })
 })

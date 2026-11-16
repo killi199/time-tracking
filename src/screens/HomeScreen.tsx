@@ -504,6 +504,7 @@ export default function HomeScreen({
                 cancelLabel={t('common.cancel')}
                 confirmLabel={t('common.confirm')}
                 calendar={calendarSystem}
+                firstDayOfWeek={firstDayOfWeek}
             />
 
             <AdaptiveDateTimePicker
@@ -543,6 +544,7 @@ export default function HomeScreen({
                 cancelLabel={t('common.cancel')}
                 confirmLabel={t('common.confirm')}
                 calendar={calendarSystem}
+                firstDayOfWeek={firstDayOfWeek}
             />
 
             <GestureDetector gesture={swipeGesture}>

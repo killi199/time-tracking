@@ -4,6 +4,7 @@ import { Portal, Dialog, Button } from 'react-native-paper'
 import DateTimePicker from '@expo/ui/community/datetime-picker'
 import { shiftToUTC, shiftToLocal } from '../utils/dateShift'
 import JalaliDatePickerDialog from './JalaliDatePickerDialog'
+import { FirstDayOfWeek } from '../utils/calendar'
 
 export interface AdaptiveDateTimePickerProps {
     visible: boolean
@@ -17,6 +18,7 @@ export interface AdaptiveDateTimePickerProps {
     maximumDate?: Date
     minimumDate?: Date
     calendar?: 'gregorian' | 'jalali'
+    firstDayOfWeek?: FirstDayOfWeek
 }
 
 const AdaptiveDateTimePicker = ({
@@ -31,6 +33,7 @@ const AdaptiveDateTimePicker = ({
     maximumDate,
     minimumDate,
     calendar = 'gregorian',
+    firstDayOfWeek,
 }: AdaptiveDateTimePickerProps) => {
     const [tempDate, setTempDate] = useState(value)
     const [prevVisible, setPrevVisible] = useState(visible)
@@ -56,6 +59,7 @@ const AdaptiveDateTimePicker = ({
                 cancelLabel={cancelLabel}
                 confirmLabel={confirmLabel}
                 locale={locale}
+                firstDayOfWeek={firstDayOfWeek}
             />
         )
     }
