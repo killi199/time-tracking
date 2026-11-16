@@ -356,12 +356,46 @@ export default function HomeScreen({
         const todayDate = getFormattedDate(new Date())
         const newDate = getFormattedDate(params.date)
         const targetDate = newDate > todayDate ? todayDate : newDate
+
         let nextDirection: SlideDirection = 'none'
-        if (targetDate > currentDate) {
-            nextDirection = 'right'
-        } else if (targetDate < currentDate) {
-            nextDirection = 'left'
+        if (viewMode === 'month') {
+            const currentMonthId = getMonthRange(
+                currentDate,
+                calendarSystem,
+            ).monthIdentifier
+            const targetMonthId = getMonthRange(
+                targetDate,
+                calendarSystem,
+            ).monthIdentifier
+            if (targetMonthId > currentMonthId) {
+                nextDirection = 'right'
+            } else if (targetMonthId < currentMonthId) {
+                nextDirection = 'left'
+            }
+        } else if (viewMode === 'week') {
+            const currentWeekStart = getWeekRange(
+                currentDate,
+                firstDayOfWeek,
+                calendarSystem,
+            ).start
+            const targetWeekStart = getWeekRange(
+                targetDate,
+                firstDayOfWeek,
+                calendarSystem,
+            ).start
+            if (targetWeekStart > currentWeekStart) {
+                nextDirection = 'right'
+            } else if (targetWeekStart < currentWeekStart) {
+                nextDirection = 'left'
+            }
+        } else {
+            if (targetDate > currentDate) {
+                nextDirection = 'right'
+            } else if (targetDate < currentDate) {
+                nextDirection = 'left'
+            }
         }
+
         setDirection(nextDirection)
         setCurrentDate(targetDate)
     }
@@ -408,6 +442,16 @@ export default function HomeScreen({
             }
         })
 
+    const animatedViewKey = (() => {
+        if (viewMode === 'month') {
+            return `month-${getMonthRange(currentDate, calendarSystem).monthIdentifier}`
+        }
+        if (viewMode === 'week') {
+            return `week-${getWeekRange(currentDate, firstDayOfWeek, calendarSystem).start}`
+        }
+        return `day-${currentDate}`
+    })()
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -421,6 +465,7 @@ export default function HomeScreen({
                     />
                     <TouchableOpacity
                         style={styles.dateTouchable}
+                        testID="date-touchable"
                         onPress={() => {
                             setDatePickerVisible(true)
                         }}
@@ -506,7 +551,7 @@ export default function HomeScreen({
             <GestureDetector gesture={swipeGesture}>
                 <View style={styles.contentContainer}>
                     <Animated.View
-                        key={`${viewMode}-${currentDate}`}
+                        key={animatedViewKey}
                         entering={getEnteringAnimation(direction)}
                         style={styles.animatedView}
                     >

@@ -629,6 +629,51 @@ describe('HomeScreen', () => {
         // Back to now
         await user.press(screen.getByText('home.backToNow'))
         expect(screen.getByText(/Aban 1405|1405/)).toBeOnTheScreen()
+
+        // Pick an earlier Jalali month via picker
+        mockDatePickerDate = new Date(2026, 9, 15) // 23 Mehr 1405
+        await user.press(screen.getByText(/Aban 1405|1405/))
+        await user.press(screen.getByTestId('confirm-date'))
+        expect(screen.getByText(/Mehr 1405|1405/)).toBeOnTheScreen()
+
+        // Pick current Jalali month again (direction right)
+        mockDatePickerDate = new Date(2026, 10, 16) // 26 Aban 1405
+        await user.press(screen.getByText(/Mehr 1405|1405/))
+        await user.press(screen.getByTestId('confirm-date'))
+        expect(screen.getByText(/Aban 1405|1405/)).toBeOnTheScreen()
+
+        mockDatePickerDate = null
+    })
+
+    it('handles picking earlier and later weeks in week view mode', async () => {
+        const user = userEvent.setup()
+        await renderWithProvider(<HomeScreen viewMode="week" />)
+
+        // Pick 2 weeks ago
+        const twoWeeksAgo = new Date()
+        twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
+        mockDatePickerDate = twoWeeksAgo
+
+        await user.press(screen.getByTestId('date-touchable'))
+        expect(screen.getByTestId('confirm-date')).toBeVisible()
+        await user.press(screen.getByTestId('confirm-date'))
+
+        expect(screen.getByTestId('next-date-btn')).toBeEnabled()
+        expect(screen.getByText('home.backToNow')).toBeEnabled()
+
+        // Pick 1 week ago (targetWeekStart > currentWeekStart -> direction right)
+        const oneWeekAgo = new Date()
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
+        mockDatePickerDate = oneWeekAgo
+        await user.press(screen.getByTestId('date-touchable'))
+        await user.press(screen.getByTestId('confirm-date'))
+
+        // Go to today from past week
+        expect(screen.getByText('home.backToNow')).toBeEnabled()
+        await user.press(screen.getByText('home.backToNow'))
+        expect(screen.getByTestId('next-date-btn')).toBeDisabled()
+
+        mockDatePickerDate = null
     })
 
     it('renders week view with Saturday start when jalali and saturday start are active', async () => {
