@@ -24,11 +24,7 @@ import { useFocusEffect, useNavigation } from 'expo-router'
 import { addEvent, updateEvent, deleteEvent } from '../db/database'
 import { TimeEvent } from '../types'
 import { useTranslation } from 'react-i18next'
-import {
-    getFormattedTime,
-    getFormattedDate,
-    getFormattedMonth,
-} from '../utils/time'
+import { getFormattedTime, getFormattedDate } from '../utils/time'
 import {
     getActiveCalendarSystem,
     getSavedFirstDayOfWeek,
@@ -65,9 +61,6 @@ export default function HomeScreen({
     const [currentDate, setCurrentDate] = useState<string>(
         getFormattedDate(new Date()),
     )
-    const [currentMonth, setCurrentMonth] = useState<string>(
-        getFormattedMonth(new Date()), // YYYY-MM
-    )
     const [direction, setDirection] = useState<SlideDirection>('none')
 
     // Refresh trigger to force updates in child components
@@ -95,7 +88,6 @@ export default function HomeScreen({
     // Track app state and date to auto-update on resume
     const appState = useRef(AppState.currentState)
     const lastActiveDateRef = useRef(getFormattedDate(new Date()))
-    const lastActiveMonthRef = useRef(getFormattedMonth(new Date()))
 
     useEffect(() => {
         const subscription = AppState.addEventListener(
@@ -107,7 +99,6 @@ export default function HomeScreen({
                 ) {
                     const now = new Date()
                     const newToday = getFormattedDate(now)
-                    const newMonth = getFormattedMonth(now)
 
                     // If real day changed and we were viewing "Today", update to new "Today"
                     if (newToday !== lastActiveDateRef.current) {
@@ -115,14 +106,6 @@ export default function HomeScreen({
                             setCurrentDate(newToday)
                         }
                         lastActiveDateRef.current = newToday
-                    }
-
-                    // Same for month
-                    if (newMonth !== lastActiveMonthRef.current) {
-                        if (currentMonth === lastActiveMonthRef.current) {
-                            setCurrentMonth(newMonth)
-                        }
-                        lastActiveMonthRef.current = newMonth
                     }
 
                     // Always refresh data on resume
@@ -136,7 +119,7 @@ export default function HomeScreen({
         return () => {
             subscription.remove()
         }
-    }, [currentDate, currentMonth])
+    }, [currentDate])
 
     const navigation = useNavigation()
 
@@ -184,7 +167,6 @@ export default function HomeScreen({
             const steppedDate = stepMonth(currentDate, step, calendarSystem)
             const newDateStr = steppedDate > todayStr ? todayStr : steppedDate
             setCurrentDate(newDateStr)
-            setCurrentMonth(getFormattedMonth(new Date(newDateStr)))
         } else if (viewMode === 'week') {
             const date = new Date(currentDate)
             date.setDate(date.getDate() + step * 7)
@@ -201,7 +183,6 @@ export default function HomeScreen({
     const goToToday = () => {
         const now = new Date()
         const todayDate = getFormattedDate(now)
-        const todayMonth = getFormattedMonth(now)
         let nextDirection: SlideDirection = 'none'
         if (todayDate > currentDate) {
             nextDirection = 'right'
@@ -210,7 +191,6 @@ export default function HomeScreen({
         }
         setDirection(nextDirection)
         setCurrentDate(todayDate)
-        setCurrentMonth(todayMonth)
     }
 
     const formattedDate = formatHeaderDate(
@@ -374,44 +354,20 @@ export default function HomeScreen({
         if (!params.date) return
 
         const todayDate = getFormattedDate(new Date())
-        const todayMonth = getFormattedMonth(new Date())
-
-        if (viewMode === 'month') {
-            const newMonth = getFormattedMonth(params.date)
-            const targetMonth = newMonth > todayMonth ? todayMonth : newMonth
-            let nextDirection: SlideDirection = 'none'
-            if (targetMonth > currentMonth) {
-                nextDirection = 'right'
-            } else if (targetMonth < currentMonth) {
-                nextDirection = 'left'
-            }
-            setDirection(nextDirection)
-            setCurrentMonth(targetMonth)
-            const newDate = getFormattedDate(params.date)
-            setCurrentDate(newDate > todayDate ? todayDate : newDate)
-        } else {
-            const newDate = getFormattedDate(params.date)
-            const targetDate = newDate > todayDate ? todayDate : newDate
-            let nextDirection: SlideDirection = 'none'
-            if (targetDate > currentDate) {
-                nextDirection = 'right'
-            } else if (targetDate < currentDate) {
-                nextDirection = 'left'
-            }
-            setDirection(nextDirection)
-            setCurrentDate(targetDate)
+        const newDate = getFormattedDate(params.date)
+        const targetDate = newDate > todayDate ? todayDate : newDate
+        let nextDirection: SlideDirection = 'none'
+        if (targetDate > currentDate) {
+            nextDirection = 'right'
+        } else if (targetDate < currentDate) {
+            nextDirection = 'left'
         }
+        setDirection(nextDirection)
+        setCurrentDate(targetDate)
     }
 
-    const dateForPicker = (() => {
-        if (viewMode === 'month') {
-            const [y, m] = currentMonth.split('-').map(Number)
-            return new Date(y, m - 1, 1)
-        } else {
-            const [y, m, d] = currentDate.split('-').map(Number)
-            return new Date(y, m - 1, d)
-        }
-    })()
+    const [y, m, d] = currentDate.split('-').map(Number)
+    const dateForPicker = new Date(y, m - 1, d)
 
     // Ensure the date is valid (fallback to now if invalid)
     const validDateForPicker = isNaN(dateForPicker.getTime())
@@ -550,7 +506,7 @@ export default function HomeScreen({
             <GestureDetector gesture={swipeGesture}>
                 <View style={styles.contentContainer}>
                     <Animated.View
-                        key={`${viewMode}-${viewMode === 'month' ? currentMonth : currentDate}`}
+                        key={`${viewMode}-${currentDate}`}
                         entering={getEnteringAnimation(direction)}
                         style={styles.animatedView}
                     >
