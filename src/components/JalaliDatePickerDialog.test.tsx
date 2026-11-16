@@ -315,4 +315,51 @@ describe('JalaliDatePickerDialog', () => {
         // Sunday should be rendered as a header
         expect(screen.getByText('Su')).toBeOnTheScreen()
     })
+
+    it('automatically clamps day from 31 to 30 or 29 when navigating to shorter months', async () => {
+        const user = userEvent.setup()
+        // 1405-06-31 (Shahrivar 31 is 2026-09-22)
+        const day31Date = new Date(2026, 8, 22)
+
+        await render(
+            <PaperProvider>
+                <JalaliDatePickerDialog
+                    visible={true}
+                    onDismiss={onDismissMock}
+                    onConfirm={onConfirmMock}
+                    value={day31Date}
+                    cancelLabel="Cancel"
+                    confirmLabel="Confirm"
+                    locale="en"
+                />
+            </PaperProvider>,
+        )
+
+        // Initially on 31 Sharivar 1405
+        expect(screen.getByText(/31.*1405/)).toBeOnTheScreen()
+
+        // Navigate forward to Mehr (has 30 days)
+        const nextBtn = screen.getByTestId('jalali-picker-next-month')
+        await user.press(nextBtn)
+
+        // Title should be clamped to 30 Mehr 1405, NOT 31 Mehr 1405
+        expect(screen.getByText(/30 Mehr 1405/)).toBeOnTheScreen()
+        expect(screen.queryByText(/31 Mehr 1405/)).toBeNull()
+
+        // Navigate forward 5 more months to Esfand (has 29 days in 1405)
+        for (let i = 0; i < 5; i++) {
+            await user.press(nextBtn)
+        }
+
+        // Title should be clamped to 29 Esfand 1405, NOT 30 or 31
+        expect(screen.getByText(/29 Esfand 1405/)).toBeOnTheScreen()
+        expect(screen.queryByText(/30 Esfand 1405/)).toBeNull()
+
+        // Confirm
+        const confirmBtn = screen.getByText('Confirm')
+        await user.press(confirmBtn)
+        expect(onConfirmMock).toHaveBeenCalledTimes(1)
+        const confirmedDate: Date = onConfirmMock.mock.calls[0][0] as Date
+        expect(confirmedDate).toBeInstanceOf(Date)
+    })
 })

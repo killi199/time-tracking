@@ -104,10 +104,12 @@ export default function JalaliDatePickerDialog({
     )
 
     const handlePrevMonth = () => {
+        setSelectedDate((d) => subMonthsJalali(d, 1))
         setCurrentMonthDate((d) => subMonthsJalali(d, 1))
     }
 
     const handleNextMonth = () => {
+        setSelectedDate((d) => addMonthsJalali(d, 1))
         setCurrentMonthDate((d) => addMonthsJalali(d, 1))
     }
 
