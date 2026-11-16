@@ -264,4 +264,26 @@ describe('JalaliDatePickerDialog', () => {
         await user.press(confirmBtn)
         expect(onConfirmMock).toHaveBeenCalledWith(minDate)
     })
+
+    it('renders German weekday abbreviations when locale is de', async () => {
+        await render(
+            <PaperProvider>
+                <JalaliDatePickerDialog
+                    visible={true}
+                    onDismiss={onDismissMock}
+                    onConfirm={onConfirmMock}
+                    value={fixedDate}
+                    cancelLabel="Abbrechen"
+                    confirmLabel="Bestätigen"
+                    locale="de"
+                />
+            </PaperProvider>,
+        )
+
+        // German weekdays starting on Saturday: Sa, So, Mo, Di, Mi, Do, Fr
+        expect(screen.getByText('So')).toBeOnTheScreen()
+        expect(screen.getByText('Di')).toBeOnTheScreen()
+        expect(screen.getByText('Mi')).toBeOnTheScreen()
+        expect(screen.getByText('Do')).toBeOnTheScreen()
+    })
 })

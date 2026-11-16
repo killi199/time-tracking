@@ -20,6 +20,7 @@ import {
     subMonths as subMonthsJalali,
 } from 'date-fns-jalali'
 import { enUS, faIR } from 'date-fns-jalali/locale'
+import { de } from 'date-fns/locale'
 
 export interface JalaliDatePickerDialogProps {
     readonly visible: boolean
@@ -31,6 +32,23 @@ export interface JalaliDatePickerDialogProps {
     readonly cancelLabel: string
     readonly confirmLabel: string
     readonly locale?: string
+}
+
+function resolveJalaliLocale(localeStr?: string) {
+    if (localeStr?.startsWith('fa')) {
+        return faIR
+    }
+    if (localeStr?.startsWith('de')) {
+        return {
+            ...enUS,
+            code: 'de',
+            localize: {
+                ...enUS.localize,
+                day: de.localize.day,
+            },
+        }
+    }
+    return enUS
 }
 
 export default function JalaliDatePickerDialog({
@@ -45,8 +63,7 @@ export default function JalaliDatePickerDialog({
     locale,
 }: JalaliDatePickerDialogProps) {
     const theme = useTheme()
-    const isFa = locale?.startsWith('fa') ?? false
-    const jalaliLocale = isFa ? faIR : enUS
+    const jalaliLocale = resolveJalaliLocale(locale)
 
     const [currentMonthDate, setCurrentMonthDate] = useState(() =>
         startOfMonthJalali(value),
