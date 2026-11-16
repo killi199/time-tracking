@@ -176,14 +176,6 @@ export const getTodayEvents = (date: string): TimeEvent[] => {
     )
 }
 
-export const getMonthEvents = (month: string): TimeEvent[] => {
-    // month format: 'YYYY-MM'
-    return db.getAllSync<TimeEvent>(
-        "SELECT * FROM events WHERE date LIKE $month || '%' ORDER BY date ASC, time ASC",
-        { $month: month },
-    )
-}
-
 export const getEventsRange = (
     startDate: string,
     endDate: string,
