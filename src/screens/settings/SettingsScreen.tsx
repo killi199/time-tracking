@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { List, Snackbar } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
-import { useRouter } from 'expo-router'
+import { useRouter, useFocusEffect } from 'expo-router'
 import AdaptiveDateTimePicker from '../../components/AdaptiveDateTimePicker'
 import {
     getDailyTargetMinutes,
@@ -21,8 +21,17 @@ export default function SettingsScreen() {
     const [workHoursPickerVisible, setWorkHoursPickerVisible] = useState(false)
     const [snackbarText, setSnackbarText] = useState<string | null>(null)
 
-    const calendarSystem = getSetting('calendar_system') || 'gregorian'
-    const firstDayOfWeek = getSetting('first_day_of_week') || 'auto'
+    const [calendarSystem, setCalendarSystem] = useState<string>(
+        () => getSetting('calendar_system') || 'gregorian',
+    )
+    const [firstDayOfWeek, setFirstDayOfWeek] = useState<string>(
+        () => getSetting('first_day_of_week') || 'auto',
+    )
+
+    useFocusEffect(() => {
+        setCalendarSystem(getSetting('calendar_system') || 'gregorian')
+        setFirstDayOfWeek(getSetting('first_day_of_week') || 'auto')
+    })
 
     const targetHours = Math.floor(dailyTarget / 60)
     const targetMinutes = dailyTarget % 60
