@@ -206,7 +206,12 @@ export default function JalaliDatePickerDialog({
                         />
                     </View>
 
-                    <View style={styles.weekdayRow}>
+                    <View
+                        style={[
+                            styles.weekdayRow,
+                            { borderColor: theme.colors.outlineVariant },
+                        ]}
+                    >
                         {weekdayLabels.map((lbl, idx) => (
                             <View
                                 key={`weekday-${String(idx)}`}
@@ -345,7 +350,6 @@ const styles = StyleSheet.create({
     },
     weekdayRow: {
         borderBottomWidth: StyleSheet.hairlineWidth,
-        borderColor: '#ccc',
         flexDirection: 'row',
         justifyContent: 'space-around',
         paddingBottom: 4,
