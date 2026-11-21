@@ -271,15 +271,15 @@ describe('calendar utility', () => {
             expect(gDay).toContain('2026')
 
             const jDayEn = formatHeaderDate(dateStr, 'day', 'jalali', 'en-US')
-            expect(jDayEn).toContain('Wednesday')
+            expect(jDayEn).toContain('Wed')
             expect(jDayEn).toContain('Aban 1405')
 
             const jDayDe = formatHeaderDate(dateStr, 'day', 'jalali', 'de-DE')
-            expect(jDayDe).toContain('Mittwoch')
+            expect(jDayDe).toContain('Mi')
             expect(jDayDe).toContain('Aban 1405')
 
             const jDayEs = formatHeaderDate(dateStr, 'day', 'jalali', 'es-ES')
-            expect(jDayEs).toContain('miércoles')
+            expect(jDayEs).toContain('mié')
             expect(jDayEs).toContain('Aban 1405')
         })
 

@@ -249,7 +249,9 @@ export function formatHeaderDate(
 
     if (viewMode === 'day') {
         if (calendar === 'jalali') {
-            const weekday = date.toLocaleDateString(locale, { weekday: 'long' })
+            const weekday = date.toLocaleDateString(locale, {
+                weekday: 'short',
+            })
             const jalaliDate = formatJalali(date, 'd MMMM yyyy', {
                 locale: enUS,
             })
