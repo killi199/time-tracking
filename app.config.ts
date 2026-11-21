@@ -13,9 +13,6 @@ const isFOSS = process.env.EXPO_PUBLIC_FOSS_BUILD !== 'false'
 
 export default ({ config }: ConfigContext): CustomExpoConfig => {
     const plugins: (string | [string, object])[] = [
-        './src/plugins/withNfcIntent',
-        './src/plugins/withDisableDependencyMetadata',
-        './src/plugins/withRemovePermissions',
         'react-native-nfc-manager',
         [
             'expo-splash-screen',
@@ -62,6 +59,15 @@ export default ({ config }: ConfigContext): CustomExpoConfig => {
         ])
         plugins.push('@maplibre/maplibre-react-native')
     }
+
+    // Custom additive plugins
+    plugins.push('./src/plugins/withNfcIntent')
+
+    // Custom cleanup / post-processing plugins
+    plugins.push(
+        './src/plugins/withDisableDependencyMetadata',
+        './src/plugins/withRemovePermissions',
+    )
 
     const finalConfig: CustomExpoConfig = {
         ...config,
