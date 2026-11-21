@@ -13,7 +13,7 @@ This documentation provides guidelines for AI agents and developers working on t
 - **Framework**: Expo (React Native) — **Expo has changed**: Always check the official versioned Expo documentation (matching the SDK version in `package.json`) before writing code.
 - **Language**: TypeScript
 - **State Management**: React Context & Hooks
-- **Navigation**: React Navigation
+- **Navigation**: Expo Router
 - **Package Registry**: Yarn
 
 ## 2. Core Technologies & Rules
@@ -70,6 +70,14 @@ This documentation provides guidelines for AI agents and developers working on t
     - **Never** add manual memoization hooks in standard React Native components/screens.
     - **Synchronous Rendering (No Flash)**: When dealing with synchronous local data (e.g., SQLite database reads), perform data queries and metrics calculations directly in the render phase rather than using asynchronous `useEffect` updates. This prevents stale state flashes and intermediate blank screen rendering.
 
+### Build Variants: Default vs. FOSS (F-Droid)
+
+- The app ships in two build variants controlled by `EXPO_PUBLIC_FOSS_BUILD`:
+    - **Default build** (`EXPO_PUBLIC_FOSS_BUILD=false`): Includes all features, including `expo-location` and `@maplibre/maplibre-react-native`.
+    - **FOSS build** (`EXPO_PUBLIC_FOSS_BUILD=true`, used for F-Droid): Excludes `expo-location` and `@maplibre/maplibre-react-native` (see `app.config.ts`).
+- **`.foss.*` Overrides**: FOSS builds resolve `.foss.ts` / `.foss.tsx` files before the default file via `config.resolver.sourceExts` in `metro.config.js` (used by `yarn build:foss`), while `moduleSuffixes: [".foss", ""]` in `tsconfig.foss.json` provides matching resolution for `yarn typecheck:foss`.
+- **Rule**: Whenever modifying or adding features that depend on location, maps, or other non-FOSS packages, ensure `.foss.*` counterparts and `tsconfig.foss.json` remain compatible so both `yarn typecheck:foss` and `yarn build:foss` pass.
+
 ## 3. coding Standards
 
 - **TypeScript Strictness**: Strictly type all props, state, variables, and function return values. Do NOT use `any`.
@@ -78,10 +86,12 @@ This documentation provides guidelines for AI agents and developers working on t
 - **Component Props**: Always create a Props interface for React components. The interface MUST be named after the file followed by `Props` (e.g., `App.tsx` -> `interface AppProps`).
 - **Hooks**: Use functional components.
 - **File Structure**:
-    - `src/screens`: Screen components managed by navigation.
+    - `src/app`: Expo Router routes and layouts.
+    - `src/screens`: Screen components rendered by routes.
     - `src/components`: Reusable UI components.
     - `src/services`: Background tasks/services (e.g., NFC, Location).
     - `src/context`: React Context providers.
+    - `src/plugins`: Custom Expo config plugins.
 - **Restrictions**:
     - **node_modules**: Agents are NOT allowed to edit anything in the `node_modules` folder.
 
@@ -103,3 +113,4 @@ This documentation provides guidelines for AI agents and developers working on t
 - [ ] Styles use `theme.colors`?
 - [ ] No manual memoization (`useMemo`/`useCallback`/`React.memo`) introduced?
 - [ ] Only Android & iOS supported (no web fallbacks or code)?
+- [ ] Compatible with both default and FOSS (`.foss.*`) builds?
