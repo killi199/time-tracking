@@ -41,7 +41,7 @@ Before presenting your work to the user or declaring a task complete, run the va
 
 - **Dependency Management**: Do NOT install new third-party packages unless absolutely necessary or explicitly approved by the user. If a package must be installed, always use `yarn`, never `npm`.
 - **Clean Workspace**: Always clean up any temporary scripts, scratch files, or logs you create during your work. Do not leave the workspace cluttered.
-- **Pipeline-Managed Files**: Do NOT manually edit `version` / `versionCode` in `package.json`, `metadata/*/changelogs/*.txt`, or `src/licenses.json` (and do NOT run `yarn generate-licenses`) — these are generated and updated automatically by the CI/release pipelines.
+- **Pipeline-Managed Files**: Do NOT manually edit or commit `version` / `versionCode` in `package.json`, `metadata/*/changelogs/*.txt`, or `src/licenses.json` — these are managed by the CI/release pipelines (`src/licenses.json` is gitignored and generated in CI; only run `yarn generate-licenses` locally if missing `src/licenses.json` blocks `yarn test` or `yarn typecheck`).
 
 ## 6. Version Control
 

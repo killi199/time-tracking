@@ -33,7 +33,7 @@ Follow these rules whenever creating branches, committing work, or opening a pul
     - Include a concise `## Summary` of the changes.
     - Link related issues with GitHub closing keywords (e.g., `Closes #123` or `Fixes #123`) when resolving an issue.
     - Do **NOT** list test, lint, build, or pipeline pass results — CI status is already visible in GitHub Actions.
-- **Labels (Required)**: ALWAYS apply the appropriate GitHub label(s) when creating a PR. Labels drive both GitHub release notes (`.github/release.yml`) and F-Droid changelogs (`.github/scripts/generate-fdroid-changelog.ts`):
+- **Labels (Required)**: ALWAYS apply the appropriate GitHub label(s) when creating a PR. Labels drive GitHub release notes (`.github/release.yml`, all categories below) and F-Droid changelogs (`.github/scripts/generate-fdroid-changelog.ts`, which includes **only** `enhancement` and `bug` PRs — `maintenance`- and `documentation`-only PRs do not appear as individual F-Droid entries):
     - `enhancement` — User-visible new features or changes.
     - `bug` — Bug fixes.
     - `maintenance` — Internal maintenance (test fixes, CI/workflows, ESLint/tooling, refactoring, agent instructions, etc.).

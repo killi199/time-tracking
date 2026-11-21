@@ -75,7 +75,7 @@ This documentation provides guidelines for AI agents and developers working on t
 - The app ships in two build variants controlled by `EXPO_PUBLIC_FOSS_BUILD`:
     - **Default build** (`EXPO_PUBLIC_FOSS_BUILD=false`): Includes all features, including `expo-location` and `@maplibre/maplibre-react-native`.
     - **FOSS build** (`EXPO_PUBLIC_FOSS_BUILD=true`, used for F-Droid): Excludes `expo-location` and `@maplibre/maplibre-react-native` (see `app.config.ts`).
-- **`.foss.*` Overrides**: FOSS builds resolve `.foss.ts` / `.foss.tsx` module suffixes before the default file (configured via `moduleSuffixes: [".foss", ""]` in `tsconfig.foss.json`).
+- **`.foss.*` Overrides**: FOSS builds resolve `.foss.ts` / `.foss.tsx` files before the default file via `config.resolver.sourceExts` in `metro.config.js` (used by `yarn build:foss`), while `moduleSuffixes: [".foss", ""]` in `tsconfig.foss.json` provides matching resolution for `yarn typecheck:foss`.
 - **Rule**: Whenever modifying or adding features that depend on location, maps, or other non-FOSS packages, ensure `.foss.*` counterparts and `tsconfig.foss.json` remain compatible so both `yarn typecheck:foss` and `yarn build:foss` pass.
 
 ## 3. coding Standards
