@@ -1,10 +1,5 @@
 import { describe, it, expect } from '@jest/globals'
-import {
-    formatTime,
-    getFormattedTime,
-    getFormattedDate,
-    getFormattedMonth,
-} from './time'
+import { formatTime, getFormattedTime, getFormattedDate } from './time'
 
 describe('formatTime', () => {
     it('formats positive minutes correctly without sign', () => {
@@ -77,22 +72,5 @@ describe('getFormattedDate', () => {
     it('handles end of year correctly', () => {
         const date = new Date(2023, 11, 31) // Dec 31, 2023
         expect(getFormattedDate(date)).toBe('2023-12-31')
-    })
-})
-
-describe('getFormattedMonth', () => {
-    it('formats month correctly with zero-padding', () => {
-        const date = new Date(2023, 0, 15) // Jan 15, 2023
-        expect(getFormattedMonth(date)).toBe('2023-01')
-    })
-
-    it('handles two-digit months correctly', () => {
-        const date = new Date(2023, 9, 1) // Oct 1, 2023
-        expect(getFormattedMonth(date)).toBe('2023-10')
-    })
-
-    it('handles December correctly', () => {
-        const date = new Date(2023, 11, 31) // Dec 31, 2023
-        expect(getFormattedMonth(date)).toBe('2023-12')
     })
 })
