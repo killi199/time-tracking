@@ -211,12 +211,14 @@ export default function HomeScreen({
             const newDateStr = steppedDate > todayStr ? todayStr : steppedDate
             setCurrentDate(newDateStr)
         } else if (viewMode === 'week') {
-            const date = new Date(currentDate)
+            const [y, m, d] = currentDate.split('-').map(Number)
+            const date = new Date(y, m - 1, d)
             date.setDate(date.getDate() + step * 7)
             const newDateStr = getFormattedDate(date)
             setCurrentDate(newDateStr > todayStr ? todayStr : newDateStr)
         } else {
-            const date = new Date(currentDate)
+            const [y, m, d] = currentDate.split('-').map(Number)
+            const date = new Date(y, m - 1, d)
             date.setDate(date.getDate() + step)
             const newDateStr = getFormattedDate(date)
             setCurrentDate(newDateStr > todayStr ? todayStr : newDateStr)
