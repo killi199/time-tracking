@@ -30,7 +30,7 @@ jobs:
 
             - name: Prettier
               if: matrix.variant == 'default'
-              run: npx prettier . --check
+              run: yarn prettier . --check
 
             - name: Yarn Dedupe Check
               if: matrix.variant == 'default'
@@ -45,7 +45,7 @@ jobs:
 
             - name: Expo Doctor
               if: matrix.variant == 'default'
-              run: npx expo-doctor
+              run: yarn dlx expo-doctor
 
             - name: Test
               if: matrix.variant == 'default'

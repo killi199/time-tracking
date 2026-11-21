@@ -23,6 +23,14 @@ jobs:
                   ref: main
                   fetch-depth: 0
 
+            - name: Enable Corepack
+              run: corepack enable
+
+            - name: Setup Node.js
+              uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+              with:
+                  node-version: 24
+
             - name: Bump package.json version and versionCode
               id: bump
               run: |
@@ -32,20 +40,15 @@ jobs:
 
                   jq ".versionCode = $NEW_VERSION_CODE | .version = \"$NEW_VERSION\"" package.json > package.tmp.json
                   mv package.tmp.json package.json
-                  npx prettier --write package.json
+                  yarn dlx prettier --write package.json
 
                   echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
                   echo "new_version_code=$NEW_VERSION_CODE" >> $GITHUB_OUTPUT
 
-            - name: Setup Node.js
-              uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-              with:
-                  node-version: 24
-
             - name: Generate F-Droid Changelog
               env:
                   GITHUB_TOKEN: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
-              run: npx tsx .github/scripts/generate-fdroid-changelog.ts ${{ steps.bump.outputs.new_version_code }}
+              run: yarn dlx tsx .github/scripts/generate-fdroid-changelog.ts ${{ steps.bump.outputs.new_version_code }}
 
             - name: Commit and push changes
               id: auto_commit
@@ -91,7 +94,7 @@ jobs:
                   java-version: '17'
 
             - name: Prebuild Android
-              run: npx expo prebuild --platform android --clean
+              run: yarn expo prebuild --platform android --clean
 
             - name: Configure Gradle Memory
               run: |
