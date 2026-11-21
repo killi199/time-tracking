@@ -123,7 +123,7 @@ export default {
             calendar: 'Kalender',
             calendarTitle: 'Kalendersystem',
             calendarGregorian: 'Gregorianisch',
-            calendarJalali: 'Dschalālī (Persischer Kalender)',
+            calendarJalali: 'Persischer Kalender (Jalali)',
             firstDayOfWeek: 'Erster Wochentag',
             firstDayOfWeekTitle: 'Erster Wochentag',
             autoFirstDay: 'Automatisch (nach Kalender)',
