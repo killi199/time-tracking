@@ -755,83 +755,102 @@ describe('HomeScreen', () => {
         })
     })
 
-    it('renders header in Jalali calendar and navigates months when jalali is active', async () => {
-        jest.mocked(getSetting).mockImplementation((key: string) => {
-            if (key === 'calendar_system') return 'jalali'
-            if (key === 'first_day_of_week') return 'saturday'
-            return null
-        })
+    it(
+        'renders header in Jalali calendar and navigates months when jalali is active',
+        withMockedDate(new Date('2026-11-16T12:00:00'), async () => {
+            jest.mocked(getSetting).mockImplementation((key: string) => {
+                if (key === 'calendar_system') return 'jalali'
+                if (key === 'first_day_of_week') return 'saturday'
+                return null
+            })
 
-        const user = userEvent.setup()
-        await renderWithProvider(<HomeScreen viewMode="month" />)
+            const user = userEvent.setup()
+            const { unmount } = await renderWithProvider(
+                <HomeScreen viewMode="month" />,
+            )
 
-        // Header should show Jalali month name
-        expect(screen.getByText(/Aban 1405|1405/)).toBeOnTheScreen()
+            // Header should show Jalali month name
+            expect(screen.getByText(/Aban 1405|1405/)).toBeOnTheScreen()
 
-        // Prev month button should step back 1 Jalali month (Mehr 1405)
-        await user.press(screen.getByTestId('prev-date-btn'))
-        expect(screen.getByText(/Mehr 1405|1405/)).toBeOnTheScreen()
+            // Prev month button should step back 1 Jalali month (Mehr 1405)
+            await user.press(screen.getByTestId('prev-date-btn'))
+            expect(screen.getByText(/Mehr 1405|1405/)).toBeOnTheScreen()
 
-        // Back to now
-        await user.press(screen.getByText('home.backToNow'))
-        expect(screen.getByText(/Aban 1405|1405/)).toBeOnTheScreen()
+            // Back to now
+            await user.press(screen.getByText('home.backToNow'))
+            expect(screen.getByText(/Aban 1405|1405/)).toBeOnTheScreen()
 
-        // Pick an earlier Jalali month via picker
-        mockDatePickerDate = new Date(2026, 9, 15) // 23 Mehr 1405
-        await user.press(screen.getByText(/Aban 1405|1405/))
-        await user.press(screen.getByTestId('confirm-date'))
-        expect(screen.getByText(/Mehr 1405|1405/)).toBeOnTheScreen()
+            // Pick an earlier Jalali month via picker
+            mockDatePickerDate = new Date(2026, 9, 15) // 23 Mehr 1405
+            await user.press(screen.getByText(/Aban 1405|1405/))
+            await user.press(screen.getByTestId('confirm-date'))
+            expect(screen.getByText(/Mehr 1405|1405/)).toBeOnTheScreen()
 
-        // Pick current Jalali month again (direction right)
-        mockDatePickerDate = new Date(2026, 10, 16) // 26 Aban 1405
-        await user.press(screen.getByText(/Mehr 1405|1405/))
-        await user.press(screen.getByTestId('confirm-date'))
-        expect(screen.getByText(/Aban 1405|1405/)).toBeOnTheScreen()
+            // Pick current Jalali month again (direction right)
+            mockDatePickerDate = new Date(2026, 10, 16) // 26 Aban 1405
+            await user.press(screen.getByText(/Mehr 1405|1405/))
+            await user.press(screen.getByTestId('confirm-date'))
+            expect(screen.getByText(/Aban 1405|1405/)).toBeOnTheScreen()
 
-        mockDatePickerDate = null
-    })
+            mockDatePickerDate = null
+            await unmount()
+        }),
+    )
 
-    it('handles picking earlier and later weeks in week view mode', async () => {
-        const user = userEvent.setup()
-        await renderWithProvider(<HomeScreen viewMode="week" />)
+    it(
+        'handles picking earlier and later weeks in week view mode',
+        withMockedDate(new Date('2026-11-16T12:00:00'), async () => {
+            const user = userEvent.setup()
+            const { unmount } = await renderWithProvider(
+                <HomeScreen viewMode="week" />,
+            )
 
-        // Pick 2 weeks ago
-        const twoWeeksAgo = new Date()
-        twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
-        mockDatePickerDate = twoWeeksAgo
+            // Pick 2 weeks ago
+            const twoWeeksAgo = new Date()
+            twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
+            mockDatePickerDate = twoWeeksAgo
 
-        await user.press(screen.getByTestId('date-touchable'))
-        expect(screen.getByTestId('confirm-date')).toBeVisible()
-        await user.press(screen.getByTestId('confirm-date'))
+            await user.press(screen.getByTestId('date-touchable'))
+            expect(screen.getByTestId('confirm-date')).toBeVisible()
+            await user.press(screen.getByTestId('confirm-date'))
 
-        expect(screen.getByTestId('next-date-btn')).toBeEnabled()
-        expect(screen.getByText('home.backToNow')).toBeEnabled()
+            expect(screen.getByTestId('next-date-btn')).toBeEnabled()
+            expect(screen.getByText('home.backToNow')).toBeEnabled()
 
-        // Pick 1 week ago (targetWeekStart > currentWeekStart -> direction right)
-        const oneWeekAgo = new Date()
-        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
-        mockDatePickerDate = oneWeekAgo
-        await user.press(screen.getByTestId('date-touchable'))
-        await user.press(screen.getByTestId('confirm-date'))
+            // Pick 1 week ago (targetWeekStart > currentWeekStart -> direction right)
+            const oneWeekAgo = new Date()
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
+            mockDatePickerDate = oneWeekAgo
+            await user.press(screen.getByTestId('date-touchable'))
+            await user.press(screen.getByTestId('confirm-date'))
 
-        // Go to today from past week
-        expect(screen.getByText('home.backToNow')).toBeEnabled()
-        await user.press(screen.getByText('home.backToNow'))
-        expect(screen.getByTestId('next-date-btn')).toBeDisabled()
+            // Go to today from past week
+            expect(screen.getByText('home.backToNow')).toBeEnabled()
+            await user.press(screen.getByText('home.backToNow'))
+            expect(screen.getByTestId('next-date-btn')).toBeDisabled()
 
-        mockDatePickerDate = null
-    })
+            mockDatePickerDate = null
+            await unmount()
+        }),
+    )
 
-    it('renders week view with Saturday start when jalali and saturday start are active', async () => {
-        jest.mocked(getSetting).mockImplementation((key: string) => {
-            if (key === 'calendar_system') return 'jalali'
-            if (key === 'first_day_of_week') return 'saturday'
-            return null
-        })
+    it(
+        'renders week view with Saturday start when jalali and saturday start are active',
+        withMockedDate(new Date('2026-11-16T12:00:00'), async () => {
+            jest.mocked(getSetting).mockImplementation((key: string) => {
+                if (key === 'calendar_system') return 'jalali'
+                if (key === 'first_day_of_week') return 'saturday'
+                return null
+            })
 
-        await renderWithProvider(<HomeScreen viewMode="week" />)
+            const { unmount } = await renderWithProvider(
+                <HomeScreen viewMode="week" />,
+            )
 
-        // Header should show Jalali week range
-        expect(screen.getByText(/1405/)).toBeOnTheScreen()
-    })
+            // Header should show Jalali week range
+            expect(screen.getByText(/1405/)).toBeOnTheScreen()
+
+            await unmount()
+        }),
+    )
 })
