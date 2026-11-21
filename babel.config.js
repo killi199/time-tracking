@@ -6,7 +6,6 @@ module.exports = function (api) {
         plugins.push([
             'babel-plugin-react-compiler',
             {
-                target: '19',
                 sources: (filename) =>
                     !filename.includes('node_modules') &&
                     !/\.test\.[jt]sx?$/.test(filename),
