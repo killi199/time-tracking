@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react-native'
 import { describe, it, expect, beforeEach, jest } from '@jest/globals'
 import MonthView from './MonthView'
 import {
-    getMonthEvents,
+    getEventsRange,
     getOverallStats,
     getWorkHoursHistory,
 } from '../db/database'
@@ -30,9 +30,10 @@ jest.mock('react-native-gesture-handler/ReanimatedSwipeable', () => {
 })
 
 jest.mock('../db/database', () => ({
-    getMonthEvents: jest.fn(),
+    getEventsRange: jest.fn(),
     getOverallStats: jest.fn(),
     getWorkHoursHistory: jest.fn(),
+    getSetting: jest.fn(),
 }))
 
 const renderWithProvider = (ui: React.ReactElement) =>
@@ -43,7 +44,7 @@ describe('MonthView', () => {
 
     beforeEach(() => {
         jest.clearAllMocks()
-        jest.mocked(getMonthEvents).mockReturnValue([])
+        jest.mocked(getEventsRange).mockReturnValue([])
         jest.mocked(getOverallStats).mockReturnValue({
             overallBalanceMinutes: -60, // -1 hour
             totalMinutesWorked: 0,
@@ -77,7 +78,7 @@ describe('MonthView', () => {
 
     it('calculates statistics correctly with multiple events', async () => {
         // Mock events for Oct 1st: 08:00 to 12:00 (4 hours)
-        jest.mocked(getMonthEvents).mockReturnValue([
+        jest.mocked(getEventsRange).mockReturnValue([
             {
                 id: 1,
                 date: '2023-10-01',
@@ -114,7 +115,7 @@ describe('MonthView', () => {
     })
 
     it('renders event list items correctly', async () => {
-        jest.mocked(getMonthEvents).mockReturnValue([
+        jest.mocked(getEventsRange).mockReturnValue([
             {
                 id: 1,
                 date: '2023-10-01',
@@ -135,6 +136,38 @@ describe('MonthView', () => {
 
         expect(screen.getByTestId('event-item-1')).toBeVisible()
         expect(screen.getByText('Month work session')).toBeVisible()
+    })
+
+    it('queries events with Jalali range and formats subheader in Jalali when calendar is jalali', async () => {
+        // 2026-11-11 is 20 Aban 1405 (Aban 1405 runs from 2026-10-23 to 2026-11-21)
+        jest.mocked(getEventsRange).mockReturnValue([
+            {
+                id: 1,
+                date: '2026-11-11',
+                time: '09:00',
+                note: 'Jalali month work',
+                isManualEntry: false,
+            },
+        ])
+
+        await renderWithProvider(
+            <MonthView
+                month="2026-11-11"
+                calendar="jalali"
+                onEditEvent={jest.fn()}
+                onDeleteEvent={jest.fn()}
+                refreshTrigger={0}
+            />,
+        )
+
+        // Verifies range query matches Jalali month boundary
+        expect(getEventsRange).toHaveBeenCalledWith('2026-10-23', '2026-11-21')
+
+        // Verifies event item rendered
+        expect(screen.getByTestId('event-item-1')).toBeVisible()
+
+        // Verifies subheader formatted in Jalali calendar
+        expect(screen.getByText(/20 Aban 1405/)).toBeVisible()
     })
 
     it('handles missing refreshTrigger gracefully', async () => {

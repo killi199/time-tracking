@@ -120,6 +120,12 @@ describe('RootLayout', () => {
             screen.getByTestId('mock-stack-screen-language-settings'),
         ).toBeVisible()
         expect(
+            screen.getByTestId('mock-stack-screen-calendar-settings'),
+        ).toBeVisible()
+        expect(
+            screen.getByTestId('mock-stack-screen-week-start-settings'),
+        ).toBeVisible()
+        expect(
             screen.getByTestId('mock-stack-screen-geofence-setup'),
         ).toBeVisible()
         expect(screen.getByTestId('mock-stack-screen-nfc-setup')).toBeVisible()

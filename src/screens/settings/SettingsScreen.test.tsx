@@ -1,18 +1,34 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals'
-import { render, screen, userEvent } from '@testing-library/react-native'
+import { render, screen, userEvent, act } from '@testing-library/react-native'
 import SettingsScreen from './SettingsScreen'
 import { useRouter } from 'expo-router'
-import { getDailyTargetMinutes, setDailyTargetMinutes } from '../../db/database'
+import {
+    getDailyTargetMinutes,
+    setDailyTargetMinutes,
+    getSetting,
+} from '../../db/database'
 import { getFormattedDate } from '../../utils/time'
 import { PaperProvider } from 'react-native-paper'
 
-jest.mock('expo-router', () => ({
-    useRouter: jest.fn(),
-}))
+let focusCallback: (() => void) | null = null
+
+jest.mock('expo-router', () => {
+    const React = jest.requireActual<typeof import('react')>('react')
+    return {
+        useRouter: jest.fn(),
+        useFocusEffect: jest.fn((cb: () => void) => {
+            focusCallback = cb
+            React.useEffect(() => {
+                cb()
+            }, [cb])
+        }),
+    }
+})
 
 jest.mock('../../db/database', () => ({
     getDailyTargetMinutes: jest.fn(),
     setDailyTargetMinutes: jest.fn(),
+    getSetting: jest.fn(),
 }))
 
 jest.mock('../../utils/time', () => ({
@@ -81,7 +97,20 @@ describe('SettingsScreen', () => {
         expect(screen.getByText('8 h 0 min')).toBeVisible()
     })
 
-    it('navigates to language settings on press', async () => {
+    it.each([
+        {
+            text: 'settings.language',
+            route: '/language-settings',
+        },
+        {
+            text: 'settings.calendar',
+            route: '/calendar-settings',
+        },
+        {
+            text: 'settings.firstDayOfWeek',
+            route: '/week-start-settings',
+        },
+    ])('navigates to $route when $text is pressed', async ({ text, route }) => {
         const user = userEvent.setup()
         await render(
             <PaperProvider>
@@ -89,8 +118,8 @@ describe('SettingsScreen', () => {
             </PaperProvider>,
         )
 
-        await user.press(screen.getByText('settings.language'))
-        expect(mockRouter.push).toHaveBeenCalledWith('/language-settings')
+        await user.press(screen.getByText(text))
+        expect(mockRouter.push).toHaveBeenCalledWith(route)
     })
 
     it('opens time picker and updates work hours on confirm', async () => {
@@ -161,5 +190,80 @@ describe('SettingsScreen', () => {
 
         expect(setDailyTargetMinutes).not.toHaveBeenCalled()
         expect(screen.queryByTestId('mock-date-picker')).not.toBeOnTheScreen()
+    })
+
+    it('displays correct descriptions for jalali and week days', async () => {
+        jest.mocked(getSetting).mockImplementation((key: string) => {
+            if (key === 'calendar_system') return 'jalali'
+            if (key === 'first_day_of_week') return 'saturday'
+            return null
+        })
+
+        const { rerender } = await render(
+            <PaperProvider>
+                <SettingsScreen />
+            </PaperProvider>,
+        )
+
+        expect(screen.getByText('settings.calendarJalali')).toBeVisible()
+        expect(screen.getByText('settings.saturday')).toBeVisible()
+
+        // Test sunday
+        jest.mocked(getSetting).mockImplementation((key: string) => {
+            if (key === 'calendar_system') return 'gregorian'
+            if (key === 'first_day_of_week') return 'sunday'
+            return null
+        })
+        await rerender(
+            <PaperProvider>
+                <SettingsScreen />
+            </PaperProvider>,
+        )
+        expect(screen.getByText('settings.sunday')).toBeVisible()
+
+        // Test monday
+        jest.mocked(getSetting).mockImplementation((key: string) => {
+            if (key === 'calendar_system') return 'gregorian'
+            if (key === 'first_day_of_week') return 'monday'
+            return null
+        })
+        await rerender(
+            <PaperProvider>
+                <SettingsScreen />
+            </PaperProvider>,
+        )
+        expect(screen.getByText('settings.monday')).toBeVisible()
+    })
+
+    it('refreshes calendar and first day of week on focus', async () => {
+        let currentCalendar = 'gregorian'
+        let currentFirstDay = 'auto'
+        jest.mocked(getSetting).mockImplementation((key: string) => {
+            if (key === 'calendar_system') return currentCalendar
+            if (key === 'first_day_of_week') return currentFirstDay
+            return null
+        })
+
+        await render(
+            <PaperProvider>
+                <SettingsScreen />
+            </PaperProvider>,
+        )
+
+        expect(screen.getByText('settings.calendarGregorian')).toBeVisible()
+        expect(screen.getByText('settings.autoFirstDay')).toBeVisible()
+
+        // Simulate settings updated while away on another screen
+        currentCalendar = 'jalali'
+        currentFirstDay = 'saturday'
+
+        // Trigger useFocusEffect
+        await act(async () => {
+            await Promise.resolve()
+            focusCallback?.()
+        })
+
+        expect(await screen.findByText('settings.calendarJalali')).toBeVisible()
+        expect(await screen.findByText('settings.saturday')).toBeVisible()
     })
 })
