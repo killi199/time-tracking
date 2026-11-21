@@ -12,6 +12,7 @@ import {
     addDays as addDaysJalali,
     addMonths as addMonthsJalali,
     format as formatJalali,
+    getDate as getDateJalali,
     getDay as getDayJalali,
     getDaysInMonth as getDaysInMonthJalali,
     setDate as setDateJalali,
@@ -163,7 +164,7 @@ export default function JalaliDatePickerDialog({
         gridRows.push(currentRow)
     }
 
-    const selectedDay = Number(formatJalali(selectedDate, 'd'))
+    const selectedDay = getDateJalali(selectedDate)
     const isSameMonthAndYear =
         formatJalali(selectedDate, 'yyyy-MM') ===
         formatJalali(currentMonthDate, 'yyyy-MM')
