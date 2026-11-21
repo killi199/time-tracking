@@ -316,18 +316,18 @@ describe('JalaliDatePickerDialog', () => {
         expect(screen.getByText('Su')).toBeOnTheScreen()
     })
 
-    it('automatically clamps day from 31 to 30 or 29 when navigating to shorter months', async () => {
+    it('does not mutate selectedDate or highlight a disabled day when browsing months with maximumDate', async () => {
         const user = userEvent.setup()
-        // 1405-06-31 (Shahrivar 31 is 2026-09-22)
-        const day31Date = new Date(2026, 8, 22)
-
+        // Today: 1405-08-20 (fixedDate = 2026-11-11)
+        // With maximumDate set to today
         await render(
             <PaperProvider>
                 <JalaliDatePickerDialog
                     visible={true}
                     onDismiss={onDismissMock}
                     onConfirm={onConfirmMock}
-                    value={day31Date}
+                    value={fixedDate}
+                    maximumDate={fixedDate}
                     cancelLabel="Cancel"
                     confirmLabel="Confirm"
                     locale="en"
@@ -335,31 +335,44 @@ describe('JalaliDatePickerDialog', () => {
             </PaperProvider>,
         )
 
-        // Initially on 31 Sharivar 1405
-        expect(screen.getByText(/31.*1405/)).toBeOnTheScreen()
+        // Title initially shows selectedDate: "20 Aban 1405"
+        expect(screen.getByText('20 Aban 1405')).toBeOnTheScreen()
+        expect(screen.getByText('Aban 1405')).toBeOnTheScreen()
 
-        // Navigate forward to Mehr (has 30 days)
+        // Day 20 in current month (Aban) is enabled and selected
+        const day20Aban = screen.getByTestId('jalali-day-20')
+        expect(day20Aban).not.toBeDisabled()
+
+        // Navigate forward to next month (Azar 1405)
         const nextBtn = screen.getByTestId('jalali-picker-next-month')
         await user.press(nextBtn)
 
-        // Title should be clamped to 30 Mehr 1405, NOT 31 Mehr 1405
-        expect(screen.getByText(/30 Mehr 1405/)).toBeOnTheScreen()
-        expect(screen.queryByText(/31 Mehr 1405/)).toBeNull()
+        // Month header advances to Azar 1405
+        expect(screen.getByText('Azar 1405')).toBeOnTheScreen()
 
-        // Navigate forward 5 more months to Esfand (has 29 days in 1405)
-        for (let i = 0; i < 5; i++) {
-            await user.press(nextBtn)
-        }
+        // Dialog title keeps the original selectedDate unchanged
+        expect(screen.getByText('20 Aban 1405')).toBeOnTheScreen()
+        expect(screen.queryByText(/20 Azar 1405/)).toBeNull()
 
-        // Title should be clamped to 29 Esfand 1405, NOT 30 or 31
-        expect(screen.getByText(/29 Esfand 1405/)).toBeOnTheScreen()
-        expect(screen.queryByText(/30 Esfand 1405/)).toBeNull()
+        // Day 20 in Azar is disabled (past maximumDate) and NOT highlighted as selected
+        const day20Azar = screen.getByTestId('jalali-day-20')
+        expect(day20Azar).toBeDisabled()
+        const flattenedStyle = [day20Azar.props.style].flat().filter(Boolean)
+        const hasPrimaryBg = flattenedStyle.some(
+            (s) =>
+                (s as { backgroundColor?: string }).backgroundColor !==
+                undefined,
+        )
+        expect(hasPrimaryBg).toBe(false)
 
-        // Confirm
+        // Navigate back to Aban 1405
+        const prevBtn = screen.getByTestId('jalali-picker-prev-month')
+        await user.press(prevBtn)
+        expect(screen.getByText('Aban 1405')).toBeOnTheScreen()
+
+        // Confirming restores and preserves selectedDate
         const confirmBtn = screen.getByText('Confirm')
         await user.press(confirmBtn)
-        expect(onConfirmMock).toHaveBeenCalledTimes(1)
-        const confirmedDate: Date = onConfirmMock.mock.calls[0][0] as Date
-        expect(confirmedDate).toBeInstanceOf(Date)
+        expect(onConfirmMock).toHaveBeenCalledWith(fixedDate)
     })
 })
