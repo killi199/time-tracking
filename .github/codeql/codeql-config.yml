@@ -1,0 +1,13 @@
+name: 'CodeQL Config'
+
+queries:
+    - uses: security-extended
+
+paths-ignore:
+    - 'android/**'
+    - 'docs/**'
+    - 'metadata/**'
+    - '.agents/**'
+    - 'src/test/**'
+    - '**/*.test.ts'
+    - '**/*.test.tsx'
