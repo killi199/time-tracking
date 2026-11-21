@@ -87,11 +87,29 @@ export default function JalaliDatePickerDialog({
             .slice(0, 2),
     )
 
+    const canGoNextMonth = (() => {
+        if (!maximumDate) return true
+        const maxAllowedMonth = startOfMonthJalali(
+            addMonthsJalali(startOfMonthJalali(maximumDate), 1),
+        )
+        return currentMonthDate.getTime() < maxAllowedMonth.getTime()
+    })()
+
+    const canGoPrevMonth = (() => {
+        if (!minimumDate) return true
+        const minAllowedMonth = startOfMonthJalali(
+            subMonthsJalali(startOfMonthJalali(minimumDate), 1),
+        )
+        return currentMonthDate.getTime() > minAllowedMonth.getTime()
+    })()
+
     const handlePrevMonth = () => {
+        if (!canGoPrevMonth) return
         setCurrentMonthDate((d) => startOfMonthJalali(subMonthsJalali(d, 1)))
     }
 
     const handleNextMonth = () => {
+        if (!canGoNextMonth) return
         setCurrentMonthDate((d) => startOfMonthJalali(addMonthsJalali(d, 1)))
     }
 
@@ -173,6 +191,7 @@ export default function JalaliDatePickerDialog({
                         <IconButton
                             icon="chevron-left"
                             onPress={handlePrevMonth}
+                            disabled={!canGoPrevMonth}
                             testID="jalali-picker-prev-month"
                         />
                         <Text
@@ -186,6 +205,7 @@ export default function JalaliDatePickerDialog({
                         <IconButton
                             icon="chevron-right"
                             onPress={handleNextMonth}
+                            disabled={!canGoNextMonth}
                             testID="jalali-picker-next-month"
                         />
                     </View>

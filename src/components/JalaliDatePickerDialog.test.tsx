@@ -426,6 +426,9 @@ describe('JalaliDatePickerDialog', () => {
         // Month header advances to Azar 1405
         expect(screen.getByText('Azar 1405')).toBeOnTheScreen()
 
+        // Chevron-right is now disabled (at most one month past maximumDate)
+        expect(nextBtn).toBeDisabled()
+
         // Dialog title keeps the original selectedDate unchanged
         expect(screen.getByText('20 Aban 1405')).toBeOnTheScreen()
         expect(screen.queryByText(/20 Azar 1405/)).toBeNull()
@@ -445,10 +448,41 @@ describe('JalaliDatePickerDialog', () => {
         const prevBtn = screen.getByTestId('jalali-picker-prev-month')
         await user.press(prevBtn)
         expect(screen.getByText('Aban 1405')).toBeOnTheScreen()
+        expect(nextBtn).not.toBeDisabled()
 
         // Confirming restores and preserves selectedDate
         const confirmBtn = screen.getByText('Confirm')
         await user.press(confirmBtn)
         expect(onConfirmMock).toHaveBeenCalledWith(fixedDate)
+    })
+
+    it('disables chevron-left once browsing one month before minimumDate', async () => {
+        const user = userEvent.setup()
+        // fixedDate = 2026-11-11 (Aban 1405)
+        // With minimumDate set to fixedDate
+        await render(
+            <PaperProvider>
+                <JalaliDatePickerDialog
+                    visible={true}
+                    onDismiss={onDismissMock}
+                    onConfirm={onConfirmMock}
+                    value={fixedDate}
+                    minimumDate={fixedDate}
+                    cancelLabel="Cancel"
+                    confirmLabel="Confirm"
+                    locale="en"
+                />
+            </PaperProvider>,
+        )
+
+        const prevBtn = screen.getByTestId('jalali-picker-prev-month')
+        expect(prevBtn).not.toBeDisabled()
+
+        // Navigate back one month (Mehr 1405)
+        await user.press(prevBtn)
+        expect(screen.getByText('Mehr 1405')).toBeOnTheScreen()
+
+        // Chevron-left is now disabled (at most one month before minimumDate)
+        expect(prevBtn).toBeDisabled()
     })
 })
