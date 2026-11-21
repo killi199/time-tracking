@@ -47,3 +47,17 @@ Before presenting your work to the user or declaring a task complete, run the va
 
 - **Branch Protection**: NEVER commit directly to `main`. All work and commits MUST happen on a new branch (`enhancement/`, `fix/`, `documentation/`, or `maintenance/` + `shortCamelCaseDescription`) or worktree.
 - **Commits & Pull Requests**: Load the `pull-request` skill (`.agents/skills/pull-request/SKILL.md`) whenever committing changes or creating a pull request.
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specs are tracked in GitHub Issues (`killi199/time-tracking`) via the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default five-label vocabulary (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context layout (`GLOSSARY.md` and `docs/adr/` at the repo root). See `docs/agents/domain.md`.
