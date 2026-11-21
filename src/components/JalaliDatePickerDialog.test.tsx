@@ -291,6 +291,27 @@ describe('JalaliDatePickerDialog', () => {
         expect(screen.getByText('Do')).toBeOnTheScreen()
     })
 
+    it('renders Spanish weekday abbreviations when locale is es', async () => {
+        await render(
+            <PaperProvider>
+                <JalaliDatePickerDialog
+                    visible={true}
+                    onDismiss={onDismissMock}
+                    onConfirm={onConfirmMock}
+                    value={fixedDate}
+                    cancelLabel="Cancelar"
+                    confirmLabel="Confirmar"
+                    locale="es"
+                />
+            </PaperProvider>,
+        )
+
+        // Spanish weekdays starting on Saturday: sá, do, lu, ma, mi, ju, vi
+        expect(screen.getByText('sá')).toBeOnTheScreen()
+        expect(screen.getByText('do')).toBeOnTheScreen()
+        expect(screen.getByText('lu')).toBeOnTheScreen()
+    })
+
     it('aligns weekdays and day grid according to firstDayOfWeek prop', async () => {
         // Month: Aban 1405 (starts on Friday, 1405-08-01 / 2026-10-23)
         // If week starts on Sunday (0):

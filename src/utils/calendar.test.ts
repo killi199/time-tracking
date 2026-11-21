@@ -88,6 +88,43 @@ describe('calendar utility', () => {
             )
             expect(resolveCalendarSystem('auto')).toBe('gregorian')
         })
+
+        it('safely handles empty arrays from getCalendars and checks locales', () => {
+            const emptyCalendars = [] as unknown as ReturnType<
+                typeof Localization.getCalendars
+            >
+            const emptyLocales = [] as unknown as ReturnType<
+                typeof Localization.getLocales
+            >
+
+            jest.mocked(Localization.getCalendars).mockReturnValueOnce(
+                emptyCalendars,
+            )
+            mockLanguageCode = 'fa'
+            expect(resolveCalendarSystem('auto')).toBe('jalali')
+
+            jest.mocked(Localization.getCalendars).mockReturnValueOnce(
+                emptyCalendars,
+            )
+            mockLanguageCode = 'en'
+            mockRegionCode = 'IR'
+            expect(resolveCalendarSystem('auto')).toBe('jalali')
+
+            jest.mocked(Localization.getCalendars).mockReturnValueOnce(
+                emptyCalendars,
+            )
+            mockLanguageCode = 'en'
+            mockRegionCode = 'US'
+            expect(resolveCalendarSystem('auto')).toBe('gregorian')
+
+            jest.mocked(Localization.getCalendars).mockReturnValueOnce(
+                emptyCalendars,
+            )
+            jest.mocked(Localization.getLocales).mockReturnValueOnce(
+                emptyLocales,
+            )
+            expect(resolveCalendarSystem('auto')).toBe('gregorian')
+        })
     })
 
     describe('getSavedCalendarSystem', () => {
@@ -240,6 +277,10 @@ describe('calendar utility', () => {
             const jDayDe = formatHeaderDate(dateStr, 'day', 'jalali', 'de-DE')
             expect(jDayDe).toContain('Mittwoch')
             expect(jDayDe).toContain('Aban 1405')
+
+            const jDayEs = formatHeaderDate(dateStr, 'day', 'jalali', 'es-ES')
+            expect(jDayEs).toContain('miércoles')
+            expect(jDayEs).toContain('Aban 1405')
         })
 
         it('formats week view for gregorian and jalali (same and multi-month)', () => {

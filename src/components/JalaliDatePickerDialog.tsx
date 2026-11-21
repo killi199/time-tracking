@@ -20,7 +20,6 @@ import {
     subMonths as subMonthsJalali,
 } from 'date-fns-jalali'
 import { enUS } from 'date-fns-jalali/locale'
-import { de } from 'date-fns/locale'
 import {
     FirstDayOfWeek,
     getSavedFirstDayOfWeek,
@@ -40,20 +39,6 @@ export interface JalaliDatePickerDialogProps {
     readonly firstDayOfWeek?: FirstDayOfWeek
 }
 
-function resolveJalaliLocale(localeStr?: string) {
-    if (localeStr?.startsWith('de')) {
-        return {
-            ...enUS,
-            code: 'de',
-            localize: {
-                ...enUS.localize,
-                day: de.localize.day,
-            },
-        }
-    }
-    return enUS
-}
-
 export default function JalaliDatePickerDialog({
     visible,
     onDismiss,
@@ -67,7 +52,6 @@ export default function JalaliDatePickerDialog({
     firstDayOfWeek,
 }: JalaliDatePickerDialogProps) {
     const theme = useTheme()
-    const jalaliLocale = resolveJalaliLocale(locale)
     const effectiveFirstDaySetting = firstDayOfWeek ?? getSavedFirstDayOfWeek()
     const weekStartsOn = resolveFirstDayOfWeek(
         effectiveFirstDaySetting,
@@ -98,9 +82,9 @@ export default function JalaliDatePickerDialog({
     // Generate weekday labels starting from weekStartsOn
     const sampleStart = startOfWeekJalali(new Date(), { weekStartsOn })
     const weekdayLabels = Array.from({ length: 7 }, (_, i) =>
-        formatJalali(addDaysJalali(sampleStart, i), 'EEEEEE', {
-            locale: jalaliLocale,
-        }),
+        addDaysJalali(sampleStart, i)
+            .toLocaleDateString(locale, { weekday: 'short' })
+            .slice(0, 2),
     )
 
     const handlePrevMonth = () => {
@@ -179,7 +163,7 @@ export default function JalaliDatePickerDialog({
                         style={styles.selectedTitleText}
                     >
                         {formatJalali(selectedDate, 'd MMMM yyyy', {
-                            locale: jalaliLocale,
+                            locale: enUS,
                         })}
                     </Text>
                 </Dialog.Title>
@@ -196,7 +180,7 @@ export default function JalaliDatePickerDialog({
                             style={styles.monthYearText}
                         >
                             {formatJalali(currentMonthDate, 'MMMM yyyy', {
-                                locale: jalaliLocale,
+                                locale: enUS,
                             })}
                         </Text>
                         <IconButton

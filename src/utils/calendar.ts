@@ -13,27 +13,12 @@ import {
     startOfMonth as startOfMonthJalali,
 } from 'date-fns-jalali'
 import { enUS } from 'date-fns-jalali/locale'
-import { de } from 'date-fns/locale'
 import * as Localization from 'expo-localization'
 import { getSetting } from '../db/database'
 
 export type CalendarSystem = 'gregorian' | 'jalali'
 export type CalendarPreference = 'auto' | 'gregorian' | 'jalali'
 export type FirstDayOfWeek = 'auto' | 'saturday' | 'sunday' | 'monday'
-
-function resolveJalaliLocale(localeStr?: string) {
-    if (localeStr?.startsWith('de')) {
-        return {
-            ...enUS,
-            code: 'de',
-            localize: {
-                ...enUS.localize,
-                day: de.localize.day,
-            },
-        }
-    }
-    return enUS
-}
 
 /**
  * Resolves the effective calendar system from a setting preference.
@@ -47,16 +32,18 @@ export function resolveCalendarSystem(
 
     try {
         const calendars = Localization.getCalendars()
-        const primaryCalendar = calendars[0].calendar?.toLowerCase()
+        const primaryCalendar = (
+            calendars[0] as Localization.Calendar | undefined
+        )?.calendar?.toLowerCase()
         if (primaryCalendar === 'persian' || primaryCalendar === 'jalali') {
             return 'jalali'
         }
 
         const locales = Localization.getLocales()
-        const primaryLocale = locales[0]
+        const primaryLocale = locales[0] as Localization.Locale | undefined
         if (
-            primaryLocale.languageCode === 'fa' ||
-            primaryLocale.regionCode === 'IR'
+            primaryLocale?.languageCode === 'fa' ||
+            primaryLocale?.regionCode === 'IR'
         ) {
             return 'jalali'
         }
@@ -219,12 +206,11 @@ function formatWeekHeader(
     )
 
     if (calendar === 'jalali') {
-        const jalaliLocale = resolveJalaliLocale(locale)
-        const sMonth = formatJalali(startDate, 'MMMM', { locale: jalaliLocale })
-        const eMonth = formatJalali(endDate, 'MMMM', { locale: jalaliLocale })
-        const sDay = formatJalali(startDate, 'd', { locale: jalaliLocale })
-        const eDay = formatJalali(endDate, 'd', { locale: jalaliLocale })
-        const year = formatJalali(endDate, 'yyyy', { locale: jalaliLocale })
+        const sMonth = formatJalali(startDate, 'MMMM', { locale: enUS })
+        const eMonth = formatJalali(endDate, 'MMMM', { locale: enUS })
+        const sDay = formatJalali(startDate, 'd', { locale: enUS })
+        const eDay = formatJalali(endDate, 'd', { locale: enUS })
+        const year = formatJalali(endDate, 'yyyy', { locale: enUS })
 
         if (sMonth === eMonth) {
             return `${sDay} - ${eDay} ${sMonth} ${year}`
@@ -263,10 +249,11 @@ export function formatHeaderDate(
 
     if (viewMode === 'day') {
         if (calendar === 'jalali') {
-            const jalaliLocale = resolveJalaliLocale(locale)
-            return formatJalali(date, 'EEEE d MMMM yyyy', {
-                locale: jalaliLocale,
+            const weekday = date.toLocaleDateString(locale, { weekday: 'long' })
+            const jalaliDate = formatJalali(date, 'd MMMM yyyy', {
+                locale: enUS,
             })
+            return `${weekday} ${jalaliDate}`
         }
         return date.toLocaleDateString(locale, {
             weekday: 'short',
@@ -282,8 +269,7 @@ export function formatHeaderDate(
 
     // viewMode === 'month'
     if (calendar === 'jalali') {
-        const jalaliLocale = resolveJalaliLocale(locale)
-        return formatJalali(date, 'MMMM yyyy', { locale: jalaliLocale })
+        return formatJalali(date, 'MMMM yyyy', { locale: enUS })
     }
 
     return date.toLocaleDateString(locale, {
