@@ -1,5 +1,10 @@
 import { describe, it, expect, jest, afterEach } from '@jest/globals'
-import { render, screen, userEvent } from '@testing-library/react-native'
+import {
+    render,
+    screen,
+    userEvent,
+    within,
+} from '@testing-library/react-native'
 import { PaperProvider } from 'react-native-paper'
 import JalaliDatePickerDialog from './JalaliDatePickerDialog'
 
@@ -202,7 +207,7 @@ describe('JalaliDatePickerDialog', () => {
                     maximumDate={maxDate}
                     cancelLabel="Cancel"
                     confirmLabel="Confirm"
-                    locale="fa"
+                    locale="en"
                 />
             </PaperProvider>,
         )
@@ -317,7 +322,7 @@ describe('JalaliDatePickerDialog', () => {
         // If week starts on Sunday (0):
         // Headers: Su, Mo, Tu, We, Th, Fr, Sa
         // Friday offset: (5 - 0 + 7) % 7 = 5 leading empty cells
-        await render(
+        const { unmount } = await render(
             <PaperProvider>
                 <JalaliDatePickerDialog
                     visible={true}
@@ -327,14 +332,64 @@ describe('JalaliDatePickerDialog', () => {
                     cancelLabel="Cancel"
                     confirmLabel="Confirm"
                     firstDayOfWeek="sunday"
+                    locale="en"
                 />
             </PaperProvider>,
         )
 
         // Day 1 should exist
         expect(screen.getByTestId('jalali-day-1')).toBeOnTheScreen()
-        // Sunday should be rendered as a header
-        expect(screen.getByText('Su')).toBeOnTheScreen()
+
+        // Weekday header order starting on Sunday
+        const sundayWeekdayRow = screen.getByTestId('jalali-picker-weekday-row')
+        const sundayLabels = within(sundayWeekdayRow)
+            .getAllByText(/.+/)
+            .map((el) => String((el.props as Record<string, unknown>).children))
+        expect(sundayLabels).toEqual(['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'])
+
+        // Friday offset with Sunday start has 5 leading empty cells
+        expect(screen.getAllByTestId('jalali-leading-empty-cell')).toHaveLength(
+            5,
+        )
+
+        await unmount()
+
+        // If week starts on Saturday (6):
+        // Headers: Sa, Su, Mo, Tu, We, Th, Fr
+        // Friday offset: (5 - 6 + 7) % 7 = 6 leading empty cells
+        await render(
+            <PaperProvider>
+                <JalaliDatePickerDialog
+                    visible={true}
+                    onDismiss={onDismissMock}
+                    onConfirm={onConfirmMock}
+                    value={fixedDate}
+                    cancelLabel="Cancel"
+                    confirmLabel="Confirm"
+                    firstDayOfWeek="saturday"
+                    locale="en"
+                />
+            </PaperProvider>,
+        )
+
+        const saturdayWeekdayRow = screen.getByTestId(
+            'jalali-picker-weekday-row',
+        )
+        const saturdayLabels = within(saturdayWeekdayRow)
+            .getAllByText(/.+/)
+            .map((el) => String((el.props as Record<string, unknown>).children))
+        expect(saturdayLabels).toEqual([
+            'Sa',
+            'Su',
+            'Mo',
+            'Tu',
+            'We',
+            'Th',
+            'Fr',
+        ])
+        expect(screen.getAllByTestId('jalali-leading-empty-cell')).toHaveLength(
+            6,
+        )
     })
 
     it('does not mutate selectedDate or highlight a disabled day when browsing months with maximumDate', async () => {

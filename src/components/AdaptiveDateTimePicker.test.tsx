@@ -1,5 +1,10 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals'
-import { render, screen, userEvent } from '@testing-library/react-native'
+import {
+    render,
+    screen,
+    userEvent,
+    within,
+} from '@testing-library/react-native'
 import { Platform } from 'react-native'
 import { PaperProvider } from 'react-native-paper'
 import AdaptiveDateTimePicker from './AdaptiveDateTimePicker'
@@ -493,8 +498,19 @@ describe('AdaptiveDateTimePicker', () => {
                 </PaperProvider>,
             )
 
-            // When week starts on Monday, the first weekday label should be Mo
-            expect(screen.getByText('Mo')).toBeOnTheScreen()
+            // When week starts on Monday, verify the exact weekday header order
+            const weekdayRow = screen.getByTestId('jalali-picker-weekday-row')
+            const labels = within(weekdayRow)
+                .getAllByText(/.+/)
+                .map((el) =>
+                    String((el.props as Record<string, unknown>).children),
+                )
+            expect(labels).toEqual(['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'])
+
+            // Friday offset with Monday start: (5 - 1 + 7) % 7 = 4 leading empty cells
+            expect(
+                screen.getAllByTestId('jalali-leading-empty-cell'),
+            ).toHaveLength(4)
         })
     })
 })

@@ -195,6 +195,7 @@ export default function JalaliDatePickerDialog({
                             styles.weekdayRow,
                             { borderColor: theme.colors.outlineVariant },
                         ]}
+                        testID="jalali-picker-weekday-row"
                     >
                         {weekdayLabels.map((lbl, idx) => (
                             <View
@@ -226,6 +227,11 @@ export default function JalaliDatePickerDialog({
                                             <View
                                                 key={`empty-${String(rowIdx)}-${String(colIdx)}`}
                                                 style={styles.gridCell}
+                                                testID={
+                                                    rowIdx === 0
+                                                        ? 'jalali-leading-empty-cell'
+                                                        : 'jalali-empty-cell'
+                                                }
                                             />
                                         )
                                     }
