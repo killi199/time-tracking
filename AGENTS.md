@@ -17,7 +17,7 @@ Before presenting your work to the user or declaring a task complete, run the va
 - **Build / Dependency / Configuration Changes** (`package.json`, `app.config.ts`, `metro.config.*`, `tsconfig*.json`, native build files, or when explicitly requested):
     - Run all steps above, plus:
     6. `yarn dedupe --check`
-    7. `npx expo-doctor`
+    7. `yarn dlx expo-doctor`
     8. `yarn build`
     9. `yarn build:foss`
 
@@ -28,10 +28,11 @@ Before presenting your work to the user or declaring a task complete, run the va
 - **Test Every Change**: Every bug fix, new feature, or code modification MUST include corresponding tests (configuration files such as `app.config.ts`, `metro.config.js`, or native build configs do not require unit tests).
 - **Full Verification**: Before committing or pushing code, run the full relevant pre-flight suite from Section 1 globally — never rely on partial checks. Ensure test mocks are strictly typed, zero ESLint/Prettier issues remain, and coverage stays at 100% for modified files.
 
-## 3. Specific Rules
+## 3. Documentation Scope & Specific Rules
 
-- For all technical coding standards, UI (React Native Paper), state, database, and localization rules, refer to `.agents/rules/time-tracking.md`.
-- For testing standards and component mocking rules, refer to `.agents/rules/testing.md`.
+- **`AGENTS.md` (this file)**: General repository and agent workflow guidelines (pre-flight checks, git/branching/commits, workspace hygiene, package manager/dependency rules, and doc pointers).
+- **`.agents/rules/time-tracking.md`**: App-specific guidelines (architecture, Expo/React Native conventions, React Native Paper UI, state, database, localization, and FOSS build variants).
+- **`.agents/rules/testing.md`**: Testing standards and component mocking rules.
 
 ## 4. Workflow & Architecture
 
@@ -39,7 +40,8 @@ Before presenting your work to the user or declaring a task complete, run the va
 
 ## 5. Workspace & Dependencies
 
-- **Dependency Management**: Do NOT install new third-party packages unless absolutely necessary or explicitly approved by the user. If a package must be installed, always use `yarn`, never `npm`.
+- **Package Manager (`yarn` only)**: Always use `yarn` (and `yarn dlx` for one-off binaries) for everything — running scripts, installing/removing dependencies, and executing CLIs. Never use `npm` or `npx`.
+- **Dependency Management**: Do NOT install new third-party packages unless absolutely necessary or explicitly approved by the user.
 - **Clean Workspace**: Always clean up any temporary scripts, scratch files, or logs you create during your work. Do not leave the workspace cluttered.
 - **Pipeline-Managed Files**: Do NOT manually edit or commit `version` / `versionCode` in `package.json`, `metadata/*/changelogs/*.txt`, or `src/licenses.json` — these are managed by the CI/release pipelines (`src/licenses.json` is gitignored and generated in CI; only run `yarn generate-licenses` locally if missing `src/licenses.json` blocks `yarn test` or `yarn typecheck`).
 
