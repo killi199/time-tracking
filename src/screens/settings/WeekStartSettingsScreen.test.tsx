@@ -52,6 +52,18 @@ describe('WeekStartSettingsScreen', () => {
         expect(getSetting).toHaveBeenCalledWith('first_day_of_week')
     })
 
+    it('defaults to auto if setting contains an invalid value', async () => {
+        ;(getSetting as jest.Mock).mockReturnValue('invalid-day')
+
+        await render(
+            <PaperProvider>
+                <WeekStartSettingsScreen />
+            </PaperProvider>,
+        )
+
+        expect(getSetting).toHaveBeenCalledWith('first_day_of_week')
+    })
+
     it.each([
         { text: 'settings.saturday', value: 'saturday' },
         { text: 'settings.sunday', value: 'sunday' },

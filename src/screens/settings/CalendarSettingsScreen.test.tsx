@@ -51,6 +51,18 @@ describe('CalendarSettingsScreen', () => {
         expect(getSetting).toHaveBeenCalledWith('calendar_system')
     })
 
+    it('defaults to auto if setting contains an invalid value', async () => {
+        ;(getSetting as jest.Mock).mockReturnValue('invalid-calendar')
+
+        await render(
+            <PaperProvider>
+                <CalendarSettingsScreen />
+            </PaperProvider>,
+        )
+
+        expect(getSetting).toHaveBeenCalledWith('calendar_system')
+    })
+
     it('changes calendar system to auto and saves setting', async () => {
         await render(
             <PaperProvider>

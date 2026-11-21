@@ -4,12 +4,14 @@ import { List, Snackbar } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
 import { useRouter, useFocusEffect } from 'expo-router'
 import AdaptiveDateTimePicker from '../../components/AdaptiveDateTimePicker'
-import {
-    getDailyTargetMinutes,
-    setDailyTargetMinutes,
-    getSetting,
-} from '../../db/database'
+import { getDailyTargetMinutes, setDailyTargetMinutes } from '../../db/database'
 import { getFormattedDate } from '../../utils/time'
+import {
+    CalendarPreference,
+    FirstDayOfWeek,
+    getSavedCalendarSystem,
+    getSavedFirstDayOfWeek,
+} from '../../utils/calendar'
 
 export default function SettingsScreen() {
     const { t, i18n } = useTranslation()
@@ -21,16 +23,16 @@ export default function SettingsScreen() {
     const [workHoursPickerVisible, setWorkHoursPickerVisible] = useState(false)
     const [snackbarText, setSnackbarText] = useState<string | null>(null)
 
-    const [calendarSystem, setCalendarSystem] = useState<string>(
-        () => getSetting('calendar_system') || 'auto',
+    const [calendarSystem, setCalendarSystem] = useState<CalendarPreference>(
+        getSavedCalendarSystem,
     )
-    const [firstDayOfWeek, setFirstDayOfWeek] = useState<string>(
-        () => getSetting('first_day_of_week') || 'auto',
+    const [firstDayOfWeek, setFirstDayOfWeek] = useState<FirstDayOfWeek>(
+        getSavedFirstDayOfWeek,
     )
 
     useFocusEffect(() => {
-        setCalendarSystem(getSetting('calendar_system') || 'auto')
-        setFirstDayOfWeek(getSetting('first_day_of_week') || 'auto')
+        setCalendarSystem(getSavedCalendarSystem())
+        setFirstDayOfWeek(getSavedFirstDayOfWeek())
     })
 
     const targetHours = Math.floor(dailyTarget / 60)

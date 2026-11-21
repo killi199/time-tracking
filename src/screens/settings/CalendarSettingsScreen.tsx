@@ -2,18 +2,22 @@ import { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { RadioButton, List } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
-import { getSetting, setSetting } from '../../db/database'
+import { setSetting } from '../../db/database'
+import {
+    CalendarPreference,
+    getSavedCalendarSystem,
+} from '../../utils/calendar'
 
 export default function CalendarSettingsScreen() {
     const { t } = useTranslation()
-    const [calendarSystem, setCalendarSystem] = useState(() => {
-        const saved = getSetting('calendar_system')
-        return saved || 'auto'
-    })
+    const [calendarSystem, setCalendarSystem] = useState<CalendarPreference>(
+        getSavedCalendarSystem,
+    )
 
     const handleCalendarChange = (value: string) => {
-        setCalendarSystem(value)
-        setSetting('calendar_system', value)
+        const pref = value as CalendarPreference
+        setCalendarSystem(pref)
+        setSetting('calendar_system', pref)
     }
 
     return (
