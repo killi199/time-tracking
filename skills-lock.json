@@ -36,12 +36,6 @@
             "sourceType": "github",
             "skillPath": "plugins/expo/skills/expo-upgrade/SKILL.md",
             "computedHash": "39b85145f83a2cc75c324f0421b7265573baa978448f8ed002cb61f18218d44f"
-        },
-        "modern-web-guidance": {
-            "source": "GoogleChrome/modern-web-guidance",
-            "sourceType": "github",
-            "skillPath": "skills/modern-web-guidance/SKILL.md",
-            "computedHash": "e0d9a1e43903940daf76e0ae454efafaf149dd0c7274ec363ed8370fa33e529e"
         }
     }
 }
