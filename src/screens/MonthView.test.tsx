@@ -138,6 +138,38 @@ describe('MonthView', () => {
         expect(screen.getByText('Month work session')).toBeVisible()
     })
 
+    it('queries events with Jalali range and formats subheader in Jalali when calendar is jalali', async () => {
+        // 2026-11-11 is 20 Aban 1405 (Aban 1405 runs from 2026-10-23 to 2026-11-21)
+        jest.mocked(getEventsRange).mockReturnValue([
+            {
+                id: 1,
+                date: '2026-11-11',
+                time: '09:00',
+                note: 'Jalali month work',
+                isManualEntry: false,
+            },
+        ])
+
+        await renderWithProvider(
+            <MonthView
+                month="2026-11-11"
+                calendar="jalali"
+                onEditEvent={jest.fn()}
+                onDeleteEvent={jest.fn()}
+                refreshTrigger={0}
+            />,
+        )
+
+        // Verifies range query matches Jalali month boundary
+        expect(getEventsRange).toHaveBeenCalledWith('2026-10-23', '2026-11-21')
+
+        // Verifies event item rendered
+        expect(screen.getByTestId('event-item-1')).toBeVisible()
+
+        // Verifies subheader formatted in Jalali calendar
+        expect(screen.getByText(/20 Aban 1405/)).toBeVisible()
+    })
+
     it('handles missing refreshTrigger gracefully', async () => {
         const { toJSON } = await render(
             <MonthView

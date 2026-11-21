@@ -142,6 +142,72 @@ describe('WeekView', () => {
         expect(screen.getByText('Morning work')).toBeVisible()
     })
 
+    it('queries events with Jalali range and formats subheader in Jalali when calendar is jalali with Saturday start', async () => {
+        // 2026-11-11 is Wednesday. Week starting on Saturday runs from 2026-11-07 to 2026-11-13.
+        jest.mocked(getEventsRange).mockReturnValue([
+            {
+                id: 1,
+                date: '2026-11-11',
+                time: '09:00',
+                note: 'Jalali week work',
+                isManualEntry: false,
+            },
+        ])
+
+        await renderWithProvider(
+            <WeekView
+                date="2026-11-11"
+                calendar="jalali"
+                firstDayOfWeek="saturday"
+                onEditEvent={jest.fn()}
+                onDeleteEvent={jest.fn()}
+                refreshTrigger={0}
+            />,
+        )
+
+        // Verifies range query matches week with Saturday start
+        expect(getEventsRange).toHaveBeenCalledWith('2026-11-07', '2026-11-13')
+
+        // Verifies event item rendered
+        expect(screen.getByTestId('event-item-1')).toBeVisible()
+
+        // Verifies subheader formatted in Jalali calendar
+        expect(screen.getByText(/20 Aban 1405/)).toBeVisible()
+    })
+
+    it('queries events with custom Sunday start when firstDayOfWeek is sunday', async () => {
+        // 2026-11-11 is Wednesday. In Gregorian with Sunday start, week runs from 2026-11-08 to 2026-11-14.
+        jest.mocked(getEventsRange).mockReturnValue([
+            {
+                id: 2,
+                date: '2026-11-11',
+                time: '10:00',
+                note: 'Sunday start work',
+                isManualEntry: false,
+            },
+        ])
+
+        await renderWithProvider(
+            <WeekView
+                date="2026-11-11"
+                calendar="gregorian"
+                firstDayOfWeek="sunday"
+                onEditEvent={jest.fn()}
+                onDeleteEvent={jest.fn()}
+                refreshTrigger={0}
+            />,
+        )
+
+        // Verifies range query matches week with Sunday start
+        expect(getEventsRange).toHaveBeenCalledWith('2026-11-08', '2026-11-14')
+
+        // Verifies event item rendered
+        expect(screen.getByTestId('event-item-2')).toBeVisible()
+
+        // Verifies subheader formatted in Gregorian
+        expect(screen.getByText(/2026/)).toBeVisible()
+    })
+
     it('handles missing refreshTrigger gracefully', async () => {
         const { toJSON } = await render(
             <WeekView
