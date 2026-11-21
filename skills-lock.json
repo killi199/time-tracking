@@ -13,11 +13,23 @@
             "skillPath": "plugins/expo/skills/expo-examples/SKILL.md",
             "computedHash": "e75906fa28a9b89634b198a6f79981c5b2378be16b2d1e5c5b1d036444744e39"
         },
+        "expo-module": {
+            "source": "expo/skills",
+            "sourceType": "github",
+            "skillPath": "plugins/expo/skills/expo-module/SKILL.md",
+            "computedHash": "eba4ef6b90ba59365b768b1270b706664fa14a1a44b16713856edc724bc350ce"
+        },
         "expo-native-ui": {
             "source": "expo/skills",
             "sourceType": "github",
             "skillPath": "plugins/expo/skills/expo-native-ui/SKILL.md",
             "computedHash": "b8d8ec9b9b93d23b669dc4e34ca120a00bc4634ba0094b2fb89f2f24db2e2d60"
+        },
+        "expo-overview": {
+            "source": "expo/skills",
+            "sourceType": "github",
+            "skillPath": "plugins/expo/skills/expo-overview/SKILL.md",
+            "computedHash": "7eb42c56354ae0c494eb214d699c2c519258a37db36e49e409854985541906f5"
         },
         "expo-router": {
             "source": "expo/skills",
