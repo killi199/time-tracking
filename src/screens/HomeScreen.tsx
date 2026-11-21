@@ -112,9 +112,40 @@ export default function HomeScreen({
                     const now = new Date()
                     const newToday = getFormattedDate(now)
 
-                    // If real day changed and we were viewing "Today", update to new "Today"
+                    // If real day changed and we were viewing the active period, update to new "Today"
                     if (newToday !== lastActiveDateRef.current) {
-                        if (currentDate === lastActiveDateRef.current) {
+                        let isViewingCurrentPeriod = false
+                        if (viewMode === 'day') {
+                            isViewingCurrentPeriod =
+                                currentDate === lastActiveDateRef.current
+                        } else if (viewMode === 'week') {
+                            const currentWeek = getWeekRange(
+                                currentDate,
+                                firstDayOfWeek,
+                                calendarSystem,
+                            )
+                            const lastActiveWeek = getWeekRange(
+                                lastActiveDateRef.current,
+                                firstDayOfWeek,
+                                calendarSystem,
+                            )
+                            isViewingCurrentPeriod =
+                                currentWeek.start === lastActiveWeek.start
+                        } else {
+                            const currentMonth = getMonthRange(
+                                currentDate,
+                                calendarSystem,
+                            )
+                            const lastActiveMonth = getMonthRange(
+                                lastActiveDateRef.current,
+                                calendarSystem,
+                            )
+                            isViewingCurrentPeriod =
+                                currentMonth.monthIdentifier ===
+                                lastActiveMonth.monthIdentifier
+                        }
+
+                        if (isViewingCurrentPeriod) {
                             setCurrentDate(newToday)
                         }
                         lastActiveDateRef.current = newToday
@@ -131,7 +162,7 @@ export default function HomeScreen({
         return () => {
             subscription.remove()
         }
-    }, [currentDate])
+    }, [calendarSystem, currentDate, firstDayOfWeek, viewMode])
 
     const navigation = useNavigation()
 
