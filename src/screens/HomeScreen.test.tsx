@@ -784,27 +784,27 @@ describe('HomeScreen', () => {
             )
 
             // Header should show Jalali month name
-            expect(screen.getByText(/Aban 1405|1405/)).toBeOnTheScreen()
+            expect(screen.getByText('Aban 1405')).toBeOnTheScreen()
 
             // Prev month button should step back 1 Jalali month (Mehr 1405)
             await user.press(screen.getByTestId('prev-date-btn'))
-            expect(screen.getByText(/Mehr 1405|1405/)).toBeOnTheScreen()
+            expect(screen.getByText('Mehr 1405')).toBeOnTheScreen()
 
             // Back to now
             await user.press(screen.getByText('home.backToNow'))
-            expect(screen.getByText(/Aban 1405|1405/)).toBeOnTheScreen()
+            expect(screen.getByText('Aban 1405')).toBeOnTheScreen()
 
             // Pick an earlier Jalali month via picker
             mockDatePickerDate = new Date(2026, 9, 15) // 23 Mehr 1405
-            await user.press(screen.getByText(/Aban 1405|1405/))
+            await user.press(screen.getByText('Aban 1405'))
             await user.press(screen.getByTestId('confirm-date'))
-            expect(screen.getByText(/Mehr 1405|1405/)).toBeOnTheScreen()
+            expect(screen.getByText('Mehr 1405')).toBeOnTheScreen()
 
             // Pick current Jalali month again (direction right)
             mockDatePickerDate = new Date(2026, 10, 16) // 26 Aban 1405
-            await user.press(screen.getByText(/Mehr 1405|1405/))
+            await user.press(screen.getByText('Mehr 1405'))
             await user.press(screen.getByTestId('confirm-date'))
-            expect(screen.getByText(/Aban 1405|1405/)).toBeOnTheScreen()
+            expect(screen.getByText('Aban 1405')).toBeOnTheScreen()
 
             mockDatePickerDate = null
             await unmount()
@@ -894,7 +894,7 @@ describe('HomeScreen', () => {
             })
 
             // Header reactively updates to Jalali month
-            expect(screen.getByText(/Aban 1405|1405/)).toBeOnTheScreen()
+            expect(screen.getByText('Aban 1405')).toBeOnTheScreen()
 
             await unmount()
         }),
