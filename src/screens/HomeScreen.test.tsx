@@ -11,17 +11,14 @@ import { useNavigation } from 'expo-router'
 import { addEvent, updateEvent, deleteEvent, getSetting } from '../db/database'
 import { AppState } from 'react-native'
 import { PaperProvider } from 'react-native-paper'
+import { getFormattedDate } from '../utils/time'
+import { formatHeaderDate } from '../utils/calendar'
 
 const mockSetOptions = jest.fn()
 
 jest.mock('expo-router', () => ({
     useNavigation: jest.fn(() => ({ setOptions: mockSetOptions })),
     useFocusEffect: jest.fn(),
-}))
-
-jest.mock('react-native-worklets', () => ({
-    scheduleOnRN: (fn: (...args: unknown[]) => unknown, ...args: unknown[]) =>
-        fn(...args),
 }))
 
 jest.mock('react-native-reanimated', () => {
@@ -67,41 +64,18 @@ jest.mock('react-native-gesture-handler', () => {
             gesture,
         }: {
             children: React.ReactNode
-            gesture?: { _onEnd?: (e: { translationX: number }) => void }
+            gesture?: { _onDeactivate?: (e: { translationX: number }) => void }
         }) => {
-            if (gesture?._onEnd) {
-                panEndCallback = gesture._onEnd
+            if (gesture?._onDeactivate) {
+                panEndCallback = gesture._onDeactivate
             }
             return children
         },
-        Gesture: {
-            Pan: () => {
-                let onEndCb: ((e: { translationX: number }) => void) | null =
-                    null
-                const builder: {
-                    activeOffsetX: () => typeof builder
-                    failOffsetY: () => typeof builder
-                    onEnd: (
-                        cb: (e: { translationX: number }) => void,
-                    ) => typeof builder
-                    _onEnd: ((e: { translationX: number }) => void) | null
-                } = {
-                    activeOffsetX: jest
-                        .fn()
-                        .mockReturnThis() as () => typeof builder,
-                    failOffsetY: jest
-                        .fn()
-                        .mockReturnThis() as () => typeof builder,
-                    onEnd: (cb: (e: { translationX: number }) => void) => {
-                        onEndCb = cb
-                        builder._onEnd = cb
-                        return builder
-                    },
-                    _onEnd: onEndCb,
-                }
-                return builder
-            },
-        },
+        usePanGesture: (config: {
+            onDeactivate?: (e: { translationX: number }) => void
+        }) => ({
+            _onDeactivate: config.onDeactivate,
+        }),
     }
 })
 
@@ -292,6 +266,11 @@ describe('HomeScreen', () => {
         await user.press(screen.getByTestId('edit-day'))
         expect(screen.getByDisplayValue('test day')).toBeOnTheScreen()
         await user.press(screen.getByText('common.cancel'))
+        await waitFor(() => {
+            expect(
+                screen.queryByText('addEntry.editTitle'),
+            ).not.toBeOnTheScreen()
+        })
     })
 
     it('handles header right button to open Add Dialog and use date/time pickers', async () => {
@@ -345,20 +324,41 @@ describe('HomeScreen', () => {
         const prevButton = screen.getByTestId('prev-date-btn')
         const backToNowButton = screen.getByText('home.backToNow')
 
+        const today = new Date()
+        const yesterday = new Date(today)
+        yesterday.setDate(yesterday.getDate() - 1)
+        const todayLabel = formatHeaderDate(
+            getFormattedDate(today),
+            'day',
+            'gregorian',
+            'en',
+        )
+        const yesterdayLabel = formatHeaderDate(
+            getFormattedDate(yesterday),
+            'day',
+            'gregorian',
+            'en',
+        )
+
         // Go back a day
         await user.press(prevButton)
         // Go back another day
         await user.press(prevButton)
 
         await user.press(backToNowButton)
+        expect(screen.getByText(todayLabel)).toBeOnTheScreen()
+
+        expect(panEndCallback).toEqual(expect.any(Function))
 
         await act(() => {
-            if (panEndCallback) {
-                panEndCallback({ translationX: 60 }) // swipe right
-                panEndCallback({ translationX: -60 }) // swipe left
-            }
+            panEndCallback?.({ translationX: 60 }) // swipe right -> yesterday
         })
-        expect(screen.getByTestId('day-view')).toBeOnTheScreen()
+        expect(screen.getByText(yesterdayLabel)).toBeOnTheScreen()
+
+        await act(() => {
+            panEndCallback?.({ translationX: -60 }) // swipe left -> today
+        })
+        expect(screen.getByText(todayLabel)).toBeOnTheScreen()
     })
 
     it('renders correctly in month view mode', async () => {
@@ -596,6 +596,11 @@ describe('HomeScreen', () => {
 
         // Save entry and verify it adds today's date rather than tomorrow
         await user.press(screen.getByText('common.confirm'))
+        await waitFor(() => {
+            expect(
+                screen.queryByText('addEntry.addTitle'),
+            ).not.toBeOnTheScreen()
+        })
         const tomorrowStr = `${String(tomorrow.getFullYear())}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`
         expect(addEvent).toHaveBeenCalledWith(
             expect.not.stringMatching(new RegExp(tomorrowStr)),
@@ -691,11 +696,21 @@ describe('HomeScreen', () => {
         await user.press(screen.getByTestId('dismiss-time'))
 
         await user.press(screen.getByText('common.cancel'))
+        await waitFor(() => {
+            expect(
+                screen.queryByText('addEntry.addTitle'),
+            ).not.toBeOnTheScreen()
+        })
 
         // Open edit dialog with invalid time format to test regex validation
         await user.press(screen.getByTestId('edit-day'))
         // Edit day has time: 10:00. Cancel it.
         await user.press(screen.getByText('common.cancel'))
+        await waitFor(() => {
+            expect(
+                screen.queryByText('addEntry.editTitle'),
+            ).not.toBeOnTheScreen()
+        })
 
         global.alert = originalAlert
     })

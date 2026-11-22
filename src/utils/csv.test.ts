@@ -25,6 +25,7 @@ const mockFileState = {
     textContent: '',
     writeError: null as Error | null,
     textError: null as Error | null,
+    writePromise: null as Promise<void> | null,
 }
 
 jest.mock('expo-file-system', () => {
@@ -44,8 +45,11 @@ jest.mock('expo-file-system', () => {
         }
 
         write(content: string) {
-            if (mockFileState.writeError) throw mockFileState.writeError
+            if (mockFileState.writeError) {
+                return Promise.reject(mockFileState.writeError)
+            }
             mockFileState.written.push({ name: this.name, content })
+            return mockFileState.writePromise ?? Promise.resolve()
         }
 
         text() {
@@ -105,6 +109,7 @@ beforeEach(() => {
     mockFileState.textContent = ''
     mockFileState.writeError = null
     mockFileState.textError = null
+    mockFileState.writePromise = null
     jest.mocked(getAllEvents).mockReturnValue([])
     jest.mocked(getWorkHoursHistory).mockReturnValue([])
     jest.mocked(Sharing.isAvailableAsync).mockResolvedValue(true)
@@ -198,6 +203,26 @@ describe('exportToCSV', () => {
 
         expect(result).toEqual({ success: false, message: 'csv.exportFailed' })
         expect(errorSpy).toHaveBeenCalled()
+    })
+
+    it('waits for file write to complete before sharing', async () => {
+        let resolveWrite!: () => void
+        mockFileState.writePromise = new Promise<void>((resolve) => {
+            resolveWrite = resolve
+        })
+
+        const exportPromise = exportToCSV()
+        await Promise.resolve()
+
+        expect(Sharing.shareAsync).not.toHaveBeenCalled()
+
+        resolveWrite()
+        const result = await exportPromise
+
+        expect(result).toEqual({ success: true })
+        expect(Sharing.shareAsync).toHaveBeenCalledWith(
+            `file://${mockFileState.written[0].name}`,
+        )
     })
 })
 
@@ -415,9 +440,7 @@ describe('importFromCSV', () => {
 
         expect(result).toEqual({ success: true, count: 3, workHoursCount: 1 })
         expect(importEvents).toHaveBeenCalledWith(
-            trickyNotes.map(
-                (note) => expect.objectContaining({ note }) as unknown,
-            ),
+            trickyNotes.map((note) => expect.objectContaining({ note })),
         )
         expect(importWorkHours).toHaveBeenCalledWith([
             { effectiveDate: '2024-01-01', dailyMinutes: 480 },

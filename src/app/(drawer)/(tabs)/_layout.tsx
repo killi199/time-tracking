@@ -34,12 +34,12 @@ export default function TabsLayout() {
 
     return (
         <Tabs
-            tabBar={({ navigation: tabNav, state, descriptors, insets }) => (
+            tabBar={({ navigateToTab, state, descriptors, insets }) => (
                 <BottomNavigation.Bar
                     navigationState={state}
                     safeAreaInsets={insets}
                     onTabPress={({ route }) => {
-                        tabNav.navigate(route.name)
+                        navigateToTab(route.key)
                     }}
                     renderIcon={renderIcon}
                     getLabelText={({ route }) => {

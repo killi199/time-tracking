@@ -16,9 +16,8 @@ import {
     useTheme,
     Checkbox,
 } from 'react-native-paper'
-import { Gesture, GestureDetector } from 'react-native-gesture-handler'
+import { GestureDetector, usePanGesture } from 'react-native-gesture-handler'
 import Animated, { SlideInLeft, SlideInRight } from 'react-native-reanimated'
-import { scheduleOnRN } from 'react-native-worklets'
 import AdaptiveDateTimePicker from '../components/AdaptiveDateTimePicker'
 import { useFocusEffect, useNavigation } from 'expo-router'
 import { addEvent, updateEvent, deleteEvent } from '../db/database'
@@ -39,6 +38,11 @@ import WeekView from './WeekView'
 
 type ViewMode = 'day' | 'week' | 'month'
 type SlideDirection = 'left' | 'right' | 'none'
+
+const INACTIVE_APP_STATES = new Set<string | null | undefined>([
+    'inactive',
+    'background',
+])
 
 const getEnteringAnimation = (direction: SlideDirection) => {
     if (direction === 'right') {
@@ -106,7 +110,7 @@ export default function HomeScreen({
             'change',
             (nextAppState) => {
                 if (
-                    /inactive|background/.exec(appState.current) &&
+                    INACTIVE_APP_STATES.has(appState.current) &&
                     nextAppState === 'active'
                 ) {
                     const now = new Date()
@@ -474,18 +478,20 @@ export default function HomeScreen({
 
     const { hours: pickerHours, minutes: pickerMinutes } = getPickerTime()
 
-    const swipeGesture = Gesture.Pan()
-        .activeOffsetX([-30, 30])
-        .failOffsetY([-30, 30])
-        .onEnd((e) => {
+    const swipeGesture = usePanGesture({
+        activeOffsetX: [-30, 30],
+        failOffsetY: [-30, 30],
+        runOnJS: true,
+        onDeactivate: (e) => {
             if (e.translationX < -50) {
                 if (canGoForward) {
-                    scheduleOnRN(changeDate, 1) // Swipe left -> Next day/week/month
+                    changeDate(1) // Swipe left -> Next day/week/month
                 }
             } else if (e.translationX > 50) {
-                scheduleOnRN(changeDate, -1) // Swipe right -> Previous day/week/month
+                changeDate(-1) // Swipe right -> Previous day/week/month
             }
-        })
+        },
+    })
 
     const animatedViewKey = (() => {
         if (viewMode === 'month') {

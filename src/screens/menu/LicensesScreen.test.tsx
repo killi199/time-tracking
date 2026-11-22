@@ -52,7 +52,7 @@ describe('LicensesScreen', () => {
     it('opens repository link when pressed', async () => {
         const openURLSpy = jest
             .spyOn(Linking, 'openURL')
-            .mockResolvedValue(true)
+            .mockResolvedValue(undefined)
 
         await render(
             <PaperProvider>

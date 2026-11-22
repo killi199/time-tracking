@@ -3,7 +3,7 @@ import { getTodayEvents, addEvent } from '../db/database'
 import { getFormattedTime, getFormattedDate } from '../utils/time'
 import i18next from 'i18next'
 
-const handleUrl = (url: string | null) => {
+const handleUrl = (url: string | null | undefined) => {
     if (url && url.includes('timetracking://nfc')) {
         try {
             const today = getFormattedDate(new Date())

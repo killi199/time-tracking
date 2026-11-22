@@ -12,9 +12,7 @@ import { DrawerActions } from 'expo-router/react-navigation'
 import TabsLayout from './_layout'
 
 interface MockTabBarProps {
-    navigation: {
-        navigate: (name: string) => void
-    }
+    navigateToTab: (routeKey: string) => void
     state: {
         index: number
         routes: Array<{ key: string; name: string }>
@@ -25,7 +23,7 @@ interface MockTabBarProps {
 
 interface MockTabsProps {
     tabBar?: (props: MockTabBarProps) => React.ReactElement<{
-        onTabPress: (event: { route: { name: string } }) => void
+        onTabPress: (event: { route: { key: string; name: string } }) => void
         renderIcon: (props: {
             route: { name: string }
             color: string
@@ -49,10 +47,10 @@ interface MockTabScreenProps {
     }
 }
 
-const mockTabNavigate = jest.fn()
+const mockNavigateToTab = jest.fn()
 let capturedTabBarProps:
     | React.ReactElement<{
-          onTabPress: (event: { route: { name: string } }) => void
+          onTabPress: (event: { route: { key: string; name: string } }) => void
           renderIcon: (props: {
               route: { name: string }
               color: string
@@ -69,9 +67,7 @@ jest.mock('expo-router', () => {
     const MockTabs = Object.assign(
         ({ tabBar, screenOptions, children }: MockTabsProps) => {
             const mockTabBarProps: MockTabBarProps = {
-                navigation: {
-                    navigate: mockTabNavigate,
-                },
+                navigateToTab: mockNavigateToTab,
                 state: {
                     index: 0,
                     routes: [
@@ -166,9 +162,9 @@ describe('TabsLayout', () => {
         // Validate captured tabBar props: onTabPress, renderIcon, getLabelText
         expect(capturedTabBarProps).not.toBeNull()
         capturedTabBarProps?.props.onTabPress({
-            route: { name: 'week' },
+            route: { key: 'key-week', name: 'week' },
         })
-        expect(mockTabNavigate).toHaveBeenCalledWith('week')
+        expect(mockNavigateToTab).toHaveBeenCalledWith('key-week')
 
         // Validate renderIcon returns correct icon for each route
         expect(

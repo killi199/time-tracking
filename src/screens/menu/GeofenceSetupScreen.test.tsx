@@ -1,4 +1,10 @@
-import { render, act, waitFor, screen } from '@testing-library/react-native'
+import {
+    render,
+    act,
+    waitFor,
+    screen,
+    userEvent,
+} from '@testing-library/react-native'
 import { describe, it, expect, jest, beforeEach } from '@jest/globals'
 import GeofenceSetupScreen from './GeofenceSetupScreen'
 import * as Location from 'expo-location'
@@ -94,6 +100,34 @@ jest.mock('@react-native-community/slider', () => {
     )
     MockSlider.displayName = 'MockSlider'
     return MockSlider
+})
+
+jest.mock('react-native-paper', () => {
+    const actual =
+        jest.requireActual<typeof import('react-native-paper')>(
+            'react-native-paper',
+        )
+    const { Pressable } =
+        jest.requireActual<typeof import('react-native')>('react-native')
+    const MockSwitch = ({
+        value,
+        onValueChange,
+    }: {
+        value?: boolean
+        onValueChange?: (value: boolean) => void
+    }) => (
+        <Pressable
+            accessibilityRole="switch"
+            accessibilityState={{ checked: Boolean(value) }}
+            onPress={() => {
+                onValueChange?.(!value)
+            }}
+        />
+    )
+    return {
+        ...actual,
+        Switch: MockSwitch,
+    }
 })
 
 const renderWithProvider = (ui: React.ReactElement) =>
@@ -193,19 +227,14 @@ describe('GeofenceSetupScreen', () => {
             expires: 'never',
         })
 
+        const user = userEvent.setup()
         await renderWithProvider(<GeofenceSetupScreen />)
 
         await waitFor(() => {
             expect(screen.getByRole('switch')).toBeOnTheScreen()
         })
 
-        const switchEl = screen.getByRole('switch')
-        const onChange = switchEl.props.onChange as (e: {
-            nativeEvent: { value: boolean }
-        }) => void
-        await act(() => {
-            onChange({ nativeEvent: { value: true } })
-        })
+        await user.press(screen.getByRole('switch'))
 
         await waitFor(() => {
             expect(Location.startGeofencingAsync).toHaveBeenCalledWith(
@@ -236,19 +265,14 @@ describe('GeofenceSetupScreen', () => {
             }),
         )
 
+        const user = userEvent.setup()
         await renderWithProvider(<GeofenceSetupScreen />)
 
         await waitFor(() => {
             expect(screen.getByRole('switch')).toBeOnTheScreen()
         })
 
-        const switchEl = screen.getByRole('switch')
-        const onChange = switchEl.props.onChange as (e: {
-            nativeEvent: { value: boolean }
-        }) => void
-        await act(() => {
-            onChange({ nativeEvent: { value: false } })
-        })
+        await user.press(screen.getByRole('switch'))
 
         await waitFor(() => {
             expect(Location.stopGeofencingAsync).toHaveBeenCalledWith(
@@ -265,19 +289,14 @@ describe('GeofenceSetupScreen', () => {
     it('shows error dialog if trying to enable without a marker', async () => {
         jest.mocked(getSetting).mockReturnValue(null)
 
+        const user = userEvent.setup()
         await renderWithProvider(<GeofenceSetupScreen />)
 
         await waitFor(() => {
             expect(screen.getByRole('switch')).toBeOnTheScreen()
         })
 
-        const switchEl = screen.getByRole('switch')
-        const onChange = switchEl.props.onChange as (e: {
-            nativeEvent: { value: boolean }
-        }) => void
-        await act(() => {
-            onChange({ nativeEvent: { value: true } })
-        })
+        await user.press(screen.getByRole('switch'))
 
         await waitFor(() => {
             expect(screen.getByText('common.error')).toBeOnTheScreen()

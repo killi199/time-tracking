@@ -59,7 +59,7 @@ export const exportToCSV = async (): Promise<CSVResult> => {
         const file = new File(Paths.document, fileName)
 
         file.create({ overwrite: true })
-        file.write(csvContent)
+        await file.write(csvContent)
 
         if (await Sharing.isAvailableAsync()) {
             await Sharing.shareAsync(file.uri)
