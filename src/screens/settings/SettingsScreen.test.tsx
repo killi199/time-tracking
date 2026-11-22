@@ -268,4 +268,52 @@ describe('SettingsScreen', () => {
         expect(await screen.findByText('settings.calendarJalali')).toBeVisible()
         expect(await screen.findByText('settings.saturday')).toBeVisible()
     })
+
+    it('displays translated language description and updates reactively', async () => {
+        let currentLang: string | null = 'auto'
+        jest.mocked(getSetting).mockImplementation((key: string) => {
+            if (key === 'language') return currentLang
+            if (key === 'calendar_system') return 'gregorian'
+            return null
+        })
+
+        await render(
+            <PaperProvider>
+                <SettingsScreen />
+            </PaperProvider>,
+        )
+
+        expect(screen.getByText('settings.auto')).toBeVisible()
+
+        // Change language setting to 'de'
+        currentLang = 'de'
+        await act(() => {
+            notifySettingsListeners()
+        })
+
+        expect(await screen.findByText('German')).toBeVisible()
+
+        // Change language setting to 'en'
+        currentLang = 'en'
+        await act(() => {
+            notifySettingsListeners()
+        })
+
+        expect(await screen.findByText('English')).toBeVisible()
+    })
+
+    it('falls back to raw language code if DisplayNames fails', async () => {
+        jest.mocked(getSetting).mockImplementation((key: string) => {
+            if (key === 'language') return 'invalid-lang-code-$$'
+            return null
+        })
+
+        await render(
+            <PaperProvider>
+                <SettingsScreen />
+            </PaperProvider>,
+        )
+
+        expect(screen.getByText('invalid-lang-code-$$')).toBeVisible()
+    })
 })

@@ -1,15 +1,22 @@
-import { useState } from 'react'
+import { useState, useSyncExternalStore } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { List, Snackbar } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'expo-router'
 import AdaptiveDateTimePicker from '../../components/AdaptiveDateTimePicker'
-import { getDailyTargetMinutes, setDailyTargetMinutes } from '../../db/database'
+import {
+    getDailyTargetMinutes,
+    setDailyTargetMinutes,
+    getSetting,
+    subscribeSettings,
+} from '../../db/database'
 import { getFormattedDate } from '../../utils/time'
 import {
     useSavedCalendarSystem,
     useSavedFirstDayOfWeek,
 } from '../../utils/calendar'
+
+const getSavedLanguage = (): string => getSetting('language') || 'auto'
 
 export default function SettingsScreen() {
     const { t, i18n } = useTranslation()
@@ -23,9 +30,27 @@ export default function SettingsScreen() {
 
     const calendarSystem = useSavedCalendarSystem()
     const firstDayOfWeek = useSavedFirstDayOfWeek()
+    const language = useSyncExternalStore(subscribeSettings, getSavedLanguage)
 
     const targetHours = Math.floor(dailyTarget / 60)
     const targetMinutes = dailyTarget % 60
+
+    const getLanguageDescription = () => {
+        if (language === 'auto') {
+            return t('settings.auto')
+        }
+        try {
+            const name = new Intl.DisplayNames([i18n.language, language], {
+                type: 'language',
+            }).of(language)
+            if (name) {
+                return name.charAt(0).toUpperCase() + name.slice(1)
+            }
+        } catch {
+            // Fallback to language code if DisplayNames fails
+        }
+        return language
+    }
 
     const getCalendarDescription = () => {
         if (calendarSystem === 'jalali') {
@@ -61,6 +86,7 @@ export default function SettingsScreen() {
             <List.Section>
                 <List.Item
                     title={t('settings.language')}
+                    description={getLanguageDescription()}
                     left={() => <List.Icon icon="translate" />}
                     right={() => <List.Icon icon="chevron-right" />}
                     onPress={() => {
