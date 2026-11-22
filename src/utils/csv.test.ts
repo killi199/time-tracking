@@ -44,8 +44,11 @@ jest.mock('expo-file-system', () => {
         }
 
         write(content: string) {
-            if (mockFileState.writeError) throw mockFileState.writeError
+            if (mockFileState.writeError) {
+                return Promise.reject(mockFileState.writeError)
+            }
             mockFileState.written.push({ name: this.name, content })
+            return Promise.resolve()
         }
 
         text() {
@@ -415,9 +418,7 @@ describe('importFromCSV', () => {
 
         expect(result).toEqual({ success: true, count: 3, workHoursCount: 1 })
         expect(importEvents).toHaveBeenCalledWith(
-            trickyNotes.map(
-                (note) => expect.objectContaining({ note }) as unknown,
-            ),
+            trickyNotes.map((note) => expect.objectContaining({ note })),
         )
         expect(importWorkHours).toHaveBeenCalledWith([
             { effectiveDate: '2024-01-01', dailyMinutes: 480 },
