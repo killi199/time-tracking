@@ -64,10 +64,7 @@ export default ({ config }: ConfigContext): CustomExpoConfig => {
     plugins.push('./src/plugins/withNfcIntent')
 
     // Custom cleanup / post-processing plugins
-    plugins.push(
-        './src/plugins/withDisableDependencyMetadata',
-        './src/plugins/withRemovePermissions',
-    )
+    plugins.push('./src/plugins/withDisableDependencyMetadata')
 
     const finalConfig: CustomExpoConfig = {
         ...config,
@@ -94,6 +91,16 @@ export default ({ config }: ConfigContext): CustomExpoConfig => {
             },
             predictiveBackGestureEnabled: false,
             package: 'de.killi199.timetracking',
+            blockedPermissions: [
+                'android.permission.SYSTEM_ALERT_WINDOW',
+                'android.permission.VIBRATE',
+                ...(isFOSS
+                    ? [
+                          'android.permission.INTERNET',
+                          'android.permission.ACCESS_NETWORK_STATE',
+                      ]
+                    : []),
+            ],
         },
         plugins: plugins,
     }
