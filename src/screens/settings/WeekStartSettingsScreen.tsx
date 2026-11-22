@@ -1,19 +1,15 @@
-import { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { RadioButton, List } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
 import { setSetting } from '../../db/database'
-import { FirstDayOfWeek, getSavedFirstDayOfWeek } from '../../utils/calendar'
+import { FirstDayOfWeek, useSavedFirstDayOfWeek } from '../../utils/calendar'
 
 export default function WeekStartSettingsScreen() {
     const { t } = useTranslation()
-    const [firstDayOfWeek, setFirstDayOfWeek] = useState<FirstDayOfWeek>(
-        getSavedFirstDayOfWeek,
-    )
+    const firstDayOfWeek = useSavedFirstDayOfWeek()
 
     const handleFirstDayChange = (value: string) => {
         const day = value as FirstDayOfWeek
-        setFirstDayOfWeek(day)
         setSetting('first_day_of_week', day)
     }
 

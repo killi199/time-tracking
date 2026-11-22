@@ -36,11 +36,24 @@ jest.mock('react-native-reanimated', () => {
     }
 })
 
+const mockSettingsListeners = new Set<() => void>()
+const notifySettingsListeners = () => {
+    mockSettingsListeners.forEach((l) => {
+        l()
+    })
+}
+
 jest.mock('../db/database', () => ({
     addEvent: jest.fn(),
     updateEvent: jest.fn(),
     deleteEvent: jest.fn(),
     getSetting: jest.fn(),
+    subscribeSettings: jest.fn((listener: () => void) => {
+        mockSettingsListeners.add(listener)
+        return () => {
+            mockSettingsListeners.delete(listener)
+        }
+    }),
 }))
 
 let panEndCallback: ((e: { translationX: number }) => void) | undefined
@@ -220,6 +233,7 @@ const renderWithProvider = (ui: React.ReactElement) =>
 describe('HomeScreen', () => {
     beforeEach(() => {
         jest.clearAllMocks()
+        mockSettingsListeners.clear()
         panEndCallback = undefined
         jest.mocked(useNavigation).mockReturnValue({
             setOptions: mockSetOptions,
@@ -849,6 +863,38 @@ describe('HomeScreen', () => {
 
             // Header should show Jalali week range
             expect(screen.getByText(/1405/)).toBeOnTheScreen()
+
+            await unmount()
+        }),
+    )
+
+    it(
+        'reactively updates header and view when calendar setting changes live via subscription',
+        withMockedDate(new Date('2026-11-16T12:00:00'), async () => {
+            let activeCalendar = 'gregorian'
+            const activeFirstDay = 'auto'
+
+            jest.mocked(getSetting).mockImplementation((key: string) => {
+                if (key === 'calendar_system') return activeCalendar
+                if (key === 'first_day_of_week') return activeFirstDay
+                return null
+            })
+
+            const { unmount } = await renderWithProvider(
+                <HomeScreen viewMode="month" />,
+            )
+
+            // Initially Gregorian month header
+            expect(screen.getByText(/November 2026/)).toBeOnTheScreen()
+
+            // Change calendar system to Jalali
+            activeCalendar = 'jalali'
+            await act(() => {
+                notifySettingsListeners()
+            })
+
+            // Header reactively updates to Jalali month
+            expect(screen.getByText(/Aban 1405|1405/)).toBeOnTheScreen()
 
             await unmount()
         }),

@@ -7,6 +7,7 @@ import { PaperProvider } from 'react-native-paper'
 jest.mock('../../db/database', () => ({
     getSetting: jest.fn(),
     setSetting: jest.fn(),
+    subscribeSettings: jest.fn(() => () => {}),
 }))
 
 describe('WeekStartSettingsScreen', () => {

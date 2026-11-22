@@ -26,8 +26,8 @@ import { TimeEvent } from '../types'
 import { useTranslation } from 'react-i18next'
 import { getFormattedTime, getFormattedDate } from '../utils/time'
 import {
-    getActiveCalendarSystem,
-    getSavedFirstDayOfWeek,
+    useActiveCalendarSystem,
+    useSavedFirstDayOfWeek,
     getWeekRange,
     getMonthRange,
     stepMonth,
@@ -94,8 +94,8 @@ export default function HomeScreen({
     const theme = useTheme()
     const { t, i18n } = useTranslation()
 
-    const calendarSystem = getActiveCalendarSystem()
-    const firstDayOfWeek = getSavedFirstDayOfWeek()
+    const calendarSystem = useActiveCalendarSystem()
+    const firstDayOfWeek = useSavedFirstDayOfWeek()
 
     // Track app state and date to auto-update on resume
     const appState = useRef(AppState.currentState)

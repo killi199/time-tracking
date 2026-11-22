@@ -10,25 +10,27 @@ import {
 import { getFormattedDate } from '../../utils/time'
 import { PaperProvider } from 'react-native-paper'
 
-let focusCallback: (() => void) | null = null
+const mockSettingsListeners = new Set<() => void>()
+const notifySettingsListeners = () => {
+    mockSettingsListeners.forEach((l) => {
+        l()
+    })
+}
 
-jest.mock('expo-router', () => {
-    const React = jest.requireActual<typeof import('react')>('react')
-    return {
-        useRouter: jest.fn(),
-        useFocusEffect: jest.fn((cb: () => void) => {
-            focusCallback = cb
-            React.useEffect(() => {
-                cb()
-            }, [cb])
-        }),
-    }
-})
+jest.mock('expo-router', () => ({
+    useRouter: jest.fn(),
+}))
 
 jest.mock('../../db/database', () => ({
     getDailyTargetMinutes: jest.fn(),
     setDailyTargetMinutes: jest.fn(),
     getSetting: jest.fn(),
+    subscribeSettings: jest.fn((listener: () => void) => {
+        mockSettingsListeners.add(listener)
+        return () => {
+            mockSettingsListeners.delete(listener)
+        }
+    }),
 }))
 
 jest.mock('../../utils/time', () => ({
@@ -78,6 +80,7 @@ describe('SettingsScreen', () => {
 
     beforeEach(() => {
         jest.clearAllMocks()
+        mockSettingsListeners.clear()
         jest.mocked(useRouter).mockReturnValue(
             mockRouter as unknown as ReturnType<typeof useRouter>,
         )
@@ -235,7 +238,7 @@ describe('SettingsScreen', () => {
         expect(screen.getByText('settings.monday')).toBeVisible()
     })
 
-    it('refreshes calendar and first day of week on focus', async () => {
+    it('refreshes calendar and first day of week when settings change', async () => {
         let currentCalendar = 'gregorian'
         let currentFirstDay = 'auto'
         jest.mocked(getSetting).mockImplementation((key: string) => {
@@ -257,10 +260,9 @@ describe('SettingsScreen', () => {
         currentCalendar = 'jalali'
         currentFirstDay = 'saturday'
 
-        // Trigger useFocusEffect
-        await act(async () => {
-            await Promise.resolve()
-            focusCallback?.()
+        // Notify settings subscribers
+        await act(() => {
+            notifySettingsListeners()
         })
 
         expect(await screen.findByText('settings.calendarJalali')).toBeVisible()

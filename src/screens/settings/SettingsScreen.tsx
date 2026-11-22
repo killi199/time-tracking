@@ -2,15 +2,13 @@ import { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { List, Snackbar } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
-import { useRouter, useFocusEffect } from 'expo-router'
+import { useRouter } from 'expo-router'
 import AdaptiveDateTimePicker from '../../components/AdaptiveDateTimePicker'
 import { getDailyTargetMinutes, setDailyTargetMinutes } from '../../db/database'
 import { getFormattedDate } from '../../utils/time'
 import {
-    CalendarPreference,
-    FirstDayOfWeek,
-    getSavedCalendarSystem,
-    getSavedFirstDayOfWeek,
+    useSavedCalendarSystem,
+    useSavedFirstDayOfWeek,
 } from '../../utils/calendar'
 
 export default function SettingsScreen() {
@@ -23,17 +21,8 @@ export default function SettingsScreen() {
     const [workHoursPickerVisible, setWorkHoursPickerVisible] = useState(false)
     const [snackbarText, setSnackbarText] = useState<string | null>(null)
 
-    const [calendarSystem, setCalendarSystem] = useState<CalendarPreference>(
-        getSavedCalendarSystem,
-    )
-    const [firstDayOfWeek, setFirstDayOfWeek] = useState<FirstDayOfWeek>(
-        getSavedFirstDayOfWeek,
-    )
-
-    useFocusEffect(() => {
-        setCalendarSystem(getSavedCalendarSystem())
-        setFirstDayOfWeek(getSavedFirstDayOfWeek())
-    })
+    const calendarSystem = useSavedCalendarSystem()
+    const firstDayOfWeek = useSavedFirstDayOfWeek()
 
     const targetHours = Math.floor(dailyTarget / 60)
     const targetMinutes = dailyTarget % 60

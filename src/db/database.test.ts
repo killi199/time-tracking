@@ -44,6 +44,21 @@ describe('settings', () => {
         db.setSetting('language', 'en')
         expect(db.getSetting('language')).toBe('en')
     })
+
+    it('notifies listeners when setSetting is called and allows unsubscribing', () => {
+        const listener = jest.fn()
+        const unsubscribe = db.subscribeSettings(listener)
+
+        db.setSetting('calendar_system', 'jalali')
+        expect(listener).toHaveBeenCalledTimes(1)
+
+        db.setSetting('first_day_of_week', 'saturday')
+        expect(listener).toHaveBeenCalledTimes(2)
+
+        unsubscribe()
+        db.setSetting('calendar_system', 'gregorian')
+        expect(listener).toHaveBeenCalledTimes(2)
+    })
 })
 
 describe('addEvent / updateEvent / deleteEvent', () => {

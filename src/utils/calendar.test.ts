@@ -1,3 +1,4 @@
+import React from 'react'
 import {
     describe,
     it,
@@ -6,10 +7,15 @@ import {
     afterEach,
     beforeEach,
 } from '@jest/globals'
+import { render, screen, act } from '@testing-library/react-native'
+import { View, Text } from 'react-native'
 import {
     getActiveCalendarSystem,
     getSavedCalendarSystem,
     getSavedFirstDayOfWeek,
+    useActiveCalendarSystem,
+    useSavedCalendarSystem,
+    useSavedFirstDayOfWeek,
     resolveCalendarSystem,
     resolveFirstDayOfWeek,
     getWeekRange,
@@ -20,8 +26,21 @@ import {
 import { getSetting } from '../db/database'
 import * as Localization from 'expo-localization'
 
+const mockSettingsListeners = new Set<() => void>()
+const notifySettingsListeners = () => {
+    mockSettingsListeners.forEach((l) => {
+        l()
+    })
+}
+
 jest.mock('../db/database', () => ({
     getSetting: jest.fn(),
+    subscribeSettings: jest.fn((listener: () => void) => {
+        mockSettingsListeners.add(listener)
+        return () => {
+            mockSettingsListeners.delete(listener)
+        }
+    }),
 }))
 
 let mockCalendarType: string = 'gregorian'
@@ -37,6 +56,7 @@ jest.mock('expo-localization', () => ({
 
 describe('calendar utility', () => {
     beforeEach(() => {
+        mockSettingsListeners.clear()
         mockCalendarType = 'gregorian'
         mockLanguageCode = 'en'
         mockRegionCode = 'US'
@@ -338,6 +358,91 @@ describe('calendar utility', () => {
 
             const jMonthDe = formatHeaderDate(dateStr, 'month', 'jalali', 'de')
             expect(jMonthDe).toBe('Aban 1405')
+        })
+    })
+
+    describe('calendar hooks', () => {
+        function TestHookComponent() {
+            const active = useActiveCalendarSystem()
+            const saved = useSavedCalendarSystem()
+            const firstDay = useSavedFirstDayOfWeek()
+            return React.createElement(
+                View,
+                null,
+                React.createElement(
+                    Text,
+                    { testID: 'active-calendar' },
+                    active,
+                ),
+                React.createElement(Text, { testID: 'saved-calendar' }, saved),
+                React.createElement(Text, { testID: 'first-day' }, firstDay),
+            )
+        }
+
+        it('reactively updates hooks when SQLite settings change', async () => {
+            let calendarSetting: string | null = null
+            let firstDaySetting: string | null = null
+
+            jest.mocked(getSetting).mockImplementation((key) => {
+                if (key === 'calendar_system') return calendarSetting
+                if (key === 'first_day_of_week') return firstDaySetting
+                return null
+            })
+
+            await render(React.createElement(TestHookComponent))
+
+            // Initial defaults
+            expect(screen.getByTestId('active-calendar')).toHaveTextContent(
+                'gregorian',
+            )
+            expect(screen.getByTestId('saved-calendar')).toHaveTextContent(
+                'auto',
+            )
+            expect(screen.getByTestId('first-day')).toHaveTextContent('auto')
+
+            // Update calendar setting to jalali
+            calendarSetting = 'jalali'
+            await act(() => {
+                notifySettingsListeners()
+            })
+
+            expect(screen.getByTestId('active-calendar')).toHaveTextContent(
+                'jalali',
+            )
+            expect(screen.getByTestId('saved-calendar')).toHaveTextContent(
+                'jalali',
+            )
+
+            // Update first day of week setting to saturday
+            firstDaySetting = 'saturday'
+            await act(() => {
+                notifySettingsListeners()
+            })
+
+            expect(screen.getByTestId('first-day')).toHaveTextContent(
+                'saturday',
+            )
+
+            // Update first day to sunday
+            firstDaySetting = 'sunday'
+            await act(() => {
+                notifySettingsListeners()
+            })
+
+            expect(screen.getByTestId('first-day')).toHaveTextContent('sunday')
+
+            // Switch back to gregorian
+            calendarSetting = 'gregorian'
+            await act(() => {
+                notifySettingsListeners()
+            })
+
+            expect(screen.getByTestId('active-calendar')).toHaveTextContent(
+                'gregorian',
+            )
+            expect(screen.getByTestId('saved-calendar')).toHaveTextContent(
+                'gregorian',
+            )
         })
     })
 })

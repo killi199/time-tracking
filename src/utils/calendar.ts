@@ -1,3 +1,4 @@
+import { useSyncExternalStore } from 'react'
 import {
     addMonths,
     endOfMonth,
@@ -14,7 +15,7 @@ import {
 } from 'date-fns-jalali'
 import { enUS } from 'date-fns-jalali/locale'
 import * as Localization from 'expo-localization'
-import { getSetting } from '../db/database'
+import { getSetting, subscribeSettings } from '../db/database'
 
 export type CalendarSystem = 'gregorian' | 'jalali'
 export type CalendarPreference = 'auto' | 'gregorian' | 'jalali'
@@ -90,6 +91,30 @@ export function getSavedFirstDayOfWeek(): FirstDayOfWeek {
         return saved
     }
     return 'auto'
+}
+
+/**
+ * React hook that subscribes to the active calendar system ('gregorian' | 'jalali').
+ * Re-renders reactively when calendar settings change in SQLite.
+ */
+export function useActiveCalendarSystem(): CalendarSystem {
+    return useSyncExternalStore(subscribeSettings, getActiveCalendarSystem)
+}
+
+/**
+ * React hook that subscribes to the saved calendar preference ('auto' | 'gregorian' | 'jalali').
+ * Re-renders reactively when calendar settings change in SQLite.
+ */
+export function useSavedCalendarSystem(): CalendarPreference {
+    return useSyncExternalStore(subscribeSettings, getSavedCalendarSystem)
+}
+
+/**
+ * React hook that subscribes to the saved first day of the week ('auto' | 'saturday' | 'sunday' | 'monday').
+ * Re-renders reactively when first-day-of-week settings change in SQLite.
+ */
+export function useSavedFirstDayOfWeek(): FirstDayOfWeek {
+    return useSyncExternalStore(subscribeSettings, getSavedFirstDayOfWeek)
 }
 
 /**
