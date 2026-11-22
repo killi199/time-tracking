@@ -1,6 +1,6 @@
 import { ReactNode, useEffect } from 'react'
 import * as SystemUI from 'expo-system-ui'
-import { useColorScheme, Platform } from 'react-native'
+import { useColorScheme } from 'react-native'
 import {
     MD3LightTheme,
     MD3DarkTheme,
@@ -19,11 +19,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     const paperTheme = (() => {
         const baseTheme = isDark ? MD3DarkTheme : MD3LightTheme
 
-        if (Platform.OS !== 'android') {
-            return baseTheme
-        }
-
-        // On Android, always apply Material You / M3 dynamic colors, passing
+        // Always apply Material You / M3 dynamic colors, passing
         // the resolved system scheme so the correct tonal palette is returned.
         const m3 = getMaterialColors({ scheme: isDark ? 'dark' : 'light' })
 

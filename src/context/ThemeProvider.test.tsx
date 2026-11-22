@@ -1,8 +1,8 @@
 import type React from 'react'
 import { describe, it, expect, jest, beforeEach } from '@jest/globals'
 import { render, screen, waitFor } from '@testing-library/react-native'
-import { Platform, useColorScheme } from 'react-native'
-import { Text, useTheme, MD3LightTheme, MD3DarkTheme } from 'react-native-paper'
+import { useColorScheme } from 'react-native'
+import { Text, useTheme } from 'react-native-paper'
 import * as SystemUI from 'expo-system-ui'
 import { getMaterialColors } from '@expo/ui/jetpack-compose'
 import { ThemeProvider } from './ThemeProvider'
@@ -86,11 +86,8 @@ const ThemeInspector: React.FC = () => {
 }
 
 describe('ThemeProvider', () => {
-    const originalPlatformOS = Platform.OS
-
     beforeEach(() => {
         jest.clearAllMocks()
-        Platform.OS = originalPlatformOS
         jest.mocked(SystemUI.setBackgroundColorAsync).mockResolvedValue(
             undefined,
         )
@@ -99,57 +96,8 @@ describe('ThemeProvider', () => {
         )
     })
 
-    describe('iOS / Non-Android Platform', () => {
-        it('renders MD3LightTheme when system color scheme is light', async () => {
-            Platform.OS = 'ios'
-            jest.mocked(useColorScheme).mockReturnValue('light')
-
-            await render(
-                <ThemeProvider>
-                    <ThemeInspector />
-                </ThemeProvider>,
-            )
-
-            expect(getMaterialColors).not.toHaveBeenCalled()
-            expect(screen.getByTestId('theme-dark')).toHaveTextContent('false')
-            expect(screen.getByTestId('theme-primary')).toHaveTextContent(
-                MD3LightTheme.colors.primary,
-            )
-            expect(screen.getByTestId('theme-background')).toHaveTextContent(
-                MD3LightTheme.colors.background,
-            )
-            expect(SystemUI.setBackgroundColorAsync).toHaveBeenCalledWith(
-                MD3LightTheme.colors.background,
-            )
-        })
-
-        it('renders MD3DarkTheme when system color scheme is dark', async () => {
-            Platform.OS = 'ios'
-            jest.mocked(useColorScheme).mockReturnValue('dark')
-
-            await render(
-                <ThemeProvider>
-                    <ThemeInspector />
-                </ThemeProvider>,
-            )
-
-            expect(getMaterialColors).not.toHaveBeenCalled()
-            expect(screen.getByTestId('theme-dark')).toHaveTextContent('true')
-            expect(screen.getByTestId('theme-primary')).toHaveTextContent(
-                MD3DarkTheme.colors.primary,
-            )
-            expect(screen.getByTestId('theme-background')).toHaveTextContent(
-                MD3DarkTheme.colors.background,
-            )
-            expect(SystemUI.setBackgroundColorAsync).toHaveBeenCalledWith(
-                MD3DarkTheme.colors.background,
-            )
-        })
-    })
-
     describe('Android Platform with Material 3 dynamic colors', () => {
         it('applies dynamic light Material colors when color scheme is light', async () => {
-            Platform.OS = 'android'
             jest.mocked(useColorScheme).mockReturnValue('light')
 
             await render(
@@ -175,7 +123,6 @@ describe('ThemeProvider', () => {
         })
 
         it('applies dynamic dark Material colors when color scheme is dark', async () => {
-            Platform.OS = 'android'
             jest.mocked(useColorScheme).mockReturnValue('dark')
 
             await render(
@@ -200,7 +147,6 @@ describe('ThemeProvider', () => {
 
     describe('SystemUI background error handling', () => {
         it('catches and logs errors if setBackgroundColorAsync fails', async () => {
-            Platform.OS = 'ios'
             jest.mocked(useColorScheme).mockReturnValue('light')
             const consoleErrorSpy = jest
                 .spyOn(console, 'error')

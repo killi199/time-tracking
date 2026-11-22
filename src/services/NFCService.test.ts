@@ -6,7 +6,7 @@ import {
     afterEach,
     jest,
 } from '@jest/globals'
-import { Platform, Linking, ToastAndroid, BackHandler } from 'react-native'
+import { Linking, ToastAndroid, BackHandler } from 'react-native'
 import { getTodayEvents, addEvent } from '../db/database'
 import { initNfcService } from './NFCService'
 import { TimeEvent } from '../types'
@@ -14,7 +14,6 @@ import { TimeEvent } from '../types'
 jest.mock('react-native', () => {
     const subscription = { remove: jest.fn() }
     return {
-        Platform: { OS: 'android' },
         ToastAndroid: { show: jest.fn(), SHORT: 0 },
         BackHandler: { exitApp: jest.fn() },
         Linking: {
@@ -38,10 +37,6 @@ const makeEvent = (id: number, time: string): TimeEvent => ({
     note: null,
 })
 
-const setPlatformOS = (os: string) => {
-    ;(Platform as { OS: string }).OS = os
-}
-
 const initAndFlush = async () => {
     initNfcService()
     // let the getInitialURL promise chain settle
@@ -63,7 +58,6 @@ const registeredSubscription = () =>
 
 beforeEach(() => {
     jest.clearAllMocks()
-    setPlatformOS('android')
     jest.useFakeTimers()
     jest.setSystemTime(new Date(2026, 6, 5, 9, 5))
     jest.mocked(getTodayEvents).mockReturnValue([])
@@ -126,18 +120,6 @@ describe('initNfcService', () => {
         expect(BackHandler.exitApp).not.toHaveBeenCalled()
 
         jest.advanceTimersByTime(1)
-        expect(BackHandler.exitApp).toHaveBeenCalledTimes(1)
-    })
-
-    it('does not show a toast on iOS but still exits', async () => {
-        setPlatformOS('ios')
-
-        await initAndFlush()
-        receiveUrl(NFC_URL)
-
-        expect(ToastAndroid.show).not.toHaveBeenCalled()
-
-        jest.advanceTimersByTime(1500)
         expect(BackHandler.exitApp).toHaveBeenCalledTimes(1)
     })
 

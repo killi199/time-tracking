@@ -7,7 +7,7 @@ import {
     jest,
 } from '@jest/globals'
 import * as QuickActions from 'expo-quick-actions'
-import { Platform, ToastAndroid } from 'react-native'
+import { ToastAndroid } from 'react-native'
 import { getTodayEvents, addEvent } from '../db/database'
 import { initQuickActions } from './QuickActionService'
 import { TimeEvent } from '../types'
@@ -28,7 +28,6 @@ jest.mock('expo-quick-actions', () => {
 })
 
 jest.mock('react-native', () => ({
-    Platform: { OS: 'android' },
     ToastAndroid: { show: jest.fn(), SHORT: 0 },
 }))
 
@@ -52,10 +51,6 @@ const makeEvent = (id: number, time: string): TimeEvent => ({
     note: null,
 })
 
-const setPlatformOS = (os: string) => {
-    ;(Platform as { OS: string }).OS = os
-}
-
 const trigger = (action: { id: string } | null) => {
     const listener = jest
         .mocked(QuickActions.addListener)
@@ -75,7 +70,6 @@ const toggleAction = { id: 'toggle_status' }
 beforeEach(() => {
     jest.clearAllMocks()
     setInitialAction(null)
-    setPlatformOS('android')
     jest.useFakeTimers()
     jest.setSystemTime(new Date(2026, 6, 5, 9, 5))
     jest.mocked(getTodayEvents).mockReturnValue([])
@@ -138,16 +132,6 @@ describe('initQuickActions', () => {
             'quickAction.checkedInAt 09:05',
             expect.anything(),
         )
-    })
-
-    it('does not show a toast on iOS', () => {
-        setPlatformOS('ios')
-
-        initQuickActions()
-        trigger(toggleAction)
-
-        expect(addEvent).toHaveBeenCalledTimes(1)
-        expect(ToastAndroid.show).not.toHaveBeenCalled()
     })
 
     it('ignores unrelated and null actions', () => {

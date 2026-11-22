@@ -1,6 +1,3 @@
-import { useState } from 'react'
-import { Platform, View } from 'react-native'
-import { Portal, Dialog, Button } from 'react-native-paper'
 import DateTimePicker from '@expo/ui/community/datetime-picker'
 import { shiftToUTC, shiftToLocal } from '../utils/dateShift'
 import JalaliDatePickerDialog from './JalaliDatePickerDialog'
@@ -35,16 +32,6 @@ const AdaptiveDateTimePicker = ({
     calendar = 'gregorian',
     firstDayOfWeek,
 }: AdaptiveDateTimePickerProps) => {
-    const [tempDate, setTempDate] = useState(value)
-    const [prevVisible, setPrevVisible] = useState(visible)
-
-    if (visible !== prevVisible) {
-        setPrevVisible(visible)
-        if (visible) {
-            setTempDate(value)
-        }
-    }
-
     if (!visible) return <></>
 
     if (calendar === 'jalali' && mode === 'date') {
@@ -61,53 +48,6 @@ const AdaptiveDateTimePicker = ({
                 locale={locale}
                 firstDayOfWeek={firstDayOfWeek}
             />
-        )
-    }
-
-    if (Platform.OS === 'ios') {
-        return (
-            <Portal>
-                <Dialog visible={visible} onDismiss={onDismiss}>
-                    <Dialog.Content>
-                        <View style={{ alignItems: 'center' }}>
-                            <DateTimePicker
-                                value={tempDate}
-                                mode={mode}
-                                display="spinner"
-                                locale={locale}
-                                maximumDate={maximumDate}
-                                minimumDate={minimumDate}
-                                onValueChange={(_, selectedDate) => {
-                                    setTempDate(selectedDate)
-                                }}
-                            />
-                        </View>
-                    </Dialog.Content>
-                    <Dialog.Actions>
-                        <Button onPress={onDismiss}>{cancelLabel}</Button>
-                        <Button
-                            onPress={() => {
-                                let confirmedDate = tempDate
-                                if (
-                                    maximumDate &&
-                                    confirmedDate > maximumDate
-                                ) {
-                                    confirmedDate = maximumDate
-                                }
-                                if (
-                                    minimumDate &&
-                                    confirmedDate < minimumDate
-                                ) {
-                                    confirmedDate = minimumDate
-                                }
-                                onConfirm(confirmedDate)
-                            }}
-                        >
-                            {confirmLabel}
-                        </Button>
-                    </Dialog.Actions>
-                </Dialog>
-            </Portal>
         )
     }
 
