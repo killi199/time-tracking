@@ -45,6 +45,14 @@ export default ({ config }: ConfigContext): CustomExpoConfig => {
                 style: 'auto',
             },
         ],
+        [
+            'expo-build-properties',
+            {
+                android: {
+                    buildExpoModulesCoreFromSource: true,
+                },
+            },
+        ],
     ]
 
     if (!isFOSS) {
