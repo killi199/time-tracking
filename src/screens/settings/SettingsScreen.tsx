@@ -39,17 +39,7 @@ export default function SettingsScreen() {
         if (language === 'auto') {
             return t('settings.auto')
         }
-        try {
-            const name = new Intl.DisplayNames([i18n.language, language], {
-                type: 'language',
-            }).of(language)
-            if (name) {
-                return name.charAt(0).toUpperCase() + name.slice(1)
-            }
-        } catch {
-            // Fallback to language code if DisplayNames fails
-        }
-        return language
+        return t(`settings.languages.${language}`, { defaultValue: language })
     }
 
     const getCalendarDescription = () => {

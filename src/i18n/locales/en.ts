@@ -111,8 +111,10 @@ export default {
             language: 'Language',
             languageTitle: 'Language Settings',
             auto: 'Automatic (System)',
-            english: 'English',
-            german: 'German',
+            languages: {
+                en: 'English',
+                de: 'German',
+            },
             workHours: 'Daily work hours',
             workHoursInvalid: 'The daily work hours must be greater than 0.',
             workHoursEffectiveNote:

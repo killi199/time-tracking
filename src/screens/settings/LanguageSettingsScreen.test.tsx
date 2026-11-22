@@ -32,8 +32,8 @@ describe('LanguageSettingsScreen', () => {
         )
 
         expect(screen.getByText('settings.auto')).toBeVisible()
-        expect(screen.getByText('settings.english')).toBeVisible()
-        expect(screen.getByText('settings.german')).toBeVisible()
+        expect(screen.getByText('settings.languages.en')).toBeVisible()
+        expect(screen.getByText('settings.languages.de')).toBeVisible()
     })
 
     it('loads the saved language setting on mount', async () => {
@@ -57,7 +57,7 @@ describe('LanguageSettingsScreen', () => {
         )
 
         const user = userEvent.setup()
-        await user.press(screen.getByText('settings.english'))
+        await user.press(screen.getByText('settings.languages.en'))
 
         expect(setSetting).toHaveBeenCalledWith('language', 'en')
         expect(i18n.changeLanguage).toHaveBeenCalledWith('en')
@@ -71,7 +71,7 @@ describe('LanguageSettingsScreen', () => {
         )
 
         const user = userEvent.setup()
-        await user.press(screen.getByText('settings.german'))
+        await user.press(screen.getByText('settings.languages.de'))
 
         expect(setSetting).toHaveBeenCalledWith('language', 'de')
         expect(i18n.changeLanguage).toHaveBeenCalledWith('de')

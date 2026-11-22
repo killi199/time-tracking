@@ -114,8 +114,10 @@ export default {
             language: 'Sprache',
             languageTitle: 'Spracheinstellungen',
             auto: 'Automatisch (System)',
-            english: 'Englisch',
-            german: 'Deutsch',
+            languages: {
+                en: 'Englisch',
+                de: 'Deutsch',
+            },
             workHours: 'Arbeitszeit pro Tag',
             workHoursInvalid: 'Die Arbeitszeit pro Tag muss größer als 0 sein.',
             workHoursEffectiveNote:

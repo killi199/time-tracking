@@ -291,7 +291,7 @@ describe('SettingsScreen', () => {
             notifySettingsListeners()
         })
 
-        expect(await screen.findByText('German')).toBeVisible()
+        expect(await screen.findByText('settings.languages.de')).toBeVisible()
 
         // Change language setting to 'en'
         currentLang = 'en'
@@ -299,21 +299,6 @@ describe('SettingsScreen', () => {
             notifySettingsListeners()
         })
 
-        expect(await screen.findByText('English')).toBeVisible()
-    })
-
-    it('falls back to raw language code if DisplayNames fails', async () => {
-        jest.mocked(getSetting).mockImplementation((key: string) => {
-            if (key === 'language') return 'invalid-lang-code-$$'
-            return null
-        })
-
-        await render(
-            <PaperProvider>
-                <SettingsScreen />
-            </PaperProvider>,
-        )
-
-        expect(screen.getByText('invalid-lang-code-$$')).toBeVisible()
+        expect(await screen.findByText('settings.languages.en')).toBeVisible()
     })
 })

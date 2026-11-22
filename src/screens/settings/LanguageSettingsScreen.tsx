@@ -42,7 +42,7 @@ export default function LanguageSettingsScreen() {
                         style={styles.listItem}
                     />
                     <List.Item
-                        title={t('settings.english')}
+                        title={t('settings.languages.en')}
                         left={() => <Text variant="titleLarge">🇬🇧</Text>}
                         right={() => <RadioButton value="en" />}
                         onPress={() => {
@@ -51,7 +51,7 @@ export default function LanguageSettingsScreen() {
                         style={styles.listItem}
                     />
                     <List.Item
-                        title={t('settings.german')}
+                        title={t('settings.languages.de')}
                         left={() => <Text variant="titleLarge">🇩🇪</Text>}
                         right={() => <RadioButton value="de" />}
                         onPress={() => {
