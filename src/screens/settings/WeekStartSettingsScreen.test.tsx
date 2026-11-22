@@ -27,6 +27,7 @@ describe('WeekStartSettingsScreen', () => {
         expect(screen.getByText('settings.saturday')).toBeVisible()
         expect(screen.getByText('settings.sunday')).toBeVisible()
         expect(screen.getByText('settings.monday')).toBeVisible()
+        expect(screen.getByText('settings.firstDayOfWeekNote')).toBeVisible()
     })
 
     it('loads saved setting on mount', async () => {

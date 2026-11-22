@@ -1,11 +1,12 @@
 import { View, StyleSheet } from 'react-native'
-import { RadioButton, List } from 'react-native-paper'
+import { RadioButton, List, Text, useTheme } from 'react-native-paper'
 import { useTranslation } from 'react-i18next'
 import { setSetting } from '../../db/database'
 import { FirstDayOfWeek, useSavedFirstDayOfWeek } from '../../utils/calendar'
 
 export default function WeekStartSettingsScreen() {
     const { t } = useTranslation()
+    const theme = useTheme()
     const firstDayOfWeek = useSavedFirstDayOfWeek()
 
     const handleFirstDayChange = (value: string) => {
@@ -58,6 +59,12 @@ export default function WeekStartSettingsScreen() {
                     />
                 </RadioButton.Group>
             </List.Section>
+            <Text
+                variant="bodySmall"
+                style={[styles.note, { color: theme.colors.onSurfaceVariant }]}
+            >
+                {t('settings.firstDayOfWeekNote')}
+            </Text>
         </View>
     )
 }
@@ -68,5 +75,9 @@ const styles = StyleSheet.create({
     },
     listItem: {
         paddingHorizontal: 16,
+    },
+    note: {
+        paddingHorizontal: 16,
+        paddingTop: 8,
     },
 })

@@ -127,6 +127,8 @@ export default {
             saturday: 'Saturday',
             sunday: 'Sunday',
             monday: 'Monday',
+            firstDayOfWeekNote:
+                "Applies to the Week view and Jalali date picker. The Gregorian date picker follows your device's system calendar.",
         },
         dialog: {
             checkInTitle: 'Check In',

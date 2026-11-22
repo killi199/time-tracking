@@ -130,6 +130,8 @@ export default {
             saturday: 'Samstag',
             sunday: 'Sonntag',
             monday: 'Montag',
+            firstDayOfWeekNote:
+                'Gilt für die Wochenansicht und den Jalali-Datumsauswahldialog. Der gregorianische Datumsauswahldialog richtet sich nach dem Systemkalender deines Geräts.',
         },
         dialog: {
             checkInTitle: 'Einchecken',
