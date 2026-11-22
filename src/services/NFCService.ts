@@ -1,4 +1,4 @@
-import { Linking, Platform, ToastAndroid, BackHandler } from 'react-native'
+import { Linking, ToastAndroid, BackHandler } from 'react-native'
 import { getTodayEvents, addEvent } from '../db/database'
 import { getFormattedTime, getFormattedDate } from '../utils/time'
 import i18next from 'i18next'
@@ -21,14 +21,12 @@ const handleUrl = (url: string | null) => {
                     : i18next.t('nfc.checkinEvent'),
             )
 
-            if (Platform.OS === 'android') {
-                ToastAndroid.show(
-                    isWorking
-                        ? `${i18next.t('nfc.checkedOutAt')} ${timeString}`
-                        : `${i18next.t('nfc.checkedInAt')} ${timeString}`,
-                    ToastAndroid.SHORT,
-                )
-            }
+            ToastAndroid.show(
+                isWorking
+                    ? `${i18next.t('nfc.checkedOutAt')} ${timeString}`
+                    : `${i18next.t('nfc.checkedInAt')} ${timeString}`,
+                ToastAndroid.SHORT,
+            )
 
             // Close app after short delay
             setTimeout(() => {

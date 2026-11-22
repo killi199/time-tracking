@@ -18,7 +18,6 @@ export default defineConfig(
             'dist/**',
             'web-build/**',
             'android/**',
-            'ios/**',
             'coverage/**',
             '.yarn/**',
             'node_modules/**',

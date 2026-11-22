@@ -1,5 +1,5 @@
 import * as QuickActions from 'expo-quick-actions'
-import { Platform, ToastAndroid } from 'react-native'
+import { ToastAndroid } from 'react-native'
 import { getTodayEvents, addEvent } from '../db/database'
 import { getFormattedTime, getFormattedDate } from '../utils/time'
 
@@ -10,7 +10,7 @@ export const initQuickActions = () => {
         {
             title: i18next.t('quickAction.title'),
             subtitle: i18next.t('quickAction.subtitle'),
-            icon: Platform.OS === 'ios' ? 'timer' : 'shortcut_timer',
+            icon: 'shortcut_timer',
             id: 'toggle_status',
             userInfo: { url: 'time-tracking://toggle_status' },
         },
@@ -36,14 +36,12 @@ export const initQuickActions = () => {
                         : i18next.t('quickAction.checkinEvent'),
                 )
 
-                if (Platform.OS === 'android') {
-                    ToastAndroid.show(
-                        isWorking
-                            ? `${i18next.t('quickAction.checkedOutAt')} ${timeString}`
-                            : `${i18next.t('quickAction.checkedInAt')} ${timeString}`,
-                        ToastAndroid.SHORT,
-                    )
-                }
+                ToastAndroid.show(
+                    isWorking
+                        ? `${i18next.t('quickAction.checkedOutAt')} ${timeString}`
+                        : `${i18next.t('quickAction.checkedInAt')} ${timeString}`,
+                    ToastAndroid.SHORT,
+                )
             } catch (e) {
                 console.error('Error handling Quick Action:', e)
             }

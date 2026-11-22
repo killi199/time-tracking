@@ -1,11 +1,8 @@
 import { ExpoConfig as BaseExpoConfig, ConfigContext } from 'expo/config'
 import { version, versionCode } from './package.json'
 
-interface CustomExpoConfig extends Omit<BaseExpoConfig, 'plugins' | 'ios'> {
+interface CustomExpoConfig extends Omit<BaseExpoConfig, 'plugins'> {
     jsEngine?: 'hermes' | 'jsc'
-    ios?: BaseExpoConfig['ios'] & {
-        jsEngine?: 'hermes' | 'jsc'
-    }
     plugins?: (string | [string, object])[]
 }
 
@@ -73,15 +70,12 @@ export default ({ config }: ConfigContext): CustomExpoConfig => {
         scheme: 'de.killi199.timetracking',
         version,
         orientation: 'portrait',
+        platforms: ['android'],
         icon: './assets/icon.png',
         userInterfaceStyle: 'automatic',
         jsEngine: 'hermes',
         experiments: {
             reactCompiler: true,
-        },
-        ios: {
-            supportsTablet: true,
-            jsEngine: 'jsc',
         },
         android: {
             versionCode,

@@ -14,7 +14,6 @@ web-build/
 !/android/app/
 /android/app/*
 !/android/app/.gitkeep
-/ios/
 
 # Metro
 .metro-health-check*
