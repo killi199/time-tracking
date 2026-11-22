@@ -25,6 +25,7 @@ const mockFileState = {
     textContent: '',
     writeError: null as Error | null,
     textError: null as Error | null,
+    writePromise: null as Promise<void> | null,
 }
 
 jest.mock('expo-file-system', () => {
@@ -48,7 +49,7 @@ jest.mock('expo-file-system', () => {
                 return Promise.reject(mockFileState.writeError)
             }
             mockFileState.written.push({ name: this.name, content })
-            return Promise.resolve()
+            return mockFileState.writePromise ?? Promise.resolve()
         }
 
         text() {
@@ -108,6 +109,7 @@ beforeEach(() => {
     mockFileState.textContent = ''
     mockFileState.writeError = null
     mockFileState.textError = null
+    mockFileState.writePromise = null
     jest.mocked(getAllEvents).mockReturnValue([])
     jest.mocked(getWorkHoursHistory).mockReturnValue([])
     jest.mocked(Sharing.isAvailableAsync).mockResolvedValue(true)
@@ -201,6 +203,26 @@ describe('exportToCSV', () => {
 
         expect(result).toEqual({ success: false, message: 'csv.exportFailed' })
         expect(errorSpy).toHaveBeenCalled()
+    })
+
+    it('waits for file write to complete before sharing', async () => {
+        let resolveWrite!: () => void
+        mockFileState.writePromise = new Promise<void>((resolve) => {
+            resolveWrite = resolve
+        })
+
+        const exportPromise = exportToCSV()
+        await Promise.resolve()
+
+        expect(Sharing.shareAsync).not.toHaveBeenCalled()
+
+        resolveWrite()
+        const result = await exportPromise
+
+        expect(result).toEqual({ success: true })
+        expect(Sharing.shareAsync).toHaveBeenCalledWith(
+            `file://${mockFileState.written[0].name}`,
+        )
     })
 })
 
