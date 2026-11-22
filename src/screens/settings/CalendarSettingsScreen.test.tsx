@@ -38,6 +38,9 @@ describe('CalendarSettingsScreen', () => {
         )
 
         expect(getSetting).toHaveBeenCalledWith('calendar_system')
+        const radios = screen.getAllByRole('radio')
+        expect(radios[2]).toBeChecked()
+        expect(radios[0]).not.toBeChecked()
     })
 
     it('defaults to auto if setting is not saved', async () => {
@@ -50,6 +53,10 @@ describe('CalendarSettingsScreen', () => {
         )
 
         expect(getSetting).toHaveBeenCalledWith('calendar_system')
+        const radios = screen.getAllByRole('radio')
+        expect(radios[0]).toBeChecked()
+        expect(radios[1]).not.toBeChecked()
+        expect(radios[2]).not.toBeChecked()
     })
 
     it('defaults to auto if setting contains an invalid value', async () => {
@@ -62,6 +69,10 @@ describe('CalendarSettingsScreen', () => {
         )
 
         expect(getSetting).toHaveBeenCalledWith('calendar_system')
+        const radios = screen.getAllByRole('radio')
+        expect(radios[0]).toBeChecked()
+        expect(radios[1]).not.toBeChecked()
+        expect(radios[2]).not.toBeChecked()
     })
 
     it('changes calendar system to auto and saves setting', async () => {

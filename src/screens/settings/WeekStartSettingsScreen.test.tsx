@@ -40,6 +40,9 @@ describe('WeekStartSettingsScreen', () => {
         )
 
         expect(getSetting).toHaveBeenCalledWith('first_day_of_week')
+        const radios = screen.getAllByRole('radio')
+        expect(radios[1]).toBeChecked()
+        expect(radios[0]).not.toBeChecked()
     })
 
     it('defaults to auto if setting is not saved', async () => {
@@ -52,6 +55,11 @@ describe('WeekStartSettingsScreen', () => {
         )
 
         expect(getSetting).toHaveBeenCalledWith('first_day_of_week')
+        const radios = screen.getAllByRole('radio')
+        expect(radios[0]).toBeChecked()
+        expect(radios[1]).not.toBeChecked()
+        expect(radios[2]).not.toBeChecked()
+        expect(radios[3]).not.toBeChecked()
     })
 
     it('defaults to auto if setting contains an invalid value', async () => {
@@ -64,6 +72,11 @@ describe('WeekStartSettingsScreen', () => {
         )
 
         expect(getSetting).toHaveBeenCalledWith('first_day_of_week')
+        const radios = screen.getAllByRole('radio')
+        expect(radios[0]).toBeChecked()
+        expect(radios[1]).not.toBeChecked()
+        expect(radios[2]).not.toBeChecked()
+        expect(radios[3]).not.toBeChecked()
     })
 
     it.each([
