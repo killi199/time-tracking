@@ -5,7 +5,7 @@ import { EventListItem } from '../components/EventListItem'
 import { TimeSeparator } from '../components/TimeSeparator'
 import { EmptyState } from '../components/EmptyState'
 import {
-    getMonthEvents,
+    getEventsRange,
     getOverallStats,
     getWorkHoursHistory,
 } from '../db/database'
@@ -13,6 +13,12 @@ import { TimeEvent } from '../types'
 import { useTranslation } from 'react-i18next'
 import { formatTime, getFormattedDate } from '../utils/time'
 import { sumDailyTargets } from '../utils/workHours'
+import {
+    getMonthRange,
+    getActiveCalendarSystem,
+    formatHeaderDate,
+    CalendarSystem,
+} from '../utils/calendar'
 
 interface ProcessedEvent extends TimeEvent {
     type: 'start' | 'end'
@@ -29,9 +35,10 @@ interface MonthViewProps {
     onEditEvent: (event: TimeEvent, close?: () => void) => void
     onDeleteEvent: (event: TimeEvent, close?: () => void) => void
     refreshTrigger: number
+    calendar?: CalendarSystem
 }
 
-function calculateMetrics(currentEvents: TimeEvent[], month: string) {
+function calculateMetrics(currentEvents: TimeEvent[], cutoffDate: string) {
     // Monthly Statistics
     let totalMinutesMonth = 0
     const workedDays = new Set<string>()
@@ -85,12 +92,6 @@ function calculateMetrics(currentEvents: TimeEvent[], month: string) {
     const dayBalance = formatTime(monthBalanceMinutes, true)
 
     // Overall Balance (Target: total accumulated until end of this month)
-    const [yearStr, monthStr] = month.split('-')
-    const year = parseInt(yearStr, 10)
-    const monthNum = parseInt(monthStr, 10)
-    const lastDay = new Date(year, monthNum, 0).getDate()
-    const cutoffDate = `${month}-${String(lastDay).padStart(2, '0')}`
-
     const { overallBalanceMinutes } = getOverallStats(
         cutoffDate,
         workHoursHistory,
@@ -169,17 +170,24 @@ export default function MonthView({
     onEditEvent,
     onDeleteEvent,
     refreshTrigger,
+    calendar,
 }: Readonly<MonthViewProps>) {
     const [, setTick] = useState(0)
 
     const theme = useTheme()
     const { t, i18n } = useTranslation()
 
-    const loadedEvents = getMonthEvents(month)
+    const activeCalendar = calendar ?? getActiveCalendarSystem()
+    const dateStr =
+        month.includes('-') && month.split('-').length === 2
+            ? `${month}-01`
+            : month
+    const { start, end } = getMonthRange(dateStr, activeCalendar)
+    const loadedEvents = getEventsRange(start, end)
     const events = processEvents(loadedEvents)
     const { todayWorked, dayBalance, overallBalance } = calculateMetrics(
         loadedEvents,
-        month,
+        end,
     )
 
     useEffect(() => {
@@ -208,17 +216,12 @@ export default function MonthView({
             <View>
                 {item.showDateHeader ? (
                     <List.Subheader>
-                        {(() => {
-                            const [y, m, d] = item.date.split('-').map(Number)
-                            return new Date(y, m - 1, d).toLocaleDateString(
-                                i18n.language,
-                                {
-                                    weekday: 'short',
-                                    day: 'numeric',
-                                    month: 'numeric',
-                                },
-                            )
-                        })()}
+                        {formatHeaderDate(
+                            item.date,
+                            'day',
+                            activeCalendar,
+                            i18n.language,
+                        )}
                     </List.Subheader>
                 ) : null}
                 <EventListItem

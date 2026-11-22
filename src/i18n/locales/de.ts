@@ -120,6 +120,18 @@ export default {
             workHoursInvalid: 'Die Arbeitszeit pro Tag muss größer als 0 sein.',
             workHoursEffectiveNote:
                 'Änderungen gelten ab heute. Frühere Tage behalten ihr bisheriges Ziel.',
+            calendar: 'Kalender',
+            calendarTitle: 'Kalendersystem',
+            calendarGregorian: 'Gregorianisch',
+            calendarJalali: 'Persischer Kalender (Jalali)',
+            firstDayOfWeek: 'Erster Wochentag',
+            firstDayOfWeekTitle: 'Erster Wochentag',
+            autoFirstDay: 'Automatisch (nach Kalender)',
+            saturday: 'Samstag',
+            sunday: 'Sonntag',
+            monday: 'Montag',
+            firstDayOfWeekNote:
+                'Gilt für die Wochenansicht und den Jalali-Datumsauswahldialog. Der gregorianische Datumsauswahldialog richtet sich nach dem Systemkalender deines Geräts.',
         },
         dialog: {
             checkInTitle: 'Einchecken',

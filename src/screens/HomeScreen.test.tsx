@@ -8,7 +8,7 @@ import {
 import { describe, it, expect, beforeEach, jest } from '@jest/globals'
 import HomeScreen from './HomeScreen'
 import { useNavigation } from 'expo-router'
-import { addEvent, updateEvent, deleteEvent } from '../db/database'
+import { addEvent, updateEvent, deleteEvent, getSetting } from '../db/database'
 import { AppState } from 'react-native'
 import { PaperProvider } from 'react-native-paper'
 
@@ -36,10 +36,24 @@ jest.mock('react-native-reanimated', () => {
     }
 })
 
+const mockSettingsListeners = new Set<() => void>()
+const notifySettingsListeners = () => {
+    mockSettingsListeners.forEach((l) => {
+        l()
+    })
+}
+
 jest.mock('../db/database', () => ({
     addEvent: jest.fn(),
     updateEvent: jest.fn(),
     deleteEvent: jest.fn(),
+    getSetting: jest.fn(),
+    subscribeSettings: jest.fn((listener: () => void) => {
+        mockSettingsListeners.add(listener)
+        return () => {
+            mockSettingsListeners.delete(listener)
+        }
+    }),
 }))
 
 let panEndCallback: ((e: { translationX: number }) => void) | undefined
@@ -219,6 +233,7 @@ const renderWithProvider = (ui: React.ReactElement) =>
 describe('HomeScreen', () => {
     beforeEach(() => {
         jest.clearAllMocks()
+        mockSettingsListeners.clear()
         panEndCallback = undefined
         jest.mocked(useNavigation).mockReturnValue({
             setOptions: mockSetOptions,
@@ -377,6 +392,147 @@ describe('HomeScreen', () => {
         )
         expect(screen.getByTestId('day-view')).toBeOnTheScreen()
     })
+
+    const withMockedDate = <T,>(
+        initialDate: Date,
+        testFn: (setMockDate: (d: Date) => void) => Promise<T>,
+    ) => {
+        return async () => {
+            const RealDate = global.Date
+            let mockTime = initialDate.getTime()
+            // @ts-expect-error Mocking global Date for controlled midnight rollover test
+            global.Date = class extends RealDate {
+                constructor(...args: unknown[]) {
+                    if (args.length === 0) {
+                        super(mockTime)
+                    } else {
+                        // @ts-expect-error Pass through constructor arguments
+                        super(...args)
+                    }
+                }
+                static now() {
+                    return mockTime
+                }
+            }
+
+            try {
+                return await testFn((d) => {
+                    mockTime = d.getTime()
+                })
+            } finally {
+                global.Date = RealDate
+            }
+        }
+    }
+
+    it(
+        'rolls over to next month at midnight when viewing current month after stepping back and forth',
+        withMockedDate(new Date('2026-11-30T12:00:00'), async (setMockDate) => {
+            const user = userEvent.setup()
+            const { unmount } = await renderWithProvider(
+                <HomeScreen viewMode="month" />,
+            )
+
+            expect(screen.getByText('November 2026')).toBeOnTheScreen()
+
+            // Step back to October, then forward to November ('2026-11-01')
+            await user.press(screen.getByTestId('prev-date-btn'))
+            expect(screen.getByText('October 2026')).toBeOnTheScreen()
+            await user.press(screen.getByTestId('next-date-btn'))
+            expect(screen.getByText('November 2026')).toBeOnTheScreen()
+
+            // Advance midnight to December 1, 2026
+            setMockDate(new Date('2026-12-01T00:01:00'))
+
+            // Simulate app coming from background to active
+            const latestHandler = jest
+                .mocked(AppState.addEventListener)
+                .mock.calls.at(-1)?.[1]
+
+            await act(async () => {
+                await Promise.resolve()
+                latestHandler?.('background')
+            })
+            await act(async () => {
+                await Promise.resolve()
+                latestHandler?.('active')
+            })
+
+            // View should automatically advance to December 2026
+            await waitFor(() => {
+                expect(screen.getByText('December 2026')).toBeOnTheScreen()
+            })
+
+            await unmount()
+        }),
+    )
+
+    it(
+        'does not roll over month at midnight if user was viewing a past month',
+        withMockedDate(new Date('2026-11-30T12:00:00'), async (setMockDate) => {
+            const user = userEvent.setup()
+            const { unmount } = await renderWithProvider(
+                <HomeScreen viewMode="month" />,
+            )
+
+            expect(screen.getByText('November 2026')).toBeOnTheScreen()
+
+            // Step back to October ('2026-10-01')
+            await user.press(screen.getByTestId('prev-date-btn'))
+            expect(screen.getByText('October 2026')).toBeOnTheScreen()
+
+            // Advance midnight to December 1, 2026
+            setMockDate(new Date('2026-12-01T00:01:00'))
+
+            const latestHandler = jest
+                .mocked(AppState.addEventListener)
+                .mock.calls.at(-1)?.[1]
+
+            await act(async () => {
+                await Promise.resolve()
+                latestHandler?.('background')
+            })
+            await act(async () => {
+                await Promise.resolve()
+                latestHandler?.('active')
+            })
+
+            // View should stay on October 2026
+            expect(screen.getByText('October 2026')).toBeOnTheScreen()
+
+            await unmount()
+        }),
+    )
+
+    it(
+        'rolls over to next week at midnight when viewing current week in week view',
+        withMockedDate(new Date('2026-11-29T23:59:00'), async (setMockDate) => {
+            const { unmount } = await renderWithProvider(
+                <HomeScreen viewMode="week" />,
+            )
+
+            // Midnight passes to Monday, Nov 30 (new week starting Nov 30)
+            setMockDate(new Date('2026-11-30T00:01:00'))
+
+            const latestHandler = jest
+                .mocked(AppState.addEventListener)
+                .mock.calls.at(-1)?.[1]
+
+            await act(async () => {
+                await Promise.resolve()
+                latestHandler?.('background')
+            })
+            await act(async () => {
+                await Promise.resolve()
+                latestHandler?.('active')
+            })
+
+            // Week header should advance to the week containing Nov 30
+            expect(screen.getByText(/Nov 30/)).toBeOnTheScreen()
+
+            await unmount()
+        }),
+    )
 
     it('disables next button and Now button on today, current week, and current month', async () => {
         const { unmount } = await renderWithProvider(
@@ -612,4 +768,135 @@ describe('HomeScreen', () => {
             ).not.toBeOnTheScreen()
         })
     })
+
+    it(
+        'renders header in Jalali calendar and navigates months when jalali is active',
+        withMockedDate(new Date('2026-11-16T12:00:00'), async () => {
+            jest.mocked(getSetting).mockImplementation((key: string) => {
+                if (key === 'calendar_system') return 'jalali'
+                if (key === 'first_day_of_week') return 'saturday'
+                return null
+            })
+
+            const user = userEvent.setup()
+            const { unmount } = await renderWithProvider(
+                <HomeScreen viewMode="month" />,
+            )
+
+            // Header should show Jalali month name
+            expect(screen.getByText('Aban 1405')).toBeOnTheScreen()
+
+            // Prev month button should step back 1 Jalali month (Mehr 1405)
+            await user.press(screen.getByTestId('prev-date-btn'))
+            expect(screen.getByText('Mehr 1405')).toBeOnTheScreen()
+
+            // Back to now
+            await user.press(screen.getByText('home.backToNow'))
+            expect(screen.getByText('Aban 1405')).toBeOnTheScreen()
+
+            // Pick an earlier Jalali month via picker
+            mockDatePickerDate = new Date(2026, 9, 15) // 23 Mehr 1405
+            await user.press(screen.getByText('Aban 1405'))
+            await user.press(screen.getByTestId('confirm-date'))
+            expect(screen.getByText('Mehr 1405')).toBeOnTheScreen()
+
+            // Pick current Jalali month again (direction right)
+            mockDatePickerDate = new Date(2026, 10, 16) // 26 Aban 1405
+            await user.press(screen.getByText('Mehr 1405'))
+            await user.press(screen.getByTestId('confirm-date'))
+            expect(screen.getByText('Aban 1405')).toBeOnTheScreen()
+
+            mockDatePickerDate = null
+            await unmount()
+        }),
+    )
+
+    it(
+        'handles picking earlier and later weeks in week view mode',
+        withMockedDate(new Date('2026-11-16T12:00:00'), async () => {
+            const user = userEvent.setup()
+            const { unmount } = await renderWithProvider(
+                <HomeScreen viewMode="week" />,
+            )
+
+            // Pick 2 weeks ago
+            const twoWeeksAgo = new Date()
+            twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
+            mockDatePickerDate = twoWeeksAgo
+
+            await user.press(screen.getByTestId('date-touchable'))
+            expect(screen.getByTestId('confirm-date')).toBeVisible()
+            await user.press(screen.getByTestId('confirm-date'))
+
+            expect(screen.getByTestId('next-date-btn')).toBeEnabled()
+            expect(screen.getByText('home.backToNow')).toBeEnabled()
+
+            // Pick 1 week ago (targetWeekStart > currentWeekStart -> direction right)
+            const oneWeekAgo = new Date()
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
+            mockDatePickerDate = oneWeekAgo
+            await user.press(screen.getByTestId('date-touchable'))
+            await user.press(screen.getByTestId('confirm-date'))
+
+            // Go to today from past week
+            expect(screen.getByText('home.backToNow')).toBeEnabled()
+            await user.press(screen.getByText('home.backToNow'))
+            expect(screen.getByTestId('next-date-btn')).toBeDisabled()
+
+            mockDatePickerDate = null
+            await unmount()
+        }),
+    )
+
+    it(
+        'renders week view with Saturday start when jalali and saturday start are active',
+        withMockedDate(new Date('2026-11-16T12:00:00'), async () => {
+            jest.mocked(getSetting).mockImplementation((key: string) => {
+                if (key === 'calendar_system') return 'jalali'
+                if (key === 'first_day_of_week') return 'saturday'
+                return null
+            })
+
+            const { unmount } = await renderWithProvider(
+                <HomeScreen viewMode="week" />,
+            )
+
+            // Header should show Jalali week range
+            expect(screen.getByText(/1405/)).toBeOnTheScreen()
+
+            await unmount()
+        }),
+    )
+
+    it(
+        'reactively updates header and view when calendar setting changes live via subscription',
+        withMockedDate(new Date('2026-11-16T12:00:00'), async () => {
+            let activeCalendar = 'gregorian'
+            const activeFirstDay = 'auto'
+
+            jest.mocked(getSetting).mockImplementation((key: string) => {
+                if (key === 'calendar_system') return activeCalendar
+                if (key === 'first_day_of_week') return activeFirstDay
+                return null
+            })
+
+            const { unmount } = await renderWithProvider(
+                <HomeScreen viewMode="month" />,
+            )
+
+            // Initially Gregorian month header
+            expect(screen.getByText(/November 2026/)).toBeOnTheScreen()
+
+            // Change calendar system to Jalali
+            activeCalendar = 'jalali'
+            await act(() => {
+                notifySettingsListeners()
+            })
+
+            // Header reactively updates to Jalali month
+            expect(screen.getByText('Aban 1405')).toBeOnTheScreen()
+
+            await unmount()
+        }),
+    )
 })

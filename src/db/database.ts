@@ -96,6 +96,18 @@ export const getSetting = (key: string): string | null => {
     return result.length > 0 ? result[0].value : null
 }
 
+const settingsListeners = new Set<() => void>()
+
+/**
+ * Subscribes to changes in settings. Returns an unsubscribe function.
+ */
+export const subscribeSettings = (listener: () => void): (() => void) => {
+    settingsListeners.add(listener)
+    return () => {
+        settingsListeners.delete(listener)
+    }
+}
+
 export const setSetting = (key: string, value: string): void => {
     const statement = db.prepareSync(
         'INSERT OR REPLACE INTO settings (key, value) VALUES ($key, $value)',
@@ -105,6 +117,9 @@ export const setSetting = (key: string, value: string): void => {
     } finally {
         statement.finalizeSync()
     }
+    settingsListeners.forEach((listener) => {
+        listener()
+    })
 }
 
 /**
@@ -173,14 +188,6 @@ export const getTodayEvents = (date: string): TimeEvent[] => {
     return db.getAllSync<TimeEvent>(
         'SELECT * FROM events WHERE date = $date ORDER BY time ASC',
         { $date: date },
-    )
-}
-
-export const getMonthEvents = (month: string): TimeEvent[] => {
-    // month format: 'YYYY-MM'
-    return db.getAllSync<TimeEvent>(
-        "SELECT * FROM events WHERE date LIKE $month || '%' ORDER BY date ASC, time ASC",
-        { $month: month },
     )
 }
 

@@ -13,6 +13,14 @@ import { TimeEvent } from '../types'
 import { useTranslation } from 'react-i18next'
 import { formatTime, getFormattedDate } from '../utils/time'
 import { sumDailyTargets } from '../utils/workHours'
+import {
+    getWeekRange,
+    getActiveCalendarSystem,
+    getSavedFirstDayOfWeek,
+    formatHeaderDate,
+    CalendarSystem,
+    FirstDayOfWeek,
+} from '../utils/calendar'
 
 interface ProcessedEvent extends TimeEvent {
     type: 'start' | 'end'
@@ -29,28 +37,8 @@ interface WeekViewProps {
     onEditEvent: (event: TimeEvent, close?: () => void) => void
     onDeleteEvent: (event: TimeEvent, close?: () => void) => void
     refreshTrigger: number
-}
-
-function getWeekRange(dateStr: string) {
-    const [y, m, d] = dateStr.split('-').map(Number)
-    const curr = new Date(y, m - 1, d)
-    const day = curr.getDay() // 0 (Sun) to 6 (Sat)
-    // Mondays as start
-    // if Sunday (0), we equate it to 7 to subtract 6 days to get Monday.
-    // if Monday (1), we subtract 0.
-    // formula: diff = getDate - (day === 0 ? 6 : day - 1)
-
-    const diffToMonday = day === 0 ? 6 : day - 1
-    const first = new Date(curr)
-    first.setDate(curr.getDate() - diffToMonday)
-
-    const last = new Date(first)
-    last.setDate(first.getDate() + 6)
-
-    return {
-        start: getFormattedDate(first),
-        end: getFormattedDate(last),
-    }
+    calendar?: CalendarSystem
+    firstDayOfWeek?: FirstDayOfWeek
 }
 
 function calculateMetrics(
@@ -186,13 +174,17 @@ export default function WeekView({
     onEditEvent,
     onDeleteEvent,
     refreshTrigger,
+    calendar,
+    firstDayOfWeek,
 }: Readonly<WeekViewProps>) {
     const [, setTick] = useState(0)
 
     const theme = useTheme()
     const { t, i18n } = useTranslation()
 
-    const { start, end } = getWeekRange(date)
+    const activeCalendar = calendar ?? getActiveCalendarSystem()
+    const activeFirstDay = firstDayOfWeek ?? getSavedFirstDayOfWeek()
+    const { start, end } = getWeekRange(date, activeFirstDay, activeCalendar)
     const loadedEvents = getEventsRange(start, end)
     const events = processEvents(loadedEvents)
     const { weekWorked, weekBalance, overallBalance } = calculateMetrics(
@@ -226,17 +218,12 @@ export default function WeekView({
             <View>
                 {item.showDateHeader ? (
                     <List.Subheader>
-                        {(() => {
-                            const [y, m, d] = item.date.split('-').map(Number)
-                            return new Date(y, m - 1, d).toLocaleDateString(
-                                i18n.language,
-                                {
-                                    weekday: 'short',
-                                    day: 'numeric',
-                                    month: 'numeric',
-                                },
-                            )
-                        })()}
+                        {formatHeaderDate(
+                            item.date,
+                            'day',
+                            activeCalendar,
+                            i18n.language,
+                        )}
                     </List.Subheader>
                 ) : null}
                 <EventListItem

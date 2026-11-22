@@ -24,30 +24,18 @@ import { useFocusEffect, useNavigation } from 'expo-router'
 import { addEvent, updateEvent, deleteEvent } from '../db/database'
 import { TimeEvent } from '../types'
 import { useTranslation } from 'react-i18next'
+import { getFormattedTime, getFormattedDate } from '../utils/time'
 import {
-    getFormattedTime,
-    getFormattedDate,
-    getFormattedMonth,
-    getLocaleDateString,
-} from '../utils/time'
+    useActiveCalendarSystem,
+    useSavedFirstDayOfWeek,
+    getWeekRange,
+    getMonthRange,
+    stepMonth,
+    formatHeaderDate,
+} from '../utils/calendar'
 import DayView from './DayView'
 import MonthView from './MonthView'
 import WeekView from './WeekView'
-
-// Helper to get week range text
-const getWeekRangeData = (dateStr: string) => {
-    const curr = new Date(dateStr)
-    const day = curr.getDay() // 0-6
-    const diffToMonday = day === 0 ? 6 : day - 1
-    const first = new Date(curr)
-    first.setDate(curr.getDate() - diffToMonday)
-    const last = new Date(first)
-    last.setDate(first.getDate() + 6)
-    return {
-        start: first,
-        end: last,
-    }
-}
 
 type ViewMode = 'day' | 'week' | 'month'
 type SlideDirection = 'left' | 'right' | 'none'
@@ -72,9 +60,6 @@ export default function HomeScreen({
     const viewMode = initialViewMode
     const [currentDate, setCurrentDate] = useState<string>(
         getFormattedDate(new Date()),
-    )
-    const [currentMonth, setCurrentMonth] = useState<string>(
-        getFormattedMonth(new Date()), // YYYY-MM
     )
     const [direction, setDirection] = useState<SlideDirection>('none')
 
@@ -109,10 +94,12 @@ export default function HomeScreen({
     const theme = useTheme()
     const { t, i18n } = useTranslation()
 
+    const calendarSystem = useActiveCalendarSystem()
+    const firstDayOfWeek = useSavedFirstDayOfWeek()
+
     // Track app state and date to auto-update on resume
     const appState = useRef(AppState.currentState)
     const lastActiveDateRef = useRef(getFormattedDate(new Date()))
-    const lastActiveMonthRef = useRef(getFormattedMonth(new Date()))
 
     useEffect(() => {
         const subscription = AppState.addEventListener(
@@ -124,22 +111,44 @@ export default function HomeScreen({
                 ) {
                     const now = new Date()
                     const newToday = getFormattedDate(now)
-                    const newMonth = getFormattedMonth(now)
 
-                    // If real day changed and we were viewing "Today", update to new "Today"
+                    // If real day changed and we were viewing the active period, update to new "Today"
                     if (newToday !== lastActiveDateRef.current) {
-                        if (currentDate === lastActiveDateRef.current) {
+                        let isViewingCurrentPeriod = false
+                        if (viewMode === 'day') {
+                            isViewingCurrentPeriod =
+                                currentDate === lastActiveDateRef.current
+                        } else if (viewMode === 'week') {
+                            const currentWeek = getWeekRange(
+                                currentDate,
+                                firstDayOfWeek,
+                                calendarSystem,
+                            )
+                            const lastActiveWeek = getWeekRange(
+                                lastActiveDateRef.current,
+                                firstDayOfWeek,
+                                calendarSystem,
+                            )
+                            isViewingCurrentPeriod =
+                                currentWeek.start === lastActiveWeek.start
+                        } else {
+                            const currentMonth = getMonthRange(
+                                currentDate,
+                                calendarSystem,
+                            )
+                            const lastActiveMonth = getMonthRange(
+                                lastActiveDateRef.current,
+                                calendarSystem,
+                            )
+                            isViewingCurrentPeriod =
+                                currentMonth.monthIdentifier ===
+                                lastActiveMonth.monthIdentifier
+                        }
+
+                        if (isViewingCurrentPeriod) {
                             setCurrentDate(newToday)
                         }
                         lastActiveDateRef.current = newToday
-                    }
-
-                    // Same for month
-                    if (newMonth !== lastActiveMonthRef.current) {
-                        if (currentMonth === lastActiveMonthRef.current) {
-                            setCurrentMonth(newMonth)
-                        }
-                        lastActiveMonthRef.current = newMonth
                     }
 
                     // Always refresh data on resume
@@ -153,7 +162,7 @@ export default function HomeScreen({
         return () => {
             subscription.remove()
         }
-    }, [currentDate, currentMonth])
+    }, [calendarSystem, currentDate, firstDayOfWeek, viewMode])
 
     const navigation = useNavigation()
 
@@ -165,14 +174,25 @@ export default function HomeScreen({
     const canGoForward = (() => {
         const today = new Date()
         const todayStr = getFormattedDate(today)
-        const todayMonthStr = getFormattedMonth(today)
 
         if (viewMode === 'month') {
-            return currentMonth < todayMonthStr
+            const currentMonthEnd = getMonthRange(
+                currentDate,
+                calendarSystem,
+            ).end
+            const todayMonthEnd = getMonthRange(todayStr, calendarSystem).end
+            return currentMonthEnd < todayMonthEnd
         } else if (viewMode === 'week') {
-            const currentWeekStart =
-                getWeekRangeData(currentDate).start.getTime()
-            const todayWeekStart = getWeekRangeData(todayStr).start.getTime()
+            const currentWeekStart = getWeekRange(
+                currentDate,
+                firstDayOfWeek,
+                calendarSystem,
+            ).start
+            const todayWeekStart = getWeekRange(
+                todayStr,
+                firstDayOfWeek,
+                calendarSystem,
+            ).start
             return currentWeekStart < todayWeekStart
         } else {
             return currentDate < todayStr
@@ -185,20 +205,20 @@ export default function HomeScreen({
         setDirection(step > 0 ? 'right' : 'left')
         const today = new Date()
         const todayStr = getFormattedDate(today)
-        const todayMonthStr = getFormattedMonth(today)
 
         if (viewMode === 'month') {
-            const [year, month] = currentMonth.split('-').map(Number)
-            const date = new Date(year, month - 1 + step, 1)
-            const newMonth = getFormattedMonth(date)
-            setCurrentMonth(newMonth > todayMonthStr ? todayMonthStr : newMonth)
+            const steppedDate = stepMonth(currentDate, step, calendarSystem)
+            const newDateStr = steppedDate > todayStr ? todayStr : steppedDate
+            setCurrentDate(newDateStr)
         } else if (viewMode === 'week') {
-            const date = new Date(currentDate)
+            const [y, m, d] = currentDate.split('-').map(Number)
+            const date = new Date(y, m - 1, d)
             date.setDate(date.getDate() + step * 7)
             const newDateStr = getFormattedDate(date)
             setCurrentDate(newDateStr > todayStr ? todayStr : newDateStr)
         } else {
-            const date = new Date(currentDate)
+            const [y, m, d] = currentDate.split('-').map(Number)
+            const date = new Date(y, m - 1, d)
             date.setDate(date.getDate() + step)
             const newDateStr = getFormattedDate(date)
             setCurrentDate(newDateStr > todayStr ? todayStr : newDateStr)
@@ -208,56 +228,23 @@ export default function HomeScreen({
     const goToToday = () => {
         const now = new Date()
         const todayDate = getFormattedDate(now)
-        const todayMonth = getFormattedMonth(now)
-        if (viewMode === 'month') {
-            let nextDirection: SlideDirection = 'none'
-            if (todayMonth > currentMonth) {
-                nextDirection = 'right'
-            } else if (todayMonth < currentMonth) {
-                nextDirection = 'left'
-            }
-            setDirection(nextDirection)
-        } else {
-            let nextDirection: SlideDirection = 'none'
-            if (todayDate > currentDate) {
-                nextDirection = 'right'
-            } else if (todayDate < currentDate) {
-                nextDirection = 'left'
-            }
-            setDirection(nextDirection)
+        let nextDirection: SlideDirection = 'none'
+        if (todayDate > currentDate) {
+            nextDirection = 'right'
+        } else if (todayDate < currentDate) {
+            nextDirection = 'left'
         }
+        setDirection(nextDirection)
         setCurrentDate(todayDate)
-        setCurrentMonth(todayMonth)
     }
 
-    const formattedDate = (() => {
-        if (viewMode === 'month') {
-            const [y, m] = currentMonth.split('-').map(Number)
-            return new Date(y, m - 1, 1).toLocaleDateString(i18n.language, {
-                year: 'numeric',
-                month: 'long',
-            })
-        } else if (viewMode === 'week') {
-            const { start, end } = getWeekRangeData(currentDate)
-            const startStr = start.toLocaleDateString(i18n.language, {
-                month: 'short',
-                day: 'numeric',
-            })
-            const endStr = end.toLocaleDateString(i18n.language, {
-                month: 'short',
-                day: 'numeric',
-            })
-            return `${startStr} - ${endStr}`
-        } else {
-            const [y, m, d] = currentDate.split('-').map(Number)
-            return new Date(y, m - 1, d).toLocaleDateString(i18n.language, {
-                weekday: 'short',
-                year: 'numeric',
-                month: 'numeric',
-                day: 'numeric',
-            })
-        }
-    })()
+    const formattedDate = formatHeaderDate(
+        currentDate,
+        viewMode,
+        calendarSystem,
+        i18n.language,
+        firstDayOfWeek,
+    )
 
     const activeItemCloseCallback = useRef<(() => void) | undefined>(undefined)
 
@@ -412,42 +399,54 @@ export default function HomeScreen({
         if (!params.date) return
 
         const todayDate = getFormattedDate(new Date())
-        const todayMonth = getFormattedMonth(new Date())
+        const newDate = getFormattedDate(params.date)
+        const targetDate = newDate > todayDate ? todayDate : newDate
 
+        let nextDirection: SlideDirection = 'none'
         if (viewMode === 'month') {
-            const newMonth = getFormattedMonth(params.date)
-            const targetMonth = newMonth > todayMonth ? todayMonth : newMonth
-            let nextDirection: SlideDirection = 'none'
-            if (targetMonth > currentMonth) {
+            const currentMonthId = getMonthRange(
+                currentDate,
+                calendarSystem,
+            ).monthIdentifier
+            const targetMonthId = getMonthRange(
+                targetDate,
+                calendarSystem,
+            ).monthIdentifier
+            if (targetMonthId > currentMonthId) {
                 nextDirection = 'right'
-            } else if (targetMonth < currentMonth) {
+            } else if (targetMonthId < currentMonthId) {
                 nextDirection = 'left'
             }
-            setDirection(nextDirection)
-            setCurrentMonth(targetMonth)
+        } else if (viewMode === 'week') {
+            const currentWeekStart = getWeekRange(
+                currentDate,
+                firstDayOfWeek,
+                calendarSystem,
+            ).start
+            const targetWeekStart = getWeekRange(
+                targetDate,
+                firstDayOfWeek,
+                calendarSystem,
+            ).start
+            if (targetWeekStart > currentWeekStart) {
+                nextDirection = 'right'
+            } else if (targetWeekStart < currentWeekStart) {
+                nextDirection = 'left'
+            }
         } else {
-            const newDate = getFormattedDate(params.date)
-            const targetDate = newDate > todayDate ? todayDate : newDate
-            let nextDirection: SlideDirection = 'none'
             if (targetDate > currentDate) {
                 nextDirection = 'right'
             } else if (targetDate < currentDate) {
                 nextDirection = 'left'
             }
-            setDirection(nextDirection)
-            setCurrentDate(targetDate)
         }
+
+        setDirection(nextDirection)
+        setCurrentDate(targetDate)
     }
 
-    const dateForPicker = (() => {
-        if (viewMode === 'month') {
-            const [y, m] = currentMonth.split('-').map(Number)
-            return new Date(y, m - 1, 1)
-        } else {
-            const [y, m, d] = currentDate.split('-').map(Number)
-            return new Date(y, m - 1, d)
-        }
-    })()
+    const [y, m, d] = currentDate.split('-').map(Number)
+    const dateForPicker = new Date(y, m - 1, d)
 
     // Ensure the date is valid (fallback to now if invalid)
     const validDateForPicker = isNaN(dateForPicker.getTime())
@@ -488,6 +487,16 @@ export default function HomeScreen({
             }
         })
 
+    const animatedViewKey = (() => {
+        if (viewMode === 'month') {
+            return `month-${getMonthRange(currentDate, calendarSystem).monthIdentifier}`
+        }
+        if (viewMode === 'week') {
+            return `week-${getWeekRange(currentDate, firstDayOfWeek, calendarSystem).start}`
+        }
+        return `day-${currentDate}`
+    })()
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -501,6 +510,7 @@ export default function HomeScreen({
                     />
                     <TouchableOpacity
                         style={styles.dateTouchable}
+                        testID="date-touchable"
                         onPress={() => {
                             setDatePickerVisible(true)
                         }}
@@ -539,6 +549,8 @@ export default function HomeScreen({
                 locale={i18n.language}
                 cancelLabel={t('common.cancel')}
                 confirmLabel={t('common.confirm')}
+                calendar={calendarSystem}
+                firstDayOfWeek={firstDayOfWeek}
             />
 
             <AdaptiveDateTimePicker
@@ -577,12 +589,14 @@ export default function HomeScreen({
                 locale={i18n.language}
                 cancelLabel={t('common.cancel')}
                 confirmLabel={t('common.confirm')}
+                calendar={calendarSystem}
+                firstDayOfWeek={firstDayOfWeek}
             />
 
             <GestureDetector gesture={swipeGesture}>
                 <View style={styles.contentContainer}>
                     <Animated.View
-                        key={`${viewMode}-${viewMode === 'month' ? currentMonth : currentDate}`}
+                        key={animatedViewKey}
                         entering={getEnteringAnimation(direction)}
                         style={styles.animatedView}
                     >
@@ -601,6 +615,8 @@ export default function HomeScreen({
                                 return (
                                     <WeekView
                                         date={currentDate}
+                                        calendar={calendarSystem}
+                                        firstDayOfWeek={firstDayOfWeek}
                                         onEditEvent={showEditDialog}
                                         onDeleteEvent={showDeleteDialog}
                                         refreshTrigger={refreshTrigger}
@@ -609,7 +625,8 @@ export default function HomeScreen({
                             } else {
                                 return (
                                     <MonthView
-                                        month={currentMonth}
+                                        month={currentDate}
+                                        calendar={calendarSystem}
                                         onEditEvent={showEditDialog}
                                         onDeleteEvent={showDeleteDialog}
                                         refreshTrigger={refreshTrigger}
@@ -639,8 +656,10 @@ export default function HomeScreen({
                                 <View pointerEvents="none">
                                     <TextInput
                                         label={t('addEntry.dateLabel')}
-                                        value={getLocaleDateString(
+                                        value={formatHeaderDate(
                                             dialogDate,
+                                            'day',
+                                            calendarSystem,
                                             i18n.language,
                                         )}
                                         mode="outlined"

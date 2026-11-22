@@ -117,6 +117,18 @@ export default {
             workHoursInvalid: 'The daily work hours must be greater than 0.',
             workHoursEffectiveNote:
                 'Changes apply from today onward. Earlier days keep their previous target.',
+            calendar: 'Calendar',
+            calendarTitle: 'Calendar System',
+            calendarGregorian: 'Gregorian',
+            calendarJalali: 'Jalali (Solar Hijri)',
+            firstDayOfWeek: 'First day of week',
+            firstDayOfWeekTitle: 'First Day of the Week',
+            autoFirstDay: 'Automatic (based on calendar)',
+            saturday: 'Saturday',
+            sunday: 'Sunday',
+            monday: 'Monday',
+            firstDayOfWeekNote:
+                "Applies to the Week view and Jalali date picker. The Gregorian date picker follows your device's system calendar.",
         },
         dialog: {
             checkInTitle: 'Check In',

@@ -1,9 +1,18 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals'
-import { render, screen, userEvent } from '@testing-library/react-native'
+import {
+    render,
+    screen,
+    userEvent,
+    within,
+} from '@testing-library/react-native'
 import { Platform } from 'react-native'
 import { PaperProvider } from 'react-native-paper'
 import AdaptiveDateTimePicker from './AdaptiveDateTimePicker'
 import { shiftToUTC, shiftToLocal } from '../utils/dateShift'
+
+jest.mock('../db/database', () => ({
+    getSetting: jest.fn(() => null),
+}))
 
 jest.mock('@expo/ui/community/datetime-picker', () => {
     const { View, Text, TouchableOpacity } =
@@ -443,6 +452,65 @@ describe('AdaptiveDateTimePicker', () => {
 
             await user.press(screen.getByTestId('trigger-dismiss'))
             expect(mockOnDismiss).toHaveBeenCalledTimes(1)
+        })
+    })
+
+    describe('Jalali calendar mode', () => {
+        it('renders JalaliDatePickerDialog when calendar is jalali and mode is date', async () => {
+            const user = userEvent.setup()
+            await render(
+                <PaperProvider>
+                    <AdaptiveDateTimePicker
+                        visible={true}
+                        onDismiss={mockOnDismiss}
+                        onConfirm={mockOnConfirm}
+                        value={new Date(2026, 10, 11)}
+                        mode="date"
+                        calendar="jalali"
+                        cancelLabel="Cancel"
+                        confirmLabel="Confirm"
+                        locale="en"
+                    />
+                </PaperProvider>,
+            )
+
+            expect(screen.getAllByText(/Aban 1405/).length).toBeGreaterThan(0)
+            const confirmBtn = screen.getByText('Confirm')
+            await user.press(confirmBtn)
+            expect(mockOnConfirm).toHaveBeenCalledTimes(1)
+        })
+
+        it('forwards firstDayOfWeek to JalaliDatePickerDialog', async () => {
+            await render(
+                <PaperProvider>
+                    <AdaptiveDateTimePicker
+                        visible={true}
+                        onDismiss={mockOnDismiss}
+                        onConfirm={mockOnConfirm}
+                        value={new Date(2026, 10, 11)}
+                        mode="date"
+                        calendar="jalali"
+                        cancelLabel="Cancel"
+                        confirmLabel="Confirm"
+                        locale="en"
+                        firstDayOfWeek="monday"
+                    />
+                </PaperProvider>,
+            )
+
+            // When week starts on Monday, verify the exact weekday header order
+            const weekdayRow = screen.getByTestId('jalali-picker-weekday-row')
+            const labels = within(weekdayRow)
+                .getAllByText(/.+/)
+                .map((el) =>
+                    String((el.props as Record<string, unknown>).children),
+                )
+            expect(labels).toEqual(['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'])
+
+            // Friday offset with Monday start: (5 - 1 + 7) % 7 = 4 leading empty cells
+            expect(
+                screen.getAllByTestId('jalali-leading-empty-cell'),
+            ).toHaveLength(4)
         })
     })
 })

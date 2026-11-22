@@ -44,6 +44,21 @@ describe('settings', () => {
         db.setSetting('language', 'en')
         expect(db.getSetting('language')).toBe('en')
     })
+
+    it('notifies listeners when setSetting is called and allows unsubscribing', () => {
+        const listener = jest.fn()
+        const unsubscribe = db.subscribeSettings(listener)
+
+        db.setSetting('calendar_system', 'jalali')
+        expect(listener).toHaveBeenCalledTimes(1)
+
+        db.setSetting('first_day_of_week', 'saturday')
+        expect(listener).toHaveBeenCalledTimes(2)
+
+        unsubscribe()
+        db.setSetting('calendar_system', 'gregorian')
+        expect(listener).toHaveBeenCalledTimes(2)
+    })
 })
 
 describe('addEvent / updateEvent / deleteEvent', () => {
@@ -109,21 +124,6 @@ describe('event queries', () => {
 
         const events = db.getTodayEvents('2024-01-15')
         expect(events.map((event) => event.time)).toEqual(['09:00', '17:00'])
-    })
-
-    it('getMonthEvents filters by month prefix and orders by date and time', () => {
-        db.addEvent('2024-01-20', '09:00', null)
-        db.addEvent('2024-01-05', '17:00', null)
-        db.addEvent('2024-01-05', '09:00', null)
-        db.addEvent('2024-11-05', '09:00', null) // must not match '2024-01'
-        db.addEvent('2023-12-31', '09:00', null)
-
-        const events = db.getMonthEvents('2024-01')
-        expect(events.map((event) => `${event.date} ${event.time}`)).toEqual([
-            '2024-01-05 09:00',
-            '2024-01-05 17:00',
-            '2024-01-20 09:00',
-        ])
     })
 
     it('getEventsRange includes both boundary dates', () => {
