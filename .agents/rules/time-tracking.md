@@ -9,7 +9,7 @@ This documentation provides guidelines for AI agents and developers working on t
 ## 1. Project Overview
 
 - **Type**: Mobile Application
-- **Supported Platforms**: **Android and iOS only**. The app will **never** run on web. Never write code, fallbacks, polyfills, or create `.web.*` files for web support.
+- **Supported Platforms**: **Android only**. Neither iOS nor web is supported until #9 is implemented. Never write iOS code, iOS `Platform.OS` branches, iOS config, iOS tests, or web fallbacks/polyfills/`.web.*` files.
 - **Framework**: Expo (React Native) — **Expo has changed**: Always check the official versioned Expo documentation (matching the SDK version in `package.json`) before writing code.
 - **Language**: TypeScript
 - **State Management**: React Context & Hooks
@@ -112,5 +112,5 @@ This documentation provides guidelines for AI agents and developers working on t
 - [ ] New translation keys added to `src/i18n/locales/*.ts`?
 - [ ] Styles use `theme.colors`?
 - [ ] No manual memoization (`useMemo`/`useCallback`/`React.memo`) introduced?
-- [ ] Only Android & iOS supported (no web fallbacks or code)?
+- [ ] Only Android supported (no iOS or web code/fallbacks)?
 - [ ] Compatible with both default and FOSS (`.foss.*`) builds?

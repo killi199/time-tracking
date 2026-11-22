@@ -94,7 +94,7 @@ Expo Go allows you to run the app quickly on your device without a full build.
     ```bash
     yarn start
     ```
-2.  Scan the QR code displayed in the terminal using the Expo Go app on your Android device (or Camera app on iOS).
+2.  Scan the QR code displayed in the terminal using the Expo Go app on your Android device.
 
 ### Running Locally on Android (Debug Build)
 
@@ -137,26 +137,6 @@ To build and install the FOSS release version on your connected Android device:
 
 ```bash
 yarn android:release-foss
-```
-
-### Running Locally on iOS
-
-To run a native build on iOS (macOS and Xcode required):
-
-Debug:
-
-```bash
-yarn ios
-# or FOSS variant
-yarn ios:foss
-```
-
-Release:
-
-```bash
-yarn ios:release
-# or FOSS variant
-yarn ios:release-foss
 ```
 
 ## Scripts
