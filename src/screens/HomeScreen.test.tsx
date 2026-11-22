@@ -11,6 +11,8 @@ import { useNavigation } from 'expo-router'
 import { addEvent, updateEvent, deleteEvent, getSetting } from '../db/database'
 import { AppState } from 'react-native'
 import { PaperProvider } from 'react-native-paper'
+import { getFormattedDate } from '../utils/time'
+import { formatHeaderDate } from '../utils/calendar'
 
 const mockSetOptions = jest.fn()
 
@@ -322,20 +324,41 @@ describe('HomeScreen', () => {
         const prevButton = screen.getByTestId('prev-date-btn')
         const backToNowButton = screen.getByText('home.backToNow')
 
+        const today = new Date()
+        const yesterday = new Date(today)
+        yesterday.setDate(yesterday.getDate() - 1)
+        const todayLabel = formatHeaderDate(
+            getFormattedDate(today),
+            'day',
+            'gregorian',
+            'en',
+        )
+        const yesterdayLabel = formatHeaderDate(
+            getFormattedDate(yesterday),
+            'day',
+            'gregorian',
+            'en',
+        )
+
         // Go back a day
         await user.press(prevButton)
         // Go back another day
         await user.press(prevButton)
 
         await user.press(backToNowButton)
+        expect(screen.getByText(todayLabel)).toBeOnTheScreen()
+
+        expect(panEndCallback).toEqual(expect.any(Function))
 
         await act(() => {
-            if (panEndCallback) {
-                panEndCallback({ translationX: 60 }) // swipe right
-                panEndCallback({ translationX: -60 }) // swipe left
-            }
+            panEndCallback?.({ translationX: 60 }) // swipe right -> yesterday
         })
-        expect(screen.getByTestId('day-view')).toBeOnTheScreen()
+        expect(screen.getByText(yesterdayLabel)).toBeOnTheScreen()
+
+        await act(() => {
+            panEndCallback?.({ translationX: -60 }) // swipe left -> today
+        })
+        expect(screen.getByText(todayLabel)).toBeOnTheScreen()
     })
 
     it('renders correctly in month view mode', async () => {
