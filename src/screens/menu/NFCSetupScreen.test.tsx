@@ -16,7 +16,7 @@ jest.mock('react-native-nfc-manager', () => ({
     NfcTech: { Ndef: 'Ndef' },
     Ndef: {
         uriRecord: jest.fn().mockReturnValue('mock-uri-record'),
-        encodeMessage: jest.fn().mockReturnValue(new Uint8Array([1, 2, 3])),
+        encodeMessage: jest.fn().mockReturnValue([1, 2, 3]),
     },
     default: {
         isSupported: jest.fn(),
@@ -116,7 +116,7 @@ describe('NFCSetupScreen', () => {
             expect(Ndef.uriRecord).toHaveBeenCalledWith('timetracking://nfc')
             expect(
                 NfcManager.ndefHandler.writeNdefMessage,
-            ).toHaveBeenCalledWith(new Uint8Array([1, 2, 3]), {
+            ).toHaveBeenCalledWith([1, 2, 3], {
                 reconnectAfterWrite: true,
             })
         })
