@@ -7238,15 +7238,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:27.1.3":
-  version: 27.1.3
-  resolution: "i18next@npm:27.1.3"
+"i18next@npm:27.2.2":
+  version: 27.2.2
+  resolution: "i18next@npm:27.2.2"
   peerDependencies:
     typescript: ^5 || ^6 || ^7
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/3c4f1ae3ee43f2dfdc721c5677d9676ea9dec46a1d640f62f02ee44f05cc9ec7ee55db48c86042851d8213caf2c5644e1b3273463a575cf696ce232bad6c6974
+  checksum: 10c0/97cb1992b8cba47b428f7065c5bdde71a7bcf63667b648ff147ccac175b10a6860d4a3f2d3e605040e7c18432e9cf6867aaa649671c42526b6e7e2761acc6e75
   languageName: node
   linkType: hard
 
@@ -11984,7 +11984,7 @@ __metadata:
     expo-status-bar: "npm:~58.0.5"
     expo-system-ui: "npm:~58.0.7"
     expo-task-manager: "npm:~58.0.14"
-    i18next: "npm:27.1.3"
+    i18next: "npm:27.2.2"
     jest: "npm:~30.5.2"
     jest-expo: "npm:~58.0.15"
     jest-junit: "npm:17.0.0"
