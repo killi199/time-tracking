@@ -16,6 +16,7 @@ import { sumDailyTargets } from '../utils/workHours'
 import {
     getMonthRange,
     getActiveCalendarSystem,
+    getSavedMonthStartDay,
     formatHeaderDate,
     CalendarSystem,
 } from '../utils/calendar'
@@ -36,6 +37,7 @@ interface MonthViewProps {
     onDeleteEvent: (event: TimeEvent, close?: () => void) => void
     refreshTrigger: number
     calendar?: CalendarSystem
+    monthStartDay?: number
 }
 
 function calculateMetrics(currentEvents: TimeEvent[], cutoffDate: string) {
@@ -171,6 +173,7 @@ export default function MonthView({
     onDeleteEvent,
     refreshTrigger,
     calendar,
+    monthStartDay,
 }: Readonly<MonthViewProps>) {
     const [, setTick] = useState(0)
 
@@ -178,11 +181,16 @@ export default function MonthView({
     const { t, i18n } = useTranslation()
 
     const activeCalendar = calendar ?? getActiveCalendarSystem()
+    const activeMonthStartDay = monthStartDay ?? getSavedMonthStartDay()
     const dateStr =
         month.includes('-') && month.split('-').length === 2
             ? `${month}-01`
             : month
-    const { start, end } = getMonthRange(dateStr, activeCalendar)
+    const { start, end } = getMonthRange(
+        dateStr,
+        activeCalendar,
+        activeMonthStartDay,
+    )
     const loadedEvents = getEventsRange(start, end)
     const events = processEvents(loadedEvents)
     const { todayWorked, dayBalance, overallBalance } = calculateMetrics(
