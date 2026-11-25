@@ -14,6 +14,7 @@ import { getFormattedDate } from '../../utils/time'
 import {
     useSavedCalendarSystem,
     useSavedFirstDayOfWeek,
+    useSavedMonthStartDay,
 } from '../../utils/calendar'
 
 const getSavedLanguage = (): string => getSetting('language') || 'auto'
@@ -30,6 +31,7 @@ export default function SettingsScreen() {
 
     const calendarSystem = useSavedCalendarSystem()
     const firstDayOfWeek = useSavedFirstDayOfWeek()
+    const monthStartDay = useSavedMonthStartDay()
     const language = useSyncExternalStore(subscribeSettings, getSavedLanguage)
 
     const targetHours = Math.floor(dailyTarget / 60)
@@ -57,6 +59,11 @@ export default function SettingsScreen() {
         if (firstDayOfWeek === 'sunday') return t('settings.sunday')
         if (firstDayOfWeek === 'monday') return t('settings.monday')
         return t('settings.autoFirstDay')
+    }
+
+    const getMonthStartDescription = () => {
+        if (monthStartDay === 1) return t('settings.monthStartDayDefault')
+        return String(monthStartDay)
     }
 
     const handleWorkHoursConfirm = (date: Date) => {
@@ -101,6 +108,16 @@ export default function SettingsScreen() {
                     right={() => <List.Icon icon="chevron-right" />}
                     onPress={() => {
                         router.push('/week-start-settings')
+                    }}
+                    style={styles.listItem}
+                />
+                <List.Item
+                    title={t('settings.monthStartDay')}
+                    description={getMonthStartDescription()}
+                    left={() => <List.Icon icon="calendar-range" />}
+                    right={() => <List.Icon icon="chevron-right" />}
+                    onPress={() => {
+                        router.push('/month-start-settings')
                     }}
                     style={styles.listItem}
                 />

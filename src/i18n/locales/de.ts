@@ -134,6 +134,11 @@ export default {
             monday: 'Montag',
             firstDayOfWeekNote:
                 'Gilt für die Wochenansicht und den Jalali-Datumsauswahldialog. Der gregorianische Datumsauswahldialog richtet sich nach dem Systemkalender deines Geräts.',
+            monthStartDay: 'Erster Tag des Monats',
+            monthStartDayTitle: 'Erster Tag des Monats',
+            monthStartDayDefault: '1 (Kalendermonat)',
+            monthStartDayNote:
+                'Gilt für die Monatsansicht und die monatlichen Statistiken. Wähle einen Tag zwischen 1 und 28.',
         },
         dialog: {
             checkInTitle: 'Einchecken',

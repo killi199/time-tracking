@@ -113,6 +113,10 @@ describe('SettingsScreen', () => {
             text: 'settings.firstDayOfWeek',
             route: '/week-start-settings',
         },
+        {
+            text: 'settings.monthStartDay',
+            route: '/month-start-settings',
+        },
     ])('navigates to $route when $text is pressed', async ({ text, route }) => {
         const user = userEvent.setup()
         await render(
@@ -210,11 +214,13 @@ describe('SettingsScreen', () => {
 
         expect(screen.getByText('settings.calendarJalali')).toBeVisible()
         expect(screen.getByText('settings.saturday')).toBeVisible()
+        expect(screen.getByText('settings.monthStartDayDefault')).toBeVisible()
 
-        // Test sunday
+        // Test sunday and custom month start day
         jest.mocked(getSetting).mockImplementation((key: string) => {
             if (key === 'calendar_system') return 'gregorian'
             if (key === 'first_day_of_week') return 'sunday'
+            if (key === 'month_start_day') return '15'
             return null
         })
         await rerender(
@@ -223,6 +229,7 @@ describe('SettingsScreen', () => {
             </PaperProvider>,
         )
         expect(screen.getByText('settings.sunday')).toBeVisible()
+        expect(screen.getByText('15')).toBeVisible()
 
         // Test monday
         jest.mocked(getSetting).mockImplementation((key: string) => {
