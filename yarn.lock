@@ -5738,15 +5738,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-testing-library@npm:7.16.2":
-  version: 7.16.2
-  resolution: "eslint-plugin-testing-library@npm:7.16.2"
+"eslint-plugin-testing-library@npm:7.16.3":
+  version: 7.16.3
+  resolution: "eslint-plugin-testing-library@npm:7.16.3"
   dependencies:
     "@typescript-eslint/scope-manager": "npm:^8.56.0"
     "@typescript-eslint/utils": "npm:^8.56.0"
   peerDependencies:
     eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
-  checksum: 10c0/ea99f41eee929e0b139d927f8a89bef7ffe3bd33c51fc3c2c93d8e9d146e146395e1f7bb8a34d4b5bd9a1ffe7a1879959fc171e952c731e1e8310b079d9d5c97
+  checksum: 10c0/356ad4363102d34cf0280f8e6c098349aafed324cda5a4955dd366292183f92c7507079259783a37bf007b8d2f368be919a9d88508bb39e662d40f99def80ff1
   languageName: node
   linkType: hard
 
@@ -11946,7 +11946,7 @@ __metadata:
     eslint-plugin-react: "npm:7.37.5"
     eslint-plugin-react-hooks: "npm:7.1.1"
     eslint-plugin-sonarjs: "npm:4.2.2"
-    eslint-plugin-testing-library: "npm:7.16.2"
+    eslint-plugin-testing-library: "npm:7.16.3"
     eslint-plugin-unused-imports: "npm:4.4.1"
     expo: "npm:~58.1.0"
     expo-build-properties: "npm:~58.0.12"
