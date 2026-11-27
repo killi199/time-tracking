@@ -170,6 +170,23 @@ describe('MonthView', () => {
         expect(screen.getByText(/20 Aban 1405/)).toBeVisible()
     })
 
+    it('queries custom month range when monthStartDay is provided', async () => {
+        jest.mocked(getEventsRange).mockReturnValue([])
+
+        await renderWithProvider(
+            <MonthView
+                month="2026-11-25"
+                calendar="gregorian"
+                monthStartDay={15}
+                onEditEvent={jest.fn()}
+                onDeleteEvent={jest.fn()}
+                refreshTrigger={0}
+            />,
+        )
+
+        expect(getEventsRange).toHaveBeenCalledWith('2026-11-15', '2026-12-14')
+    })
+
     it('handles missing refreshTrigger gracefully', async () => {
         const { toJSON } = await render(
             <MonthView

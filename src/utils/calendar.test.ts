@@ -13,9 +13,11 @@ import {
     getActiveCalendarSystem,
     getSavedCalendarSystem,
     getSavedFirstDayOfWeek,
+    getSavedMonthStartDay,
     useActiveCalendarSystem,
     useSavedCalendarSystem,
     useSavedFirstDayOfWeek,
+    useSavedMonthStartDay,
     resolveCalendarSystem,
     resolveFirstDayOfWeek,
     getWeekRange,
@@ -358,6 +360,100 @@ describe('calendar utility', () => {
 
             const jMonthDe = formatHeaderDate(dateStr, 'month', 'jalali', 'de')
             expect(jMonthDe).toBe('Aban 1405')
+
+            const customGMonth = formatHeaderDate(
+                '2026-11-25',
+                'month',
+                'gregorian',
+                'en-US',
+                'auto',
+                15,
+            )
+            expect(customGMonth).toContain('Nov 15')
+            expect(customGMonth).toContain('Dec 14')
+
+            const customJMonth = formatHeaderDate(
+                '2026-11-25',
+                'month',
+                'jalali',
+                'en',
+                'auto',
+                15,
+            )
+            expect(customJMonth).toBe('15 Aban - 14 Azar 1405')
+        })
+    })
+
+    describe('getSavedMonthStartDay & custom month range/step', () => {
+        it('parses valid month_start_day (1-28) and defaults to 1 otherwise', () => {
+            jest.mocked(getSetting).mockReturnValue(null)
+            expect(getSavedMonthStartDay()).toBe(1)
+
+            jest.mocked(getSetting).mockReturnValue('15')
+            expect(getSavedMonthStartDay()).toBe(15)
+
+            jest.mocked(getSetting).mockReturnValue('28')
+            expect(getSavedMonthStartDay()).toBe(28)
+
+            jest.mocked(getSetting).mockReturnValue('0')
+            expect(getSavedMonthStartDay()).toBe(1)
+
+            jest.mocked(getSetting).mockReturnValue('29')
+            expect(getSavedMonthStartDay()).toBe(1)
+
+            jest.mocked(getSetting).mockReturnValue('15abc')
+            expect(getSavedMonthStartDay()).toBe(1)
+        })
+
+        it('computes custom Gregorian month range and steps correctly', () => {
+            // On or after start day 15
+            expect(getMonthRange('2026-11-25', 'gregorian', 15)).toEqual({
+                start: '2026-11-15',
+                end: '2026-12-14',
+                monthIdentifier: '2026-11-15',
+            })
+
+            // Before start day 15 (crosses year boundary)
+            expect(getMonthRange('2026-01-10', 'gregorian', 15)).toEqual({
+                start: '2025-12-15',
+                end: '2026-01-14',
+                monthIdentifier: '2025-12-15',
+            })
+
+            // Day 28 in February
+            expect(getMonthRange('2026-03-05', 'gregorian', 28)).toEqual({
+                start: '2026-02-28',
+                end: '2026-03-27',
+                monthIdentifier: '2026-02-28',
+            })
+
+            // Invalid monthStartDay falls back to 1
+            expect(getMonthRange('2026-11-25', 'gregorian', 31)).toEqual({
+                start: '2026-11-01',
+                end: '2026-11-30',
+                monthIdentifier: '2026-11',
+            })
+
+            // stepMonth forward & backward
+            expect(stepMonth('2026-11-25', 1, 'gregorian', 15)).toBe(
+                '2026-12-15',
+            )
+            expect(stepMonth('2026-01-10', -1, 'gregorian', 15)).toBe(
+                '2025-11-15',
+            )
+        })
+
+        it('computes custom Jalali month range and steps correctly', () => {
+            // 2026-11-25 is 1405-09-04 (< 15), so range is 1405-08-15 to 1405-09-14
+            // 1405-08-15 is 2026-11-06, 1405-09-14 is 2026-12-05
+            expect(getMonthRange('2026-11-25', 'jalali', 15)).toEqual({
+                start: '2026-11-06',
+                end: '2026-12-05',
+                monthIdentifier: '2026-11-06',
+            })
+
+            expect(stepMonth('2026-11-25', 1, 'jalali', 15)).toBe('2026-12-06')
+            expect(stepMonth('2026-11-25', -1, 'jalali', 15)).toBe('2026-10-07')
         })
     })
 
@@ -366,6 +462,7 @@ describe('calendar utility', () => {
             const active = useActiveCalendarSystem()
             const saved = useSavedCalendarSystem()
             const firstDay = useSavedFirstDayOfWeek()
+            const monthStartDay = useSavedMonthStartDay()
             return React.createElement(
                 View,
                 null,
@@ -376,16 +473,23 @@ describe('calendar utility', () => {
                 ),
                 React.createElement(Text, { testID: 'saved-calendar' }, saved),
                 React.createElement(Text, { testID: 'first-day' }, firstDay),
+                React.createElement(
+                    Text,
+                    { testID: 'month-start-day' },
+                    String(monthStartDay),
+                ),
             )
         }
 
         it('reactively updates hooks when SQLite settings change', async () => {
             let calendarSetting: string | null = null
             let firstDaySetting: string | null = null
+            let monthStartSetting: string | null = null
 
             jest.mocked(getSetting).mockImplementation((key) => {
                 if (key === 'calendar_system') return calendarSetting
                 if (key === 'first_day_of_week') return firstDaySetting
+                if (key === 'month_start_day') return monthStartSetting
                 return null
             })
 
@@ -442,6 +546,16 @@ describe('calendar utility', () => {
             )
             expect(screen.getByTestId('saved-calendar')).toHaveTextContent(
                 'gregorian',
+            )
+
+            // Update month start day setting to 15
+            monthStartSetting = '15'
+            await act(() => {
+                notifySettingsListeners()
+            })
+
+            expect(screen.getByTestId('month-start-day')).toHaveTextContent(
+                '15',
             )
         })
     })

@@ -27,6 +27,7 @@ import { getFormattedTime, getFormattedDate } from '../utils/time'
 import {
     useActiveCalendarSystem,
     useSavedFirstDayOfWeek,
+    useSavedMonthStartDay,
     getWeekRange,
     getMonthRange,
     stepMonth,
@@ -100,6 +101,7 @@ export default function HomeScreen({
 
     const calendarSystem = useActiveCalendarSystem()
     const firstDayOfWeek = useSavedFirstDayOfWeek()
+    const monthStartDay = useSavedMonthStartDay()
 
     // Track app state and date to auto-update on resume
     const appState = useRef(AppState.currentState)
@@ -139,10 +141,12 @@ export default function HomeScreen({
                             const currentMonth = getMonthRange(
                                 currentDate,
                                 calendarSystem,
+                                monthStartDay,
                             )
                             const lastActiveMonth = getMonthRange(
                                 lastActiveDateRef.current,
                                 calendarSystem,
+                                monthStartDay,
                             )
                             isViewingCurrentPeriod =
                                 currentMonth.monthIdentifier ===
@@ -166,7 +170,7 @@ export default function HomeScreen({
         return () => {
             subscription.remove()
         }
-    }, [calendarSystem, currentDate, firstDayOfWeek, viewMode])
+    }, [calendarSystem, currentDate, firstDayOfWeek, monthStartDay, viewMode])
 
     const navigation = useNavigation()
 
@@ -183,8 +187,13 @@ export default function HomeScreen({
             const currentMonthEnd = getMonthRange(
                 currentDate,
                 calendarSystem,
+                monthStartDay,
             ).end
-            const todayMonthEnd = getMonthRange(todayStr, calendarSystem).end
+            const todayMonthEnd = getMonthRange(
+                todayStr,
+                calendarSystem,
+                monthStartDay,
+            ).end
             return currentMonthEnd < todayMonthEnd
         } else if (viewMode === 'week') {
             const currentWeekStart = getWeekRange(
@@ -211,7 +220,12 @@ export default function HomeScreen({
         const todayStr = getFormattedDate(today)
 
         if (viewMode === 'month') {
-            const steppedDate = stepMonth(currentDate, step, calendarSystem)
+            const steppedDate = stepMonth(
+                currentDate,
+                step,
+                calendarSystem,
+                monthStartDay,
+            )
             const newDateStr = steppedDate > todayStr ? todayStr : steppedDate
             setCurrentDate(newDateStr)
         } else if (viewMode === 'week') {
@@ -248,6 +262,7 @@ export default function HomeScreen({
         calendarSystem,
         i18n.language,
         firstDayOfWeek,
+        monthStartDay,
     )
 
     const activeItemCloseCallback = useRef<(() => void) | undefined>(undefined)
@@ -411,10 +426,12 @@ export default function HomeScreen({
             const currentMonthId = getMonthRange(
                 currentDate,
                 calendarSystem,
+                monthStartDay,
             ).monthIdentifier
             const targetMonthId = getMonthRange(
                 targetDate,
                 calendarSystem,
+                monthStartDay,
             ).monthIdentifier
             if (targetMonthId > currentMonthId) {
                 nextDirection = 'right'
@@ -495,7 +512,7 @@ export default function HomeScreen({
 
     const animatedViewKey = (() => {
         if (viewMode === 'month') {
-            return `month-${getMonthRange(currentDate, calendarSystem).monthIdentifier}`
+            return `month-${getMonthRange(currentDate, calendarSystem, monthStartDay).monthIdentifier}`
         }
         if (viewMode === 'week') {
             return `week-${getWeekRange(currentDate, firstDayOfWeek, calendarSystem).start}`
@@ -633,6 +650,7 @@ export default function HomeScreen({
                                     <MonthView
                                         month={currentDate}
                                         calendar={calendarSystem}
+                                        monthStartDay={monthStartDay}
                                         onEditEvent={showEditDialog}
                                         onDeleteEvent={showDeleteDialog}
                                         refreshTrigger={refreshTrigger}

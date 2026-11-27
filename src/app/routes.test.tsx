@@ -7,6 +7,7 @@ import GeofenceSetupRoute from './geofence-setup'
 import LanguageSettingsRoute from './language-settings'
 import CalendarSettingsRoute from './calendar-settings'
 import WeekStartSettingsRoute from './week-start-settings'
+import MonthStartSettingsRoute from './month-start-settings'
 import LicensesRoute from './licenses'
 import NFCSetupRoute from './nfc-setup'
 import NFCRoute from './nfc'
@@ -54,6 +55,14 @@ jest.mock('../screens/settings/WeekStartSettingsScreen', () => {
         const { Text } =
             jest.requireActual<typeof import('react-native')>('react-native')
         return <Text testID="mock-week-start-screen">Week Start</Text>
+    }
+})
+
+jest.mock('../screens/settings/MonthStartSettingsScreen', () => {
+    return function MockMonthStartSettingsScreen() {
+        const { Text } =
+            jest.requireActual<typeof import('react-native')>('react-native')
+        return <Text testID="mock-month-start-screen">Month Start</Text>
     }
 })
 
@@ -135,6 +144,11 @@ describe('App Route Forwarders', () => {
     it('renders WeekStartSettingsRoute', async () => {
         await render(<WeekStartSettingsRoute />)
         expect(screen.getByTestId('mock-week-start-screen')).toBeVisible()
+    })
+
+    it('renders MonthStartSettingsRoute', async () => {
+        await render(<MonthStartSettingsRoute />)
+        expect(screen.getByTestId('mock-month-start-screen')).toBeVisible()
     })
 
     it('renders LicensesRoute', async () => {

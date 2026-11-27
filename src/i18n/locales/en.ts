@@ -131,6 +131,11 @@ export default {
             monday: 'Monday',
             firstDayOfWeekNote:
                 "Applies to the Week view and Jalali date picker. The Gregorian date picker follows your device's system calendar.",
+            monthStartDay: 'First day of month',
+            monthStartDayTitle: 'First Day of the Month',
+            monthStartDayDefault: '1 (Calendar month)',
+            monthStartDayNote:
+                'Applies to the Month view and monthly statistics. Choose a day from 1 to 28.',
         },
         dialog: {
             checkInTitle: 'Check In',

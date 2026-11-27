@@ -4,13 +4,18 @@ import {
     endOfMonth,
     endOfWeek,
     format,
+    getDate,
+    setDate,
     startOfMonth,
     startOfWeek,
+    subDays,
 } from 'date-fns'
 import {
     addMonths as addMonthsJalali,
     endOfMonth as endOfMonthJalali,
     format as formatJalali,
+    getDate as getDateJalali,
+    setDate as setDateJalali,
     startOfMonth as startOfMonthJalali,
 } from 'date-fns-jalali'
 import { enUS } from 'date-fns-jalali/locale'
@@ -94,6 +99,22 @@ export function getSavedFirstDayOfWeek(): FirstDayOfWeek {
 }
 
 /**
+ * Returns the configured first day of the month (1-28) from database settings.
+ * Defaults to 1.
+ */
+export function getSavedMonthStartDay(): number {
+    const saved = getSetting('month_start_day')
+    if (!saved || !/^\d+$/.test(saved)) {
+        return 1
+    }
+    const parsed = Number.parseInt(saved, 10)
+    if (parsed >= 1 && parsed <= 28) {
+        return parsed
+    }
+    return 1
+}
+
+/**
  * React hook that subscribes to the active calendar system ('gregorian' | 'jalali').
  * Re-renders reactively when calendar settings change in SQLite.
  */
@@ -115,6 +136,14 @@ export function useSavedCalendarSystem(): CalendarPreference {
  */
 export function useSavedFirstDayOfWeek(): FirstDayOfWeek {
     return useSyncExternalStore(subscribeSettings, getSavedFirstDayOfWeek)
+}
+
+/**
+ * React hook that subscribes to the saved first day of the month (1-28).
+ * Re-renders reactively when month-start-day settings change in SQLite.
+ */
+export function useSavedMonthStartDay(): number {
+    return useSyncExternalStore(subscribeSettings, getSavedMonthStartDay)
 }
 
 /**
@@ -164,36 +193,71 @@ export function getWeekRange(
     }
 }
 
+function normalizeMonthStartDay(monthStartDay: number): number {
+    if (
+        Number.isInteger(monthStartDay) &&
+        monthStartDay >= 1 &&
+        monthStartDay <= 28
+    ) {
+        return monthStartDay
+    }
+    return 1
+}
+
+function parseDateStr(dateStr: string): Date {
+    const [y, m, d] = dateStr.split('-').map(Number)
+    return new Date(y, m - 1, d)
+}
+
 /**
  * Returns the Gregorian start and end dates (YYYY-MM-DD) for the month containing dateStr.
+ * When monthStartDay > 1, computes the custom billing/work month starting on that day.
  */
 export function getMonthRange(
     dateStr: string,
     calendar: CalendarSystem = 'gregorian',
+    monthStartDay: number = 1,
 ): {
     start: string
     end: string
     monthIdentifier: string
 } {
-    const [y, m, d] = dateStr.split('-').map(Number)
-    const curr = new Date(y, m - 1, d)
+    const curr = parseDateStr(dateStr)
+    const effectiveStartDay = normalizeMonthStartDay(monthStartDay)
 
-    if (calendar === 'jalali') {
-        const start = startOfMonthJalali(curr)
-        const end = endOfMonthJalali(curr)
+    const isJalali = calendar === 'jalali'
+    const getMonthStart = isJalali ? startOfMonthJalali : startOfMonth
+    const getMonthEnd = isJalali ? endOfMonthJalali : endOfMonth
+    const addMonth = isJalali ? addMonthsJalali : addMonths
+    const getDayNum = isJalali ? getDateJalali : getDate
+    const setDayNum = isJalali ? setDateJalali : setDate
+
+    if (effectiveStartDay === 1) {
+        const start = getMonthStart(curr)
+        const end = getMonthEnd(curr)
         return {
             start: format(start, 'yyyy-MM-dd'),
             end: format(end, 'yyyy-MM-dd'),
-            monthIdentifier: formatJalali(curr, 'yyyy-MM'),
+            monthIdentifier: isJalali
+                ? formatJalali(curr, 'yyyy-MM')
+                : format(curr, 'yyyy-MM'),
         }
     }
 
-    const start = startOfMonth(curr)
-    const end = endOfMonth(curr)
+    const dayOfMonth = getDayNum(curr)
+    const anchor = dayOfMonth >= effectiveStartDay ? curr : addMonth(curr, -1)
+    const start = setDayNum(getMonthStart(anchor), effectiveStartDay)
+    const nextPeriodStart = setDayNum(
+        getMonthStart(addMonth(start, 1)),
+        effectiveStartDay,
+    )
+    const end = subDays(nextPeriodStart, 1)
+    const startStr = format(start, 'yyyy-MM-dd')
+
     return {
-        start: format(start, 'yyyy-MM-dd'),
+        start: startStr,
         end: format(end, 'yyyy-MM-dd'),
-        monthIdentifier: format(curr, 'yyyy-MM'),
+        monthIdentifier: startStr,
     }
 }
 
@@ -205,31 +269,39 @@ export function stepMonth(
     referenceDateStr: string,
     step: number,
     calendar: CalendarSystem = 'gregorian',
+    monthStartDay: number = 1,
 ): string {
-    const [y, m, d] = referenceDateStr.split('-').map(Number)
-    const curr = new Date(y, m - 1, d)
+    const effectiveStartDay = normalizeMonthStartDay(monthStartDay)
+    const isJalali = calendar === 'jalali'
+    const getMonthStart = isJalali ? startOfMonthJalali : startOfMonth
+    const addMonth = isJalali ? addMonthsJalali : addMonths
+    const setDayNum = isJalali ? setDateJalali : setDate
 
-    if (calendar === 'jalali') {
-        const nextMonthDate = startOfMonthJalali(addMonthsJalali(curr, step))
+    if (effectiveStartDay === 1) {
+        const curr = parseDateStr(referenceDateStr)
+        const nextMonthDate = getMonthStart(addMonth(curr, step))
         return format(nextMonthDate, 'yyyy-MM-dd')
     }
 
-    const nextMonthDate = startOfMonth(addMonths(curr, step))
+    const { start } = getMonthRange(
+        referenceDateStr,
+        calendar,
+        effectiveStartDay,
+    )
+    const startDate = parseDateStr(start)
+    const nextMonthDate = setDayNum(
+        getMonthStart(addMonth(startDate, step)),
+        effectiveStartDay,
+    )
     return format(nextMonthDate, 'yyyy-MM-dd')
 }
 
-function formatWeekHeader(
-    dateStr: string,
+function formatDateRangeHeader(
+    startDate: Date,
+    endDate: Date,
     calendar: CalendarSystem,
     locale: string,
-    firstDayOfWeek: FirstDayOfWeek,
 ): string {
-    const { startDate, endDate } = getWeekRange(
-        dateStr,
-        firstDayOfWeek,
-        calendar,
-    )
-
     if (calendar === 'jalali') {
         const sMonth = formatJalali(startDate, 'MMMM', { locale: enUS })
         const eMonth = formatJalali(endDate, 'MMMM', { locale: enUS })
@@ -263,6 +335,7 @@ export function formatHeaderDate(
     calendar: CalendarSystem,
     locale: string,
     firstDayOfWeek: FirstDayOfWeek = 'auto',
+    monthStartDay: number = 1,
 ): string {
     if (!dateStr) return ''
 
@@ -291,10 +364,30 @@ export function formatHeaderDate(
     }
 
     if (viewMode === 'week') {
-        return formatWeekHeader(dateStr, calendar, locale, firstDayOfWeek)
+        const { startDate, endDate } = getWeekRange(
+            dateStr,
+            firstDayOfWeek,
+            calendar,
+        )
+        return formatDateRangeHeader(startDate, endDate, calendar, locale)
     }
 
     // viewMode === 'month'
+    const effectiveStartDay = normalizeMonthStartDay(monthStartDay)
+    if (effectiveStartDay > 1) {
+        const { start, end } = getMonthRange(
+            dateStr,
+            calendar,
+            effectiveStartDay,
+        )
+        return formatDateRangeHeader(
+            parseDateStr(start),
+            parseDateStr(end),
+            calendar,
+            locale,
+        )
+    }
+
     if (calendar === 'jalali') {
         return formatJalali(date, 'MMMM yyyy', { locale: enUS })
     }
